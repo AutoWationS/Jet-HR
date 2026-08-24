@@ -123,7 +123,15 @@ export function calcolaDetrazioneLavoro(redditoComplessivo, parametri, giorni) {
  * 3. Taglio del cuneo fiscale (L. 207/2024)
  * -------------------------------------------------------------------------- */
 
-/** (a) Somma esente: bonus in busta paga che NON concorre a formare reddito. */
+/**
+ * (a) Somma esente: bonus in busta paga che NON concorre a formare reddito.
+ *
+ * Due punti su cui e' facile sbagliare, entrambi verificati:
+ *  - la base e' il REDDITO DI LAVORO DIPENDENTE, cioe' l'imponibile fiscale gia'
+ *    al netto dei contributi (artt. 49 e 51 c. 2 lett. a TUIR), non la RAL;
+ *  - la percentuale e' UNICA, scelta in base alla fascia in cui cade il reddito,
+ *    non applicata per scaglioni successivi.
+ */
 export function calcolaSommaEsente(redditoComplessivo, redditoLavoroDipendente, parametri) {
   const p = parametri.cuneoFiscale.sommaEsente;
   if (redditoComplessivo > p.limiteRedditoComplessivo) return { percentuale: 0, importo: 0 };

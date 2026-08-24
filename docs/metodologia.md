@@ -99,6 +99,9 @@ alternative**, selezionate dal reddito complessivo:
 **(a) Somma esente** — reddito complessivo ≤ 20.000 €. È una somma **erogata in busta paga che
 non concorre a formare reddito**: si somma al netto, non riduce l'imponibile.
 
+La base di calcolo è il **reddito di lavoro dipendente**, cioè l'imponibile fiscale già al netto
+dei contributi (artt. 49 e 51 c. 2 lett. a TUIR) — non la RAL. Vedi §3.4 per la verifica.
+
 | Reddito di lavoro dipendente | Percentuale |
 |---|---|
 | ≤ 8.500 € | 7,1% |
@@ -291,10 +294,39 @@ motivo per cui questo confronto valeva la pena farlo: nessun test interno avrebb
 trovare una regola che il modello non conosceva.
 
 *La somma esente: la divergenza è loro.* 639,00 è esattamente 9.000 × 7,1%, cioè la percentuale
-applicata alla **RAL**. La circolare 4/E del 16 maggio 2025 dell'Agenzia delle Entrate precisa
-che la percentuale va applicata alla sola **quota imponibile del reddito di lavoro dipendente**,
-cioè al netto dei contributi previdenziali: 8.172,90 × 7,1% = 580,28. Su una RAL di 9.000 la
-differenza vale 58,72 €, e cresce con il reddito fino alla soglia dei 20.000.
+applicata alla **RAL**. La base corretta è invece 8.172,90, e la catena normativa è questa:
+
+1. la L. 207/2024 (art. 1 c. 4) dice che la percentuale si applica **al reddito di lavoro
+   dipendente** — non alla retribuzione lorda, non alla RAL;
+2. *reddito di lavoro dipendente* non è un'espressione generica: è la nozione definita dagli
+   artt. 49 e 51 del TUIR;
+3. l'art. 51 c. 2 lett. a) esclude espressamente dalla formazione di quel reddito i contributi
+   previdenziali e assistenziali obbligatori versati dal lavoratore.
+
+Quindi il reddito di lavoro dipendente **è già** al netto del 9,19%: 8.172,90 × 7,1% = 580,28.
+È lo stesso importo che compare al punto 1 della Certificazione Unica, ed è la stessa grandezza
+su cui si leggono le soglie della detrazione dell'art. 13 e del trattamento integrativo.
+
+La circolare 4/E del 16 maggio 2025 conferma la logica ("la percentuale va applicata alla sola
+quota imponibile del reddito di lavoro dipendente"), ma il passaggio riguarda in via diretta
+l'esclusione delle **quote esenti** — regimi impatriati, frontalieri — non i contributi: sui
+contributi la risposta viene già dall'art. 51, e non serve la circolare per arrivarci.
+
+Un argomento di coerenza interna rafforza la conclusione, ed è visibile proprio nei numeri di
+PMI.it: la *fascia* di percentuale l'hanno determinata correttamente sull'imponibile (7,1%
+richiede un reddito non superiore a 8.500, e 9.000 lo supera), ma poi hanno applicato quella
+percentuale al lordo. Usare due grandezze diverse per scegliere l'aliquota e per applicarla non
+è sostenibile: o entrambe sul lordo — e allora la percentuale sarebbe stata 5,3% — o entrambe
+sull'imponibile, che è la lettura corretta.
+
+Su una RAL di 9.000 la differenza vale 58,72 €, e cresce con il reddito fino alla soglia dei
+20.000.
+
+> Su questa misura circolano due letture errate diffuse, entrambe presenti in guide online: la
+> percentuale applicata **per scaglioni** (7,1% sui primi 8.500, poi 5,3%, poi 4,8%) invece che
+> come aliquota unica, e la base presa **al lordo**. La norma dice "la percentuale
+> corrispondente", al singolare, applicata al reddito di lavoro dipendente. Il modello
+> implementa aliquota unica su base imponibile, ed entrambe le scelte sono coperte da test.
 
 Residuo dopo la correzione: 8.812 − 8.753,18 = 58,82, cioè esattamente la sola divergenza sulla
 base della somma esente. Anche in questo caso il confronto si chiude senza voci inspiegate.
