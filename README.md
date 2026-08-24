@@ -1,41 +1,28 @@
-# Dal lordo al netto — calcolatore RAL → netto (anno d'imposta 2026)
+# Dal lordo al netto — calcolatore RAL → netto
 
-Prototipo di calcolatore che, data una **RAL** (retribuzione annua lorda), proietta la
-**retribuzione netta annua e mensile** e mostra **ogni voce trattenuta sul lordo**.
+Prototipo che, data una **RAL**, proietta la **retribuzione netta annua e mensile** e mostra
+**ogni voce trattenuta sul lordo**: contributi previdenziali, IRPEF, addizionali locali, e le
+somme non imponibili che tornano in busta paga.
 
-Ipotesi del caso standard: impiegato del settore privato, contratto a tempo indeterminato,
-residente e domiciliato fiscalmente a **Milano**, nessuna agevolazione o regime speciale.
-
-> ⚠️ Prototipo a scopo dimostrativo. Non sostituisce un cedolino paga né una consulenza fiscale.
-> Tutte le semplificazioni sono dichiarate: vedi [`docs/metodologia.md`](docs/metodologia.md).
+Caso modellato: impiegato del settore privato, tempo indeterminato, residente a **Milano**,
+nessun familiare a carico, nessuna agevolazione. Anno d'imposta **2026**.
 
 ---
 
-## Come si prova
-
-La pagina usa moduli ES: va servita da un server statico (aprendola con `file://` il browser
-non carica i moduli e compare un avviso esplicito).
+## Prova in 60 secondi
 
 ```bash
-git clone <questo-repo> && cd <questo-repo>
 python3 -m http.server 8080     # oppure: npx serve .
 # apri http://localhost:8080
 ```
 
-Test del motore di calcolo (nessuna dipendenza, solo Node ≥ 18):
+Oppure apri direttamente `dist/calcolatore.html` con un doppio clic: è la stessa pagina con
+tutto inline, generata dai medesimi sorgenti.
 
 ```bash
-npm test                               # 26 test con node --test
-npm run build                          # rigenera il bundle in dist/
-node scripts/tabella-riferimento.mjs   # tabella dei casi di riferimento in markdown
+npm test                               # 26 test, nessuna dipendenza da installare
+node scripts/tabella-riferimento.mjs   # 11 RAL con tutte le voci intermedie
 ```
-
-### Versione a file singolo
-
-`dist/calcolatore.html` è la stessa pagina con CSS e JavaScript inline: si apre con
-**doppio clic**, senza server. Non è una seconda implementazione — è generata dagli stessi
-sorgenti da `scripts/bundle.mjs`, e un test verifica che il file in `dist/` sia allineato al
-codice: se si tocca il motore e ci si dimentica di `npm run build`, la suite fallisce.
 
 ---
 
@@ -44,108 +31,159 @@ codice: se si tocca il motore e ci si dimentica di `npm run build`, la suite fal
 Il cuore dell'esercizio non è la pagina, è la sequenza. In busta paga si scende così:
 
 ```
-  RAL
-−  contributi INPS a carico dipendente      IVS 9,19%  (+1% oltre 56.224 €)
-=  imponibile fiscale
-−  IRPEF lorda                              23% / 33% / 43%
-+  detrazione lavoro dipendente             art. 13 TUIR, rapportata ai giorni
-+  ulteriore detrazione taglio cuneo        1.000 € tra 20k e 32k, décalage fino a 40k
-=  IRPEF netta  (mai negativa)
-−  addizionale regionale Lombardia          per scaglioni, 1,23% → 1,73%
-−  addizionale comunale Milano              0,80%, esente sotto 23.000 € di imponibile
-   (nessuna delle due e' dovuta se l'IRPEF netta e' zero: no tax area)
-+  somma esente taglio cuneo                7,1% / 5,3% / 4,8% fino a 20.000 €
-+  trattamento integrativo                  1.200 € fino a 15.000 €
-=  NETTO ANNUO        →  ÷ 12 / 13 / 14 mensilità  →  NETTO MENSILE
+   RAL
+−  contributi INPS c/dipendente      IVS 9,19%, +1% oltre 56.224 €
+=  imponibile fiscale                (i contributi sono deducibili, art. 51 TUIR)
+−  IRPEF lorda                       23% / 33% / 43%
++  detrazione lavoro dipendente      art. 13 c. 1, rapportata ai giorni, +65 € (c. 1.1)
++  ulteriore detrazione cuneo        1.000 € tra 20k e 32k, décalage fino a 40k
+=  IRPEF netta                       mai negativa: l'eccedenza si perde
+−  addizionale regionale Lombardia   per scaglioni, 1,23% → 1,73%
+−  addizionale comunale Milano       0,80%, esente sotto 23.000 € di imponibile
+                                     nessuna delle due è dovuta se l'IRPEF netta è zero
++  somma esente cuneo                7,1% / 5,3% / 4,8% fino a 20.000 €
++  trattamento integrativo           1.200 € fino a 15.000 €, se c'è capienza
+=  NETTO ANNUO   →   ÷ 12 / 13 / 14 mensilità   →   NETTO MENSILE
 ```
 
-Le mensilità **non cambiano il netto annuo**: cambiano solo come viene spalmato. È una scelta
-esplicita, ed è il primo malinteso da chiarire quando si parla di "quanto prendo al mese".
+Due punti che valgono una nota:
+
+- le **mensilità non cambiano il netto annuo**, cambiano solo come viene spalmato. È il primo
+  malinteso da chiarire quando si parla di "quanto prendo al mese";
+- i **contributi INPS non sono imposte**: sono retribuzione differita che matura pensione. La
+  pagina li mostra separati dalle imposte proprio per non confonderli.
 
 ---
 
-## Struttura del progetto
+## Le decisioni
 
-Il vincolo di progetto è uno solo: **il motore di calcolo non deve finire dentro la UI**.
+Il dominio è vasto, quindi la parte difficile non è calcolare: è **scegliere cosa modellare e
+dirlo**. Ogni riga qui sotto è una scelta consapevole, con l'alternativa che ho scartato.
+
+| Decisione | Alternativa scartata | Perché questa |
+|---|---|---|
+| Motore puro, separato dalla UI | Tutto in un file con il DOM | I test girano senza browser: se la separazione fosse finta non partirebbero |
+| Nessun numero magico nel motore | Costanti sparse nel codice | Cambiare anno d'imposta = un oggetto nuovo in `parametri.js`, zero modifiche alla logica |
+| Fonti come **dati**, non commenti | Elenco di link scritto a mano | La pagina genera la sezione "Fonti" dai parametri: non può divergere dal calcolo |
+| Reddito complessivo = imponibile fiscale | Modellare il reddito di riferimento completo | Esatto per chi ha solo reddito da lavoro dipendente; il resto è fuori dal caso standard |
+| Addizionali per competenza | Per cassa (saldo + acconto) come in busta | Su una carriera stabile si equivalgono; per cassa servirebbe l'anno precedente in input |
+| Calcolo a saldo d'anno | Simulazione busta per busta | Il brief chiede la proiezione annua; il cedolino mensile è un altro prodotto |
+| TFR escluso dal netto | Scorporarlo dalla RAL | È accantonato, non erogato: non transita nella retribuzione corrente |
+| Riduzioni forfettarie (260 € / 440 €) dichiarate ma non applicate | Applicarle per "completezza" | Incidono sulle detrazioni per oneri dell'art. 15, che il modello non ha: applicarle gonfierebbe l'imposta di chi non ha nulla da ridurre |
+| Massimale contributivo attivo di default | Ignorarlo | Un assunto di oggi è iscritto dopo il 1995; resta un interruttore nei parametri avanzati |
+| Effetti soglia **mostrati**, non nascosti | Curva liscia e rassicurante | Sono la parte del sistema che sorprende chi legge la busta paga: nasconderli è la scelta comoda |
+
+---
+
+## Come è verificato
+
+Tre livelli, dal più debole al più forte.
+
+**1. Ricalcolo manuale.** Il caso RAL 35.000 è rifatto a mano passaggio per passaggio in
+[`docs/metodologia.md`](docs/metodologia.md) §3.1, e lo stesso ricalcolo è codificato riga per
+riga nel primo test: se un passaggio si rompe, il test dice **quale**.
+
+**2. Ventisei test** con `node --test`, in quattro famiglie:
+casi di riferimento (ogni voce intermedia, non solo il totale), blocchi isolati (continuità
+delle formule sui confini di fascia, décalage, massimale), invarianti sull'intera curva da 1.000
+a 200.000 €, e coerenza del registro delle fonti.
+
+L'invariante più utile: **il netto può scendere solo attraversando una soglia dichiarata**, e
+ogni salto vale esattamente quanto l'agevolazione persa. Se una modifica introducesse una
+discontinuità non prevista, il test cade e dice a quale RAL.
+
+**3. Confronto con un calcolatore indipendente** (PMI.it), documentato in
+[`docs/metodologia.md`](docs/metodologia.md) §3.4. A RAL 45.000 tutte le voci coincidono al
+centesimo. Le due divergenze trovate sono risolte con la norma alla mano — e **una era un
+errore nostro**: il modello calcolava le addizionali anche in no tax area, dove non sono dovute.
+Nessun test interno poteva trovarlo: il modello non conosceva la regola.
+
+**4. Fonte primaria.** La circolare Agenzia delle Entrate 4/E del 16/05/2025 è stata letta
+integralmente: ha confermato tre scelte e corretto quattro dettagli sul rapporto al periodo di
+lavoro. Gli esempi 1 e 2 della circolare sono due casi di test.
+
+---
+
+## Struttura
 
 | File | Ruolo |
 |---|---|
-| `src/parametri.js` | Tutte le aliquote, soglie e importi, più il registro `FONTI`: ogni blocco di parametri dichiara norma primaria, prassi, dettaglio applicativo e nota di verifica. Le fonti sono **dati**, e la pagina genera da qui la propria sezione "Fonti", quindi non possono divergere dal calcolo. Nel motore non esiste un solo numero magico. |
+| `src/parametri.js` | Aliquote, soglie, importi, e il registro `FONTI`: per ogni blocco la norma primaria, la prassi, il dettaglio applicativo e cosa è stato verificato. |
 | `src/motore.js` | Funzioni **pure**: zero DOM, zero I/O, zero dipendenze. `calcolaNetto(input, parametri)`. |
 | `src/ui.js` | L'unico modulo che tocca il DOM. Non conosce nessuna regola fiscale. |
 | `src/grafico.js` | Curva netto/RAL e aliquota marginale, SVG generato a mano. |
 | `src/formato.js` | Unico posto in cui i numeri diventano stringhe. |
-| `test/motore.test.mjs` | 19 test sul motore, con `node --test`. |
-| `test/fonti.test.mjs` | 4 test che tengono onesto il registro delle fonti: nessun parametro senza fonte, nessuna fonte incompleta o orfana, perimetro escluso dichiarato voce per voce. |
-| `test/bundle.test.mjs` | 3 test che tengono il bundle allineato ai sorgenti. |
-| `scripts/bundle.mjs` | Impacchetta tutto in un file HTML autoportante (`dist/`). Esporta `costruisci()` così che un test possa verificare che il bundle non sia divergente. |
-| `scripts/tabella-riferimento.mjs` | Tabella dei casi di riferimento, per il confronto con calcolatori esterni. |
-| `docs/metodologia.md` | Fonti, semplificazioni, verifiche e questioni aperte. |
+| `test/` | 19 test sul motore, 4 sulle fonti, 3 sul bundle. |
+| `scripts/bundle.mjs` | Genera `dist/` dai sorgenti; un test verifica che non possa divergere. |
+| `docs/metodologia.md` | Decisioni, catena di calcolo, verifiche, semplificazioni, fonti. |
 
 ---
 
 ## Casi di riferimento (13 mensilità)
 
-| RAL | INPS | Imponibile | IRPEF netta | Addizionali | Bonus | **Netto annuo** | Netto/mese | % netto | Marginale |
-|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 15.000 | 1.378,50 | 13.621,50 | 1.177,95 | 167,54 | 1.921,94 | **14.197,95** | 1.092,15 | 94,65% | 26,39% |
-| 25.000 | 2.297,50 | 22.702,50 | 1.826,65 | 306,20 | — | **20.569,65** | 1.582,28 | 82,28% | 39,83% |
-| 35.000 | 3.216,50 | 31.783,50 | 5.042,04 | 709,25 | — | **26.032,22** | 2.002,48 | 74,38% | 49,33% |
-| 60.000 | 5.551,76 | 54.448,24 | 15.612,74 | 1.280,84 | — | **37.554,66** | 2.888,82 | 62,59% | 51,08% |
-| 120.000 | 11.665,76 | 108.334,24 | 38.783,72 | 2.644,15 | — | **66.906,36** | 5.146,64 | 55,76% | 51,08% |
-
-La pagina è progettata per **tema chiaro e scuro**: i componenti leggono solo token CSS,
-i tre stati del tema (chiaro esplicito, scuro esplicito, impostazione di sistema) sono coperti,
-e anche i colori del grafico SVG stanno nel foglio di stile, non nel codice che lo disegna.
-
-Il caso 35.000 è ricalcolato passaggio per passaggio, a mano, in
-[`docs/metodologia.md`](docs/metodologia.md) e nel primo test della suite.
+| RAL | Contributi | Imponibile | IRPEF netta | Addizionali | Non imponibili | **Netto annuo** | Netto/mese |
+|---:|---:|---:|---:|---:|---:|---:|---:|
+| 15.000 | 1.378,50 | 13.621,50 | 1.177,95 | 167,54 | 1.921,94 | **14.197,95** | 1.092,15 |
+| 25.000 | 2.297,50 | 22.702,50 | 1.826,65 | 306,20 | — | **20.569,65** | 1.582,28 |
+| 35.000 | 3.216,50 | 31.783,50 | 5.042,04 | 709,25 | — | **26.032,22** | 2.002,48 |
+| 45.000 | 4.135,50 | 40.864,50 | 9.892,16 | 938,09 | — | **30.034,25** | 2.310,33 |
+| 60.000 | 5.551,76 | 54.448,24 | 15.612,74 | 1.280,84 | — | **37.554,66** | 2.888,82 |
+| 120.000 | 11.665,76 | 108.334,24 | 38.783,72 | 2.644,16 | — | **66.906,36** | 5.146,64 |
 
 ---
 
-## Cosa mostra il prototipo che un calcolatore "a scatola chiusa" nasconde
+## La parte che un calcolatore a scatola chiusa nasconde
 
-La cosa interessante non è il numero finale, sono le **soglie**. La normativa italiana è piena
-di agevolazioni che si perdono *per intero* superando un euro di reddito: il risultato è che il
-netto **non è monotono** nella RAL.
+Il netto in Italia **non è monotono nella RAL**: la normativa concentra le agevolazioni in fasce
+che si perdono per intero. Il grafico in pagina mostra l'aliquota marginale accanto alla curva
+del netto proprio per rendere visibili questi punti.
 
-Il grafico in pagina mostra l'aliquota marginale effettiva accanto alla curva del netto, e la
-suite di test contiene un controllo che verifica che il netto scenda **solo** in corrispondenza
-delle soglie dichiarate — se ne comparisse una nuova, il test fallisce.
-
-Nel modello 2026 le cadute sono cinque, e due cadono quasi nello stesso punto:
-
-| Soglia | RAL corrispondente | Cosa succede | Salto del netto |
+| Soglia | RAL | Cosa succede | Salto |
 |---|---:|---|---:|
-| reddito 8.500 € | 9.360,20 € | la somma esente scende dal 7,1% al 5,3% **dell'intero** reddito | −152,96 € |
-| reddito 8.500 € | 9.360,24 € | si esce dalla **no tax area**: l'IRPEF diventa dovuta e con essa le addizionali, sull'intero imponibile | −104,53 € |
-| reddito 15.000 € | 16.518 € | decade il trattamento integrativo da 1.200 € | −129,97 € |
-| imponibile 23.000 € | 25.328 € | scatta l'addizionale comunale di Milano **sull'intero** imponibile | −183,96 € |
-| reddito 35.000 € | 38.542 € | decade la maggiorazione di 65 € (art. 13 c. 1.1) | −64,98 € |
+| reddito 8.500 € | 9.360,20 € | la somma esente scende dal 7,1% al 5,3% dell'intero reddito | −152,96 € |
+| reddito 8.500 € | 9.360,24 € | si esce dalla no tax area: scattano le addizionali | −104,53 € |
+| reddito 15.000 € | 16.518,00 € | decade il trattamento integrativo | −129,97 € |
+| imponibile 23.000 € | 25.327,61 € | l'esenzione comunale di Milano cade sull'**intero** imponibile | −183,96 € |
+| reddito 35.000 € | 38.542,01 € | decade la maggiorazione di 65 € | −64,98 € |
 
-C'è poi una **finestra** che sfugge a quasi tutti i calcolatori: fra 8.173,91 e 8.500 € di
-reddito (RAL da 9.001 a 9.360) non si paga né IRPEF né addizionali, **e il trattamento
-integrativo da 1.200 € spetta comunque**. La condizione di capienza guarda l'imposta *lorda*
-contro la detrazione meno 75 €, non l'imposta netta: lo scarto di 75 € serve proprio a questo.
+E il salto opposto: a **RAL 9.001,14 €** il netto fa **+1.200 €** di colpo, perché scatta la
+capienza del trattamento integrativo. In quel punto l'aliquota marginale vale **−1.196%**.
 
-E un salto nella direzione opposta: a **9.001,14 € di RAL** il netto fa **+1.200 €** di colpo.
-È la condizione di capienza del trattamento integrativo ("IRPEF lorda > detrazione art. 13
-− 75 €"): un centesimo di lordo in più e il credito scatta per intero. In quel punto l'aliquota
-marginale vale **−1.196%**. Non è un bug: è come è scritta la norma.
+Nella fascia 32.000–40.000 di reddito la marginale effettiva è del **~61%**: più alta di quella
+di chi guadagna 100.000 €.
 
 ---
 
-## Fonti principali
+## Cosa resta fuori
 
-- **IRPEF 2026** (seconda aliquota dal 35% al 33%): Legge di bilancio 2026 (L. 199/2025), art. 11 TUIR.
-- **Detrazione lavoro dipendente**: art. 13 D.P.R. 917/1986 (TUIR).
-- **Taglio del cuneo fiscale** (somma esente + ulteriore detrazione): L. 207/2024 art. 1 cc. 4-9,
-  reso strutturale dalla L. 199/2025.
-- **Trattamento integrativo**: art. 1 D.L. 3/2020 conv. L. 21/2020, mod. L. 234/2021.
-- **Contributi**: aliquota IVS 9,19%; prima fascia di retribuzione pensionabile 56.224 € e
-  massimale annuo 122.295 € da INPS circ. n. 6 del 30/01/2026; aliquota aggiuntiva 1% ex
-  art. 3-ter D.L. 384/1992.
-- **Addizionale regionale Lombardia**: aliquote per scaglioni 1,23% / 1,58% / 1,72% / 1,73%.
-- **Addizionale comunale Milano**: 0,80% con soglia di esenzione a 23.000 €.
+Dichiarato voce per voce, con norma e motivo, in `src/parametri.js` (`fuoriPerimetro`) e
+mostrato in fondo alla pagina: riduzioni forfettarie delle detrazioni per oneri, TFR, detrazioni
+per carichi di famiglia, fringe benefit e premi di risultato, addizionali per cassa.
 
-Dettaglio, link e note di verifica in [`docs/metodologia.md`](docs/metodologia.md).
+Non modellati anche: regimi agevolati (impatriati, ricercatori, frontalieri), part-time e
+contratti a termine, comuni diversi da Milano, conguaglio di fine anno, straordinari.
+
+---
+
+## Fonti
+
+Le fonti complete, con norma primaria, prassi e nota di verifica, sono nel registro `FONTI` di
+`src/parametri.js` e sono **generate in pagina** da lì. In sintesi:
+
+- **IRPEF 2026**: art. 11 TUIR come modificato dalla L. 199/2025 (seconda aliquota 35% → 33%).
+- **Detrazione lavoro dipendente**: art. 13 c. 1 TUIR; maggiorazione di 65 € al c. 1.1 (L. 234/2021).
+- **Taglio del cuneo**: L. 207/2024 art. 1 cc. 4-9, strutturale con la L. 199/2025.
+- **Trattamento integrativo**: art. 1 D.L. 3/2020, come modificato dalla L. 207/2024 c. 3.
+- **Contributi**: IVS 9,19%; 1% ex art. 3-ter D.L. 384/1992; prima fascia 56.224 € e massimale
+  122.295 € da INPS circ. 6 del 30/01/2026.
+- **Addizionali**: art. 50 D.Lgs. 446/1997 e art. 1 D.Lgs. 360/1998; aliquote deliberate da
+  Regione Lombardia e Comune di Milano.
+- **Prassi**: circolare Agenzia delle Entrate 4/E del 16/05/2025, letta integralmente.
+
+> Il parametro più volatile è la **soglia di esenzione dell'addizionale comunale di Milano**:
+> è deliberata ogni anno dal Comune, ed è l'unico valore del modello che può cambiare senza un
+> intervento del legislatore nazionale.
+
+---
+
+Prototipo a scopo dimostrativo. Non sostituisce un cedolino paga né una consulenza fiscale.

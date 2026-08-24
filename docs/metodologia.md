@@ -5,6 +5,30 @@ un numero preciso senza il metodo che lo produce è solo un numero convincente.
 
 Anno d'imposta di riferimento: **2026**.
 
+**Indice** — [1. Il caso modellato](#1-il-caso-modellato) · [2. La catena di calcolo](#2-la-catena-di-calcolo) · [3. Verifica](#3-verifica) · [4. Effetti soglia](#4-effetti-soglia-la-parte-interessante) · [5. Semplificazioni](#5-semplificazioni-e-cosa-comportano) · [6. Oltre il prototipo](#6-se-dovessi-portarlo-oltre-il-prototipo) · [7. Fonti](#7-fonti) · [8. Bundle](#8-nota-sul-bundle)
+
+---
+
+## 0. Le decisioni, in una tabella
+
+Il dominio è vasto: la parte difficile non è calcolare, è **scegliere cosa modellare e
+dichiararlo**. Questa tabella è il riassunto; le sezioni successive spiegano ogni riga.
+
+| # | Decisione | Alternativa scartata | Perché questa | Dove |
+|---|---|---|---|---|
+| 1 | Motore di calcolo puro, separato dalla UI | Tutto in un file insieme al DOM | I test girano senza browser né dipendenze: se la separazione fosse dichiarata e non reale, non partirebbero | `src/motore.js` |
+| 2 | Nessun numero magico nel motore | Costanti sparse nel codice | Cambiare anno d'imposta significa aggiungere un oggetto, non toccare la logica | `src/parametri.js` |
+| 3 | Fonti come dati, non come commenti | Elenco di link scritto a mano in pagina | La sezione "Fonti" è generata dai parametri: non può divergere da ciò che il motore usa | registro `FONTI` |
+| 4 | Reddito complessivo = imponibile fiscale | Modellare il reddito di riferimento completo | Esatto per chi ha solo reddito da lavoro dipendente, che è il caso standard richiesto | §5.1 |
+| 5 | Addizionali per competenza | Per cassa, come in busta paga | Servirebbe l'anno precedente in input; su carriera stabile si equivalgono | §5.2 |
+| 6 | Calcolo a saldo d'anno | Simulazione busta per busta | Il brief chiede la proiezione annua; il cedolino mensile è un altro prodotto | §5.2 |
+| 7 | TFR escluso dal netto | Scorporarlo dalla RAL | È accantonato, non erogato: non transita nella retribuzione corrente | §5.3 |
+| 8 | Riduzioni forfettarie dichiarate ma non applicate | Applicarle per completezza apparente | Incidono sulle detrazioni per oneri dell'art. 15, che il modello non rappresenta | §5.4 |
+| 9 | Percentuale del cuneo unica per fascia, su base imponibile | Calcolo per scaglioni, o base lorda | Entrambe le letture errate circolano in guide online; la circolare 4/E dice il contrario | §3.4 |
+| 10 | Massimale contributivo attivo di default | Ignorarlo | Un assunto di oggi è iscritto INPS dopo il 1995; resta comunque un interruttore | §2.1 |
+| 11 | Effetti soglia mostrati in pagina | Curva liscia, nessun avviso | Sono la parte del sistema che sorprende chi legge la busta paga | §4 |
+| 12 | Mensilità che non cambiano il netto annuo | Ricalcolare il netto per mensilità | Le mensilità ripartiscono, non generano reddito. È il primo malinteso da chiarire | §2.8 |
+
 ---
 
 ## 1. Il caso modellato

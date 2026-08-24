@@ -520,6 +520,25 @@ button.calcola:hover { background: var(--accento-vivo); }
 .grafico .punto { fill: var(--accento-vivo); stroke: var(--carta); }
 .grafico .punto-etichetta { fill: var(--inchiostro); stroke: var(--carta); font-family: var(--mono); }
 
+/* --- Indici sintetici, sopra la curva a cui si riferiscono --- */
+.indici {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 12px;
+  padding-bottom: 18px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--linea);
+}
+.indici > div { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.indici b {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--t-grande);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.indici span:last-child { font-size: var(--t-micro); color: var(--inchiostro-tenue); line-height: 1.45; }
+
 /* ==========================================================================
    Fonti e perimetro (generati dai parametri)
    ========================================================================== */

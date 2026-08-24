@@ -71,19 +71,31 @@ function mostraRisultato(r) {
       <span class="nota">su ${r.input.mensilita} mensilità</span>
     </div>
     <div class="indicatore onere">
-      <span class="occhiello">Trattenute totali</span>
-      <span class="valore">${eur(r.totali.trattenute)}</span>
-      <span class="nota">contributi ${eurTondo(r.totali.contributi)} + imposte ${eurTondo(
-        r.totali.imposte,
-      )}</span>
+      <span class="occhiello">Imposte</span>
+      <span class="valore">${eur(r.totali.imposte)}</span>
+      <span class="nota">IRPEF netta ${eurTondo(r.irpef.netta)} + addizionali ${eurTondo(
+        r.addizionali.totale,
+      )} · ${su(r.totali.imposte)} della RAL</span>
     </div>
-    <div class="indicatore">
-      <span class="occhiello">Aliquota marginale</span>
-      <span class="valore">${pct(r.indici.aliquotaMarginale)}</span>
-      <span class="nota">di 100 € di aumento lordo restano ${eur(
-        100 * (1 - r.indici.aliquotaMarginale),
-      )}</span>
+    <div class="indicatore onere">
+      <span class="occhiello">Contributi INPS</span>
+      <span class="valore">${eur(r.totali.contributi)}</span>
+      <span class="nota">non sono imposte: maturano la pensione. ${su(
+        r.totali.contributi,
+      )} della RAL</span>
     </div>`;
+
+  /* --- Indici, accanto alla curva a cui si riferiscono --- */
+  $('#indici').innerHTML = `
+    <div><span class="occhiello">Aliquota marginale</span>
+      <b>${pct(r.indici.aliquotaMarginale)}</b>
+      <span>di 100 € di aumento lordo restano ${eur(100 * (1 - r.indici.aliquotaMarginale))}</span></div>
+    <div><span class="occhiello">Netto sulla RAL</span>
+      <b>${pct(r.indici.incidenzaNetto)}</b>
+      <span>trattenute complessive ${eur(r.totali.trattenute)}</span></div>
+    <div><span class="occhiello">Aliquota IRPEF effettiva</span>
+      <b>${pct(r.indici.aliquotaIrpefEffettiva)}</b>
+      <span>sull’imponibile, dopo le detrazioni</span></div>`;
 
   /* --- Cascata --- */
   const scaglioni = (dettaglio) =>

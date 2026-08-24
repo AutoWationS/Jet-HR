@@ -523,6 +523,25 @@ button.calcola:hover { background: var(--accento-vivo); }
 .grafico .punto { fill: var(--accento-vivo); stroke: var(--carta); }
 .grafico .punto-etichetta { fill: var(--inchiostro); stroke: var(--carta); font-family: var(--mono); }
 
+/* --- Indici sintetici, sopra la curva a cui si riferiscono --- */
+.indici {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 12px;
+  padding-bottom: 18px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--linea);
+}
+.indici > div { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.indici b {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--t-grande);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.indici span:last-child { font-size: var(--t-micro); color: var(--inchiostro-tenue); line-height: 1.45; }
+
 /* ==========================================================================
    Fonti e perimetro (generati dai parametri)
    ========================================================================== */
@@ -715,6 +734,7 @@ footer {
               soglia della norma; dove escono dall'asse il valore è tagliato.
             </p>
           </header>
+          <div class="indici" id="indici"></div>
           <div class="grafico" id="grafico"></div>
           <div class="legenda">
             <span class="netto">Netto annuo</span>
@@ -1734,19 +1754,31 @@ function mostraRisultato(r) {
       <span class="nota">su ${r.input.mensilita} mensilità</span>
     </div>
     <div class="indicatore onere">
-      <span class="occhiello">Trattenute totali</span>
-      <span class="valore">${eur(r.totali.trattenute)}</span>
-      <span class="nota">contributi ${eurTondo(r.totali.contributi)} + imposte ${eurTondo(
-        r.totali.imposte,
-      )}</span>
+      <span class="occhiello">Imposte</span>
+      <span class="valore">${eur(r.totali.imposte)}</span>
+      <span class="nota">IRPEF netta ${eurTondo(r.irpef.netta)} + addizionali ${eurTondo(
+        r.addizionali.totale,
+      )} · ${su(r.totali.imposte)} della RAL</span>
     </div>
-    <div class="indicatore">
-      <span class="occhiello">Aliquota marginale</span>
-      <span class="valore">${pct(r.indici.aliquotaMarginale)}</span>
-      <span class="nota">di 100 € di aumento lordo restano ${eur(
-        100 * (1 - r.indici.aliquotaMarginale),
-      )}</span>
+    <div class="indicatore onere">
+      <span class="occhiello">Contributi INPS</span>
+      <span class="valore">${eur(r.totali.contributi)}</span>
+      <span class="nota">non sono imposte: maturano la pensione. ${su(
+        r.totali.contributi,
+      )} della RAL</span>
     </div>`;
+
+  /* --- Indici, accanto alla curva a cui si riferiscono --- */
+  $('#indici').innerHTML = `
+    <div><span class="occhiello">Aliquota marginale</span>
+      <b>${pct(r.indici.aliquotaMarginale)}</b>
+      <span>di 100 € di aumento lordo restano ${eur(100 * (1 - r.indici.aliquotaMarginale))}</span></div>
+    <div><span class="occhiello">Netto sulla RAL</span>
+      <b>${pct(r.indici.incidenzaNetto)}</b>
+      <span>trattenute complessive ${eur(r.totali.trattenute)}</span></div>
+    <div><span class="occhiello">Aliquota IRPEF effettiva</span>
+      <b>${pct(r.indici.aliquotaIrpefEffettiva)}</b>
+      <span>sull’imponibile, dopo le detrazioni</span></div>`;
 
   /* --- Cascata --- */
   const scaglioni = (dettaglio) =>
