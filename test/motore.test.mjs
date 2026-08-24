@@ -299,6 +299,36 @@ test('nella no tax area le addizionali non sono dovute', () => {
   assert.ok(fuori.addizionali.regionale > 100);
 });
 
+test('finestra 8.174-8.500: nessuna imposta ma trattamento integrativo pieno', () => {
+  // La condizione di spettanza del trattamento integrativo guarda l'imposta
+  // LORDA, non la netta: lorda > detrazione - 75, cioe' reddito superiore a
+  // 1.880 / 23% = 8.173,91. La no tax area finisce invece a 1.955 / 23% =
+  // 8.500. Nella finestra fra i due valori non si paga IRPEF (ne' addizionali)
+  // e il trattamento integrativo spetta comunque, per intero. Lo scarto di 75
+  // euro esiste esattamente per creare questa finestra.
+  const detrazione = P.detrazioneLavoroDipendente.fasce[0].base;
+  const aliquota = P.irpef.scaglioni[0].aliquota;
+  const daReddito = (r) => r / (1 - P.inps.aliquotaIvs);
+
+  vicino((detrazione - P.trattamentoIntegrativo.scartoCapienza) / aliquota, 8173.91, 0.01);
+  vicino(detrazione / aliquota, 8500, 0.01);
+
+  const dentro = calcolaNetto({ ral: daReddito(8300) });
+  assert.equal(dentro.irpef.netta, 0);
+  assert.equal(dentro.addizionali.totale, 0);
+  assert.equal(dentro.bonus.trattamentoIntegrativo, 1200);
+
+  // Sotto la finestra: nessuna imposta e nessun trattamento integrativo
+  const sotto = calcolaNetto({ ral: daReddito(8100) });
+  assert.equal(sotto.irpef.netta, 0);
+  assert.equal(sotto.bonus.trattamentoIntegrativo, 0);
+
+  // Sopra la no tax area: imposta dovuta e trattamento integrativo ancora pieno
+  const sopra = calcolaNetto({ ral: daReddito(9000) });
+  assert.ok(sopra.irpef.netta > 0);
+  assert.equal(sopra.bonus.trattamentoIntegrativo, 1200);
+});
+
 test('la trappola della soglia comunale: serve un aumento minimo per non perderci', () => {
   // RAL che porta l'imponibile esattamente a 23.000
   const ralSoglia = P.addizionaleComunale.sogliaEsenzione / (1 - P.inps.aliquotaIvs);

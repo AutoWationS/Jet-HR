@@ -25,7 +25,7 @@ python3 -m http.server 8080     # oppure: npx serve .
 Test del motore di calcolo (nessuna dipendenza, solo Node ≥ 18):
 
 ```bash
-npm test                               # 20 test con node --test
+npm test                               # 21 test con node --test
 npm run build                          # rigenera il bundle in dist/
 node scripts/tabella-riferimento.mjs   # tabella dei casi di riferimento in markdown
 ```
@@ -75,7 +75,7 @@ Il vincolo di progetto è uno solo: **il motore di calcolo non deve finire dentr
 | `src/ui.js` | L'unico modulo che tocca il DOM. Non conosce nessuna regola fiscale. |
 | `src/grafico.js` | Curva netto/RAL e aliquota marginale, SVG generato a mano. |
 | `src/formato.js` | Unico posto in cui i numeri diventano stringhe. |
-| `test/motore.test.mjs` | 17 test sul motore, con `node --test`. |
+| `test/motore.test.mjs` | 18 test sul motore, con `node --test`. |
 | `test/bundle.test.mjs` | 3 test che tengono il bundle allineato ai sorgenti. |
 | `scripts/bundle.mjs` | Impacchetta tutto in un file HTML autoportante (`dist/`). Esporta `costruisci()` così che un test possa verificare che il bundle non sia divergente. |
 | `scripts/tabella-riferimento.mjs` | Tabella dei casi di riferimento, per il confronto con calcolatori esterni. |
@@ -121,6 +121,11 @@ Nel modello 2026 le cadute sono cinque, e due cadono quasi nello stesso punto:
 | reddito 15.000 € | 16.518 € | decade il trattamento integrativo da 1.200 € | −129,97 € |
 | imponibile 23.000 € | 25.328 € | scatta l'addizionale comunale di Milano **sull'intero** imponibile | −183,96 € |
 | reddito 35.000 € | 38.542 € | decade la maggiorazione di 65 € (art. 13 c. 1.1) | −64,98 € |
+
+C'è poi una **finestra** che sfugge a quasi tutti i calcolatori: fra 8.173,91 e 8.500 € di
+reddito (RAL da 9.001 a 9.360) non si paga né IRPEF né addizionali, **e il trattamento
+integrativo da 1.200 € spetta comunque**. La condizione di capienza guarda l'imposta *lorda*
+contro la detrazione meno 75 €, non l'imposta netta: lo scarto di 75 € serve proprio a questo.
 
 E un salto nella direzione opposta: a **9.001,14 € di RAL** il netto fa **+1.200 €** di colpo.
 È la condizione di capienza del trattamento integrativo ("IRPEF lorda > detrazione art. 13

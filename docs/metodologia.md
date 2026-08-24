@@ -125,6 +125,16 @@ per cui la marginale effettiva in quella fascia supera il 60% (§4).
 
 - **R ≤ 15.000**: 1.200 € pieni, ma solo se c'è **capienza**, cioè se
   `IRPEF lorda > detrazione art. 13 − 75 €`.
+
+  La condizione guarda l'imposta **lorda**, non la netta — ed è un dettaglio che cambia il
+  risultato. La detrazione piena è 1.955, quindi la soglia è 1.880, cioè un reddito di
+  `1.880 / 23% = 8.173,91`. La *no tax area* finisce invece a `1.955 / 23% = 8.500`. Fra i due
+  valori si apre una **finestra**: il lavoratore non paga IRPEF né addizionali, **e riceve
+  comunque i 1.200 € pieni**. Lo scarto di 75 € nella norma esiste esattamente per creare
+  quella finestra: senza, il beneficio si sarebbe fermato al punto di capienza.
+
+  Tradurre la regola in "in no tax area il trattamento integrativo non spetta" è la
+  semplificazione sbagliata più comune su questa misura (§3.4).
 - **15.000 < R ≤ 28.000**: spetta per la differenza tra le detrazioni spettanti e l'IRPEF lorda,
   nel limite di 1.200 €. Con le sole detrazioni modellate qui (nessun carico di famiglia,
   nessun onere detraibile) questa differenza è sempre negativa: nel prototipo il trattamento
@@ -200,7 +210,7 @@ passaggio si rompe, il test dice **quale**.
 
 ### 3.2 Suite di test
 
-`npm test` esegue 20 test. Diciassette sul motore, in tre famiglie:
+`npm test` esegue 21 test. Diciotto sul motore, in tre famiglie:
 
 1. **Casi di riferimento** (15k / 25k / 35k / 60k): ogni voce intermedia verificata, non solo
    il totale. Un test che controlla solo il netto finale non dice dove si è rotto il calcolo.
@@ -331,6 +341,30 @@ Su una RAL di 9.000 la differenza vale 58,72 €, e cresce con il reddito fino a
 Residuo dopo la correzione: 8.812 − 8.753,18 = 58,82, cioè esattamente la sola divergenza sulla
 base della somma esente. Anche in questo caso il confronto si chiude senza voci inspiegate.
 
+**RAL 9.100 — la finestra del trattamento integrativo.**
+
+| Voce | Modello | PMI.it |
+|---|---:|---:|
+| IRPEF netta | 0 | 0 (*no tax area*) |
+| Addizionali | 0 | 0 |
+| Trattamento integrativo | **1.200,00** | **0** |
+| Somma esente (cuneo) | 586,72 | 646,10 |
+| Netto annuo | **10.050,43** | **8.910** |
+
+Differenza 1.140,62, che si scompone senza residui in `1.200,00 − 59,38`: il trattamento
+integrativo per intero, meno la solita divergenza sulla base della somma esente.
+
+*Il trattamento integrativo: la divergenza è loro.* Con un imponibile di 8.263,71 l'IRPEF lorda
+vale 1.900,65, che supera la soglia di capienza di 1.880: il trattamento integrativo spetta,
+per intero, anche se l'imposta netta è zero. È la finestra descritta in §2.6, fra 8.173,91 e
+8.500 di reddito. Il loro modello sembra applicare la scorciatoia "no tax area → niente
+trattamento integrativo", che è vera per quasi tutta la no tax area ma non per gli ultimi 326 €.
+
+Il confine è sottile in modo istruttivo: a RAL **9.000** l'IRPEF lorda vale 1.879,77 e la soglia
+non è superata **per 23 centesimi**, quindi il trattamento integrativo non spetta e i due
+modelli concordano; a RAL **9.100** la soglia è superata e si aprono 1.200 €. Il modello ha un
+test dedicato che fissa entrambi gli estremi della finestra.
+
 > Nota terminologica emersa proprio da questa verifica: la maggiorazione sta al **comma 1.1**,
 > non al comma 1-bis. Il comma 1-bis dell'art. 13 conteneva il credito noto come "bonus Renzi",
 > abrogato dal D.L. 3/2020 e sostituito dal trattamento integrativo. Una versione precedente di
@@ -437,6 +471,7 @@ lavoro straordinario e indennità.
 | Taglio del cuneo: somma esente e ulteriore detrazione | L. 207/2024 art. 1 cc. 4-9; resa strutturale dalla L. 199/2025 |
 | Riduzione detrazioni per oneri (260 € / 440 €) | L. 207/2024 art. 1 c. 10; L. 199/2025 |
 | Trattamento integrativo | Art. 1 D.L. 3/2020 conv. L. 21/2020, mod. L. 234/2021 |
+| Chiarimenti su cuneo, detrazioni e trattamento integrativo | Agenzia delle Entrate, circolare n. 4/E del 16 maggio 2025 |
 | Aliquota IVS 9,19%, prima fascia 56.224 €, massimale 122.295 € | INPS, circolare n. 6 del 30/01/2026 |
 | Aliquota aggiuntiva 1% oltre la prima fascia | Art. 3-ter D.L. 384/1992 |
 | Massimale contributivo per i "nuovi iscritti" | Art. 2 c. 18 L. 335/1995 |
