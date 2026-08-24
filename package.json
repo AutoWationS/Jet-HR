@@ -1,0 +1,12 @@
+{
+  "name": "calcolatore-netto-italia",
+  "version": "1.0.0",
+  "description": "Prototipo: proiezione della retribuzione netta annuale e mensile a partire dalla RAL (impiegato a tempo indeterminato, Milano, anno d'imposta 2026)",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "test": "node --test \"test/**/*.test.mjs\"",
+    "start": "python3 -m http.server 8080"
+  },
+  "license": "MIT"
+}
