@@ -421,7 +421,7 @@ footer { text-align: center; color: var(--testo-tenue); font-size: 0.82rem; padd
       <li><b>IRPEF lorda</b> per scaglioni: 23% fino a 28.000, 33% da 28.000 a 50.000, 43% oltre
         (seconda aliquota ridotta dal 35% al 33% dalla Legge di bilancio 2026).</li>
       <li><b>− detrazione per lavoro dipendente</b> (art. 13 TUIR), rapportata ai giorni di lavoro,
-        più la maggiorazione di 65 € tra 25.000 e 35.000.</li>
+        più la maggiorazione di 65 € (c. 1.1) tra 25.000 e 35.000.</li>
       <li><b>− ulteriore detrazione</b> del taglio del cuneo: 1.000 € tra 20.000 e 32.000,
         in <i>décalage</i> lineare fino ad azzerarsi a 40.000.</li>
       <li><b>− addizionale regionale Lombardia</b> per scaglioni (1,23% / 1,58% / 1,72% / 1,73%)
@@ -557,7 +557,9 @@ const PARAMETRI_2026 = {
     // Importo minimo garantito per i rapporti a tempo indeterminato
     // (art. 13 c.1 lett. a, secondo periodo).
     minimoTempoIndeterminato: 690,
-    // Maggiorazione art. 13 c.1-bis TUIR: +65 euro, NON rapportata al periodo.
+    // Maggiorazione art. 13 c. 1.1 TUIR (introdotto dalla L. 234/2021): +65 euro,
+    // NON rapportata al periodo di lavoro. Attenzione a non citarlo come c. 1-bis:
+    // quel comma era il credito "bonus Renzi", abrogato dal D.L. 3/2020.
     maggiorazione: { importo: 65, da: 25000, a: 35000 },
     giorniAnno: 365,
   },
@@ -1215,7 +1217,7 @@ function mostraRisultato(r) {
   const detrazioni = [
     { voce: `Detrazione lavoro dipendente (art. 13 TUIR)`, importo: -r.irpef.detrazioneLavoro },
     r.irpef.maggiorazione65
-      ? { voce: 'Maggiorazione art. 13 c. 1-bis (65 €)', importo: -r.irpef.maggiorazione65 }
+      ? { voce: 'Maggiorazione art. 13 c. 1.1 (65 €)', importo: -r.irpef.maggiorazione65 }
       : null,
     r.irpef.ulterioreDetrazione
       ? { voce: 'Ulteriore detrazione taglio cuneo (L. 207/2024)', importo: -r.irpef.ulterioreDetrazione }

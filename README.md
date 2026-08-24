@@ -118,7 +118,7 @@ Nel modello 2026 le cadute sono quattro:
 | reddito 8.500 € | 9.360 € | la somma esente scende dal 7,1% al 5,3% **dell'intero** reddito | −152,96 € |
 | reddito 15.000 € | 16.518 € | decade il trattamento integrativo da 1.200 € | −129,97 € |
 | imponibile 23.000 € | 25.328 € | scatta l'addizionale comunale di Milano **sull'intero** imponibile | −183,96 € |
-| reddito 35.000 € | 38.542 € | decade la maggiorazione di 65 € (art. 13 c. 1-bis) | −64,98 € |
+| reddito 35.000 € | 38.542 € | decade la maggiorazione di 65 € (art. 13 c. 1.1) | −64,98 € |
 
 E un salto nella direzione opposta: a **9.001,14 € di RAL** il netto fa **+1.200 €** di colpo.
 È la condizione di capienza del trattamento integrativo ("IRPEF lorda > detrazione art. 13

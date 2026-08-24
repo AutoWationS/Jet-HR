@@ -82,7 +82,7 @@ function mostraRisultato(r) {
   const detrazioni = [
     { voce: `Detrazione lavoro dipendente (art. 13 TUIR)`, importo: -r.irpef.detrazioneLavoro },
     r.irpef.maggiorazione65
-      ? { voce: 'Maggiorazione art. 13 c. 1-bis (65 €)', importo: -r.irpef.maggiorazione65 }
+      ? { voce: 'Maggiorazione art. 13 c. 1.1 (65 €)', importo: -r.irpef.maggiorazione65 }
       : null,
     r.irpef.ulterioreDetrazione
       ? { voce: 'Ulteriore detrazione taglio cuneo (L. 207/2024)', importo: -r.irpef.ulterioreDetrazione }

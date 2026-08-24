@@ -60,7 +60,9 @@ export const PARAMETRI_2026 = {
     // Importo minimo garantito per i rapporti a tempo indeterminato
     // (art. 13 c.1 lett. a, secondo periodo).
     minimoTempoIndeterminato: 690,
-    // Maggiorazione art. 13 c.1-bis TUIR: +65 euro, NON rapportata al periodo.
+    // Maggiorazione art. 13 c. 1.1 TUIR (introdotto dalla L. 234/2021): +65 euro,
+    // NON rapportata al periodo di lavoro. Attenzione a non citarlo come c. 1-bis:
+    // quel comma era il credito "bonus Renzi", abrogato dal D.L. 3/2020.
     maggiorazione: { importo: 65, da: 25000, a: 35000 },
     giorniAnno: 365,
   },

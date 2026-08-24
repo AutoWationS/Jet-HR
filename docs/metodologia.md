@@ -85,7 +85,7 @@ Due dettagli che i calcolatori semplificati saltano e che qui sono implementati:
 
 - la detrazione è **rapportata ai giorni di lavoro nell'anno** (`× giorni / 365`), con un
   **minimo di 690 €** per i rapporti a tempo indeterminato;
-- la **maggiorazione di 65 €** dell'art. 13 c. 1-bis spetta per redditi tra 25.000 e 35.000 e
+- la **maggiorazione di 65 €** dell'art. 13 c. 1.1 spetta per redditi tra 25.000 e 35.000 e
   **non** è rapportata al periodo di lavoro.
 
 Si noti la discontinuità in salita a 15.000: la detrazione passa da 1.955 a ~3.100 €. Non è un
@@ -171,7 +171,7 @@ Le mensilità (12, 13, 14) **non modificano il netto annuo**: cambiano solo la r
 | **Imponibile fiscale** | 35.000 − 3.216,50 | **31.783,50** |
 | IRPEF lorda | 28.000 × 23% = 6.440,00 <br> 3.783,50 × 33% = 1.248,56 | −7.688,56 |
 | Detrazione art. 13 | 1.910 × (50.000 − 31.783,50) / 22.000 | +1.581,52 |
-| Maggiorazione c. 1-bis | reddito in (25.000; 35.000] | +65,00 |
+| Maggiorazione c. 1.1 | reddito in (25.000; 35.000] | +65,00 |
 | Ulteriore detrazione cuneo | reddito ≤ 32.000 → importo pieno | +1.000,00 |
 | **IRPEF netta** | 7.688,56 − 2.646,52 | **−5.042,04** |
 | Add. regionale Lombardia | 15.000 × 1,23% = 184,50 <br> 13.000 × 1,58% = 205,40 <br> 3.783,50 × 1,72% = 65,08 | −454,98 |
@@ -218,11 +218,60 @@ tutte riconducibili a scelte di perimetro dichiarate e non a errori:
 | Netto diverso oltre i 56.224 € | Aliquota aggiuntiva dell'1% non implementata, o applicata all'intera retribuzione invece che alla sola eccedenza. |
 | Addizionale comunale nulla tra 21.000 e 23.000 € | Soglia di esenzione di Milano diversa: va verificata ogni anno sul portale del Federalismo Fiscale del MEF, perché è deliberata dal Comune. |
 
-> **Nota sull'ambiente in cui è stato sviluppato il prototipo.** La verifica incrociata
-> automatica contro calcolatori online non è stata eseguita: l'ambiente di sviluppo usato non
-> ha accesso di rete verso quei siti. Le verifiche effettuate sono quelle di §3.1 (ricalcolo
-> manuale completo) e §3.2 (suite di test). Il confronto esterno è quindi lasciato come
-> procedura documentata e riproducibile in un comando, non dichiarato come già fatto.
+### 3.4 Esito del confronto con un calcolatore esterno
+
+Confronto eseguito manualmente contro il calcolatore di PMI.it, con gli stessi parametri
+(Lombardia, addizionale comunale 0,80%, 13 mensilità, 365 giorni, nessun familiare a carico).
+
+Prima cosa da sapere per leggere i risultati: quel calcolatore **chiama "IRPEF lorda" il totale
+delle imposte lorde, addizionali incluse** — non ha una riga separata per le addizionali. È una
+differenza di etichetta, non di modello, ma senza accorgersene il confronto sembra fallire.
+
+**RAL 45.000 — coincidenza al centesimo su ogni voce:**
+
+| Voce | Modello | PMI.it |
+|---|---:|---:|
+| Imposte lorde (IRPEF 10.685,29 + addizionali 938,09) | 11.623,38 | 11.623 |
+| Detrazione art. 13 | 793,13 | 793 |
+| Taglio del cuneo (reddito oltre 40.000) | 0 | 0 |
+| Trattamento integrativo | 0 | 0 |
+| Imposte nette | 10.830,25 | 10.830 |
+| **Netto annuo** | **30.034,25** | **30.034** |
+| Netto mensile | 2.310,33 | 2.310 |
+
+**RAL 35.000 — una sola divergenza, di 65 €:**
+
+| Voce | Modello | PMI.it | Δ |
+|---|---:|---:|---:|
+| Imposte lorde (IRPEF 7.688,56 + addizionali 709,24) | 8.397,80 | 8.398 | +0,20 |
+| Detrazioni art. 13 | 1.646,52 | 1.712 | **+65,48** |
+| Taglio del cuneo | 1.000,00 | 1.000 | 0 |
+| Imposte nette | 5.751,28 | 5.686 | −65,28 |
+| **Netto annuo** | **26.032,22** | **26.097** | **+64,78** |
+
+Le imposte lorde coincidono a venti centesimi: un numero costruito da otto componenti
+indipendenti (tre scaglioni IRPEF, quattro scaglioni regionali, l'aliquota comunale) su un
+imponibile che dipende a sua volta dall'aliquota contributiva. Questo conferma in blocco tutta
+la catena fino alle addizionali.
+
+**Diagnosi della divergenza.** Poiché a 45.000 la detrazione art. 13 coincide esattamente
+(793,13 contro 793), la formula del comma 1 è identica nei due modelli. A 35.000 si aggiunge
+solo la maggiorazione del comma 1.1: qui il modello applica 65 €, l'altro calcolatore ne
+applica circa 130 (1.712 − 1.581,52 = 130,48). L'art. 13 c. 1.1 TUIR, introdotto dalla
+L. 234/2021, prevede **65 euro**, non rapportati al periodo di lavoro. La divergenza è quindi
+attribuibile all'altro calcolatore.
+
+> Nota terminologica emersa proprio da questa verifica: la maggiorazione sta al **comma 1.1**,
+> non al comma 1-bis. Il comma 1-bis dell'art. 13 conteneva il credito noto come "bonus Renzi",
+> abrogato dal D.L. 3/2020 e sostituito dal trattamento integrativo. Una versione precedente di
+> questo documento e del codice citava erroneamente il c. 1-bis.
+
+### 3.5 Nota sull'ambiente di sviluppo
+
+Le verifiche automatiche contro calcolatori online non sono eseguibili dalla suite: l'ambiente
+di sviluppo non ha accesso di rete verso quei siti. Il confronto di §3.4 è stato eseguito
+manualmente. Le verifiche riproducibili con un comando restano quelle di §3.1 (ricalcolo
+manuale codificato nel primo test) e §3.2 (suite completa).
 
 ---
 
@@ -236,7 +285,7 @@ risultato è che **il netto non è una funzione monotona della RAL**.
 | reddito 8.500 € | 9.360,20 € | somma esente: 7,1% → 5,3% sull'intero reddito | −152,96 € |
 | reddito 15.000 € | 16.518,00 € | trattamento integrativo (1.200 €) | −129,97 € |
 | imponibile 23.000 € | 25.327,61 € | esenzione addizionale comunale Milano | −183,96 € |
-| reddito 35.000 € | 38.542,01 € | maggiorazione art. 13 c. 1-bis (65 €) | −64,98 € |
+| reddito 35.000 € | 38.542,01 € | maggiorazione art. 13 c. 1.1 (65 €) | −64,98 € |
 
 E il salto opposto, a **RAL 9.001,14 €**: **+1.200,03 €** di netto per un centesimo di lordo in
 più. È la condizione di capienza del trattamento integrativo (`IRPEF lorda > 1.955 − 75`).
@@ -312,7 +361,7 @@ lavoro straordinario e indennità.
 | Argomento | Riferimento |
 |---|---|
 | Scaglioni e aliquote IRPEF 2026 (2ª aliquota al 33%) | L. 199/2025 (Legge di bilancio 2026), art. 11 TUIR |
-| Detrazione per redditi di lavoro dipendente | Art. 13 D.P.R. 917/1986 (TUIR), cc. 1 e 1-bis |
+| Detrazione per redditi di lavoro dipendente | Art. 13 D.P.R. 917/1986 (TUIR), c. 1; maggiorazione di 65 € al c. 1.1, introdotto dalla L. 234/2021 |
 | Deducibilità dei contributi previdenziali | Art. 51 c. 2 lett. a TUIR |
 | Taglio del cuneo: somma esente e ulteriore detrazione | L. 207/2024 art. 1 cc. 4-9; resa strutturale dalla L. 199/2025 |
 | Riduzione detrazioni per oneri (260 € / 440 €) | L. 207/2024 art. 1 c. 10; L. 199/2025 |

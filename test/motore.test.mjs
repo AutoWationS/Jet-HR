@@ -44,7 +44,7 @@ test('RAL 35.000 — caso di riferimento, ogni passaggio verificato a mano', () 
 
   // Detrazione art. 13: 1.910 x (50.000 - 31.783,50) / 22.000 = 1.581,52
   vicino(r.irpef.detrazioneLavoro, 1581.52);
-  // Maggiorazione c.1-bis: reddito in (25.000; 35.000] -> 65
+  // Maggiorazione c. 1.1: reddito in (25.000; 35.000] -> 65
   vicino(r.irpef.maggiorazione65, 65);
   // Ulteriore detrazione cuneo: reddito <= 32.000 -> 1.000 pieni
   vicino(r.irpef.ulterioreDetrazione, 1000);
