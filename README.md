@@ -25,7 +25,7 @@ python3 -m http.server 8080     # oppure: npx serve .
 Test del motore di calcolo (nessuna dipendenza, solo Node ≥ 18):
 
 ```bash
-npm test                               # 19 test con node --test
+npm test                               # 20 test con node --test
 npm run build                          # rigenera il bundle in dist/
 node scripts/tabella-riferimento.mjs   # tabella dei casi di riferimento in markdown
 ```
@@ -53,6 +53,7 @@ Il cuore dell'esercizio non è la pagina, è la sequenza. In busta paga si scend
 =  IRPEF netta  (mai negativa)
 −  addizionale regionale Lombardia          per scaglioni, 1,23% → 1,73%
 −  addizionale comunale Milano              0,80%, esente sotto 23.000 € di imponibile
+   (nessuna delle due e' dovuta se l'IRPEF netta e' zero: no tax area)
 +  somma esente taglio cuneo                7,1% / 5,3% / 4,8% fino a 20.000 €
 +  trattamento integrativo                  1.200 € fino a 15.000 €
 =  NETTO ANNUO        →  ÷ 12 / 13 / 14 mensilità  →  NETTO MENSILE
@@ -74,7 +75,7 @@ Il vincolo di progetto è uno solo: **il motore di calcolo non deve finire dentr
 | `src/ui.js` | L'unico modulo che tocca il DOM. Non conosce nessuna regola fiscale. |
 | `src/grafico.js` | Curva netto/RAL e aliquota marginale, SVG generato a mano. |
 | `src/formato.js` | Unico posto in cui i numeri diventano stringhe. |
-| `test/motore.test.mjs` | 16 test sul motore, con `node --test`. |
+| `test/motore.test.mjs` | 17 test sul motore, con `node --test`. |
 | `test/bundle.test.mjs` | 3 test che tengono il bundle allineato ai sorgenti. |
 | `scripts/bundle.mjs` | Impacchetta tutto in un file HTML autoportante (`dist/`). Esporta `costruisci()` così che un test possa verificare che il bundle non sia divergente. |
 | `scripts/tabella-riferimento.mjs` | Tabella dei casi di riferimento, per il confronto con calcolatori esterni. |
@@ -111,11 +112,12 @@ Il grafico in pagina mostra l'aliquota marginale effettiva accanto alla curva de
 suite di test contiene un controllo che verifica che il netto scenda **solo** in corrispondenza
 delle soglie dichiarate — se ne comparisse una nuova, il test fallisce.
 
-Nel modello 2026 le cadute sono quattro:
+Nel modello 2026 le cadute sono cinque, e due cadono quasi nello stesso punto:
 
 | Soglia | RAL corrispondente | Cosa succede | Salto del netto |
 |---|---:|---|---:|
-| reddito 8.500 € | 9.360 € | la somma esente scende dal 7,1% al 5,3% **dell'intero** reddito | −152,96 € |
+| reddito 8.500 € | 9.360,20 € | la somma esente scende dal 7,1% al 5,3% **dell'intero** reddito | −152,96 € |
+| reddito 8.500 € | 9.360,24 € | si esce dalla **no tax area**: l'IRPEF diventa dovuta e con essa le addizionali, sull'intero imponibile | −104,53 € |
 | reddito 15.000 € | 16.518 € | decade il trattamento integrativo da 1.200 € | −129,97 € |
 | imponibile 23.000 € | 25.328 € | scatta l'addizionale comunale di Milano **sull'intero** imponibile | −183,96 € |
 | reddito 35.000 € | 38.542 € | decade la maggiorazione di 65 € (art. 13 c. 1.1) | −64,98 € |

@@ -139,7 +139,8 @@
       <li><b>− ulteriore detrazione</b> del taglio del cuneo: 1.000 € tra 20.000 e 32.000,
         in <i>décalage</i> lineare fino ad azzerarsi a 40.000.</li>
       <li><b>− addizionale regionale Lombardia</b> per scaglioni (1,23% / 1,58% / 1,72% / 1,73%)
-        e <b>addizionale comunale Milano</b> 0,80%, con esenzione sotto i 23.000 di imponibile.</li>
+        e <b>addizionale comunale Milano</b> 0,80%, con esenzione sotto i 23.000 di imponibile.
+        Nessuna delle due è dovuta se l'IRPEF netta è zero (<i>no tax area</i>).</li>
       <li><b>+ somme non imponibili</b> erogate in busta paga: somma esente del taglio del cuneo
         (7,1% / 5,3% / 4,8% fino a 20.000 di reddito complessivo) e trattamento integrativo
         di 1.200 € fino a 15.000.</li>
@@ -195,7 +196,7 @@
       <li><code>src/motore.js</code> — funzioni pure, zero DOM, zero dipendenze:
         <code>calcolaNetto(input, parametri)</code>.</li>
       <li><code>src/ui.js</code> — l'unico modulo che tocca la pagina. Non conosce nessuna regola fiscale.</li>
-      <li><code>test/motore.test.mjs</code> — 16 test con <code>node --test</code>: casi di riferimento
+      <li><code>test/motore.test.mjs</code> — 20 test con <code>node --test</code>: casi di riferimento
         ricalcolati a mano, continuità delle formule sui confini di fascia, e un test che verifica
         che il netto scenda <i>solo</i> attraversando le soglie dichiarate.</li>
     </ul>

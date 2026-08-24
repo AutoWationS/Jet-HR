@@ -417,7 +417,8 @@ footer { text-align: center; color: var(--testo-tenue); font-size: 0.82rem; padd
       <li><b>− ulteriore detrazione</b> del taglio del cuneo: 1.000 € tra 20.000 e 32.000,
         in <i>décalage</i> lineare fino ad azzerarsi a 40.000.</li>
       <li><b>− addizionale regionale Lombardia</b> per scaglioni (1,23% / 1,58% / 1,72% / 1,73%)
-        e <b>addizionale comunale Milano</b> 0,80%, con esenzione sotto i 23.000 di imponibile.</li>
+        e <b>addizionale comunale Milano</b> 0,80%, con esenzione sotto i 23.000 di imponibile.
+        Nessuna delle due è dovuta se l'IRPEF netta è zero (<i>no tax area</i>).</li>
       <li><b>+ somme non imponibili</b> erogate in busta paga: somma esente del taglio del cuneo
         (7,1% / 5,3% / 4,8% fino a 20.000 di reddito complessivo) e trattamento integrativo
         di 1.200 € fino a 15.000.</li>
@@ -473,7 +474,7 @@ footer { text-align: center; color: var(--testo-tenue); font-size: 0.82rem; padd
       <li><code>src/motore.js</code> — funzioni pure, zero DOM, zero dipendenze:
         <code>calcolaNetto(input, parametri)</code>.</li>
       <li><code>src/ui.js</code> — l'unico modulo che tocca la pagina. Non conosce nessuna regola fiscale.</li>
-      <li><code>test/motore.test.mjs</code> — 16 test con <code>node --test</code>: casi di riferimento
+      <li><code>test/motore.test.mjs</code> — 20 test con <code>node --test</code>: casi di riferimento
         ricalcolati a mano, continuità delle formule sui confini di fascia, e un test che verifica
         che il netto scenda <i>solo</i> attraversando le soglie dichiarate.</li>
     </ul>
@@ -852,7 +853,29 @@ function calcolaTrattamentoIntegrativo(redditoComplessivo, irpefLorda, detrazion
  * 5. Addizionali regionali e comunali
  * -------------------------------------------------------------------------- */
 
-function calcolaAddizionali(imponibile, parametri) {
+/**
+ * Le addizionali non sono dovute quando l'IRPEF, al netto delle detrazioni,
+ * risulta pari a zero: art. 50 c. 2 D.Lgs. 446/1997 per la regionale, art. 1
+ * c. 4 D.Lgs. 360/1998 per la comunale. E' la cosiddetta "no tax area": chi
+ * non paga IRPEF non paga nemmeno le addizionali.
+ *
+ * Per questo la funzione riceve l'IRPEF netta: senza, calcolerebbe addizionali
+ * su un contribuente che non deve nulla.
+ */
+function calcolaAddizionali(imponibile, parametri, opzioni = {}) {
+  const irpefNetta = opzioni.irpefNetta ?? Infinity;
+
+  if (irpefNetta <= 0) {
+    return {
+      regionale: 0,
+      regionaleDettaglio: [],
+      comunale: 0,
+      comunaleEsente: true,
+      totale: 0,
+      nonDovutePerImpostaZero: true,
+    };
+  }
+
   const regionale = applicaScaglioni(imponibile, parametri.addizionaleRegionale.scaglioni);
 
   const c = parametri.addizionaleComunale;
@@ -866,6 +889,7 @@ function calcolaAddizionali(imponibile, parametri) {
     comunale: euro(comunale),
     comunaleEsente: imponibile <= c.sogliaEsenzione,
     totale: euro(regionale.totale + comunale),
+    nonDovutePerImpostaZero: false,
   };
 }
 
@@ -911,7 +935,8 @@ function calcolaNetto(input, parametri = PARAMETRI_DEFAULT) {
   const detrazioniNonGodute = euro(Math.max(0, detrazioniTotali - irpefLorda));
 
   // --- Addizionali ---------------------------------------------------------
-  const addizionali = calcolaAddizionali(imponibileFiscale, parametri);
+  // Vanno calcolate DOPO l'IRPEF netta: se questa e' zero non sono dovute.
+  const addizionali = calcolaAddizionali(imponibileFiscale, parametri, { irpefNetta });
 
   // --- Somme non imponibili in busta paga ----------------------------------
   const sommaEsente = calcolaSommaEsente(redditoComplessivo, imponibileFiscale, parametri);
@@ -1007,7 +1032,7 @@ function calcolaNettoSemplice(input, parametri) {
   const detrLavoro = calcolaDetrazioneLavoro(imponibile, parametri, giorni);
   const detrTotali = detrLavoro.totale + calcolaUlterioreDetrazione(imponibile, parametri);
   const irpefNetta = Math.max(0, irpefLorda - detrTotali);
-  const addizionali = calcolaAddizionali(imponibile, parametri);
+  const addizionali = calcolaAddizionali(imponibile, parametri, { irpefNetta });
   const sommaEsente = calcolaSommaEsente(imponibile, imponibile, parametri).importo;
   const ti = calcolaTrattamentoIntegrativo(
     imponibile,
@@ -1300,7 +1325,9 @@ function mostraRisultato(r) {
   pezzi.push(
     gruppo({
       voce: `Addizionale regionale ${P.addizionaleRegionale.regione}`,
-      nota: 'aliquote per scaglioni sull’imponibile IRPEF',
+      nota: r.addizionali.nonDovutePerImpostaZero
+        ? 'non dovuta: l’IRPEF netta è zero (no tax area)'
+        : 'aliquote per scaglioni sull’imponibile IRPEF',
       importo: -r.addizionali.regionale,
       quota: su(-r.addizionali.regionale),
       classe: 'trattenuta',
@@ -1312,9 +1339,11 @@ function mostraRisultato(r) {
   pezzi.push(
     riga({
       voce: `Addizionale comunale ${P.addizionaleComunale.comune}`,
-      nota: r.addizionali.comunaleEsente
-        ? `esente: imponibile sotto la soglia di ${eurTondo(P.addizionaleComunale.sogliaEsenzione)}`
-        : `${pct(P.addizionaleComunale.aliquota)} sull’intero imponibile`,
+      nota: r.addizionali.nonDovutePerImpostaZero
+        ? 'non dovuta: l’IRPEF netta è zero (no tax area)'
+        : r.addizionali.comunaleEsente
+          ? `esente: imponibile sotto la soglia di ${eurTondo(P.addizionaleComunale.sogliaEsenzione)}`
+          : `${pct(P.addizionaleComunale.aliquota)} sull’intero imponibile`,
       importo: -r.addizionali.comunale,
       quota: su(-r.addizionali.comunale),
       classe: 'trattenuta',
@@ -1388,6 +1417,15 @@ function avvisi(r) {
       `<strong>Effetto soglia.</strong> Con 1.000 € di RAL in più il netto <em>scende</em> di ` +
         `${eur(r.netto.annuo - piu1000.netto.annuo)}: si attraversa una soglia che fa perdere ` +
         `un’agevolazione per intero. Non è un errore del calcolo, è come è scritta la norma.`,
+    );
+  }
+
+  if (r.addizionali.nonDovutePerImpostaZero) {
+    messaggi.push(
+      `<strong>No tax area.</strong> Le detrazioni azzerano l’IRPEF, e senza IRPEF non sono ` +
+        `dovute nemmeno le addizionali regionale e comunale (art. 50 c. 2 D.Lgs. 446/1997 e ` +
+        `art. 1 c. 4 D.Lgs. 360/1998). Appena l’imposta diventa dovuta, le addizionali si ` +
+        `pagano sull’intero imponibile.`,
     );
   }
 

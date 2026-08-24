@@ -237,9 +237,10 @@ test('il netto scende solo attraversando una soglia dichiarata', () => {
   }
 
   // Le soglie che nel modello 2026 producono davvero una perdita di netto:
-  // 8.500 e 15.000 (cambio di percentuale della somma esente e caduta del
-  // trattamento integrativo), 23.000 (addizionale comunale Milano),
-  // 35.000 (fine della maggiorazione di 65 euro).
+  // 8.500 (cambio di percentuale della somma esente e uscita dalla no tax
+  // area, che fa scattare le addizionali), 15.000 (caduta del trattamento
+  // integrativo), 23.000 (addizionale comunale Milano), 35.000 (fine della
+  // maggiorazione di 65 euro).
   assert.deepEqual([...new Set(cadute)].sort((a, b) => a - b), [8500, 15000, 23000, 35000]);
 });
 
@@ -251,6 +252,17 @@ test('i salti alle soglie valgono esattamente quanto vale l agevolazione persa',
     calcolaNetto({ ral: ral + 0.02 }).netto.annuo - calcolaNetto({ ral: ral - 0.02 }).netto.annuo;
 
   vicino(salto(ralPer(8500)), -152.96, 0.5); // somma esente 7,1% -> 5,3%
+
+  // Uscita dalla no tax area, praticamente nello stesso punto: l'IRPEF diventa
+  // dovuta e con essa le addizionali, sull'intero imponibile.
+  let sotto = 8000;
+  let sopra = 12000;
+  for (let i = 0; i < 60; i++) {
+    const meta = (sotto + sopra) / 2;
+    if (calcolaNetto({ ral: meta }).irpef.netta > 0) sopra = meta;
+    else sotto = meta;
+  }
+  vicino(salto(sopra), -104.53, 0.5);
   vicino(salto(ralPer(15000)), -129.97, 0.5); // fine trattamento integrativo
   vicino(salto(ralPer(23000)), -183.96, 0.5); // addizionale comunale Milano
   vicino(salto(ralPer(35000)), -64.98, 0.5); // fine maggiorazione 65 euro
@@ -262,6 +274,29 @@ test('i salti alle soglie valgono esattamente quanto vale l agevolazione persa',
       P.irpef.scaglioni[0].aliquota) /
     (1 - P.inps.aliquotaIvs);
   vicino(salto(ralCapienza), 1200, 1);
+});
+
+test('nella no tax area le addizionali non sono dovute', () => {
+  // Fino a 8.500 di reddito la detrazione art. 13 (1.955) azzera l'IRPEF,
+  // perche' 8.500 x 23% = 1.955 esatti: e' la "no tax area". Senza imposta
+  // non sono dovute nemmeno le addizionali (art. 50 c. 2 D.Lgs. 446/1997 per
+  // la regionale, art. 1 c. 4 D.Lgs. 360/1998 per la comunale).
+  const soglia = P.detrazioneLavoroDipendente.fasce[0].base / P.irpef.scaglioni[0].aliquota;
+  vicino(soglia, 8500, 0.01);
+
+  const dentro = calcolaNetto({ ral: 9000 });
+  assert.equal(dentro.irpef.netta, 0);
+  assert.equal(dentro.addizionali.totale, 0);
+  assert.equal(dentro.addizionali.nonDovutePerImpostaZero, true);
+
+  const fuori = calcolaNetto({ ral: 9500 });
+  assert.ok(fuori.irpef.netta > 0);
+  assert.ok(fuori.addizionali.regionale > 0);
+  assert.equal(fuori.addizionali.nonDovutePerImpostaZero, false);
+
+  // La regola vale solo per capienza nulla: appena l'IRPEF e' dovuta, anche
+  // per pochi centesimi, le addizionali si pagano sull'intero imponibile.
+  assert.ok(fuori.addizionali.regionale > 100);
 });
 
 test('la trappola della soglia comunale: serve un aumento minimo per non perderci', () => {

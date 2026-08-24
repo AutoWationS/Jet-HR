@@ -173,7 +173,9 @@ function mostraRisultato(r) {
   pezzi.push(
     gruppo({
       voce: `Addizionale regionale ${P.addizionaleRegionale.regione}`,
-      nota: 'aliquote per scaglioni sull’imponibile IRPEF',
+      nota: r.addizionali.nonDovutePerImpostaZero
+        ? 'non dovuta: l’IRPEF netta è zero (no tax area)'
+        : 'aliquote per scaglioni sull’imponibile IRPEF',
       importo: -r.addizionali.regionale,
       quota: su(-r.addizionali.regionale),
       classe: 'trattenuta',
@@ -185,9 +187,11 @@ function mostraRisultato(r) {
   pezzi.push(
     riga({
       voce: `Addizionale comunale ${P.addizionaleComunale.comune}`,
-      nota: r.addizionali.comunaleEsente
-        ? `esente: imponibile sotto la soglia di ${eurTondo(P.addizionaleComunale.sogliaEsenzione)}`
-        : `${pct(P.addizionaleComunale.aliquota)} sull’intero imponibile`,
+      nota: r.addizionali.nonDovutePerImpostaZero
+        ? 'non dovuta: l’IRPEF netta è zero (no tax area)'
+        : r.addizionali.comunaleEsente
+          ? `esente: imponibile sotto la soglia di ${eurTondo(P.addizionaleComunale.sogliaEsenzione)}`
+          : `${pct(P.addizionaleComunale.aliquota)} sull’intero imponibile`,
       importo: -r.addizionali.comunale,
       quota: su(-r.addizionali.comunale),
       classe: 'trattenuta',
@@ -261,6 +265,15 @@ function avvisi(r) {
       `<strong>Effetto soglia.</strong> Con 1.000 € di RAL in più il netto <em>scende</em> di ` +
         `${eur(r.netto.annuo - piu1000.netto.annuo)}: si attraversa una soglia che fa perdere ` +
         `un’agevolazione per intero. Non è un errore del calcolo, è come è scritta la norma.`,
+    );
+  }
+
+  if (r.addizionali.nonDovutePerImpostaZero) {
+    messaggi.push(
+      `<strong>No tax area.</strong> Le detrazioni azzerano l’IRPEF, e senza IRPEF non sono ` +
+        `dovute nemmeno le addizionali regionale e comunale (art. 50 c. 2 D.Lgs. 446/1997 e ` +
+        `art. 1 c. 4 D.Lgs. 360/1998). Appena l’imposta diventa dovuta, le addizionali si ` +
+        `pagano sull’intero imponibile.`,
     );
   }
 

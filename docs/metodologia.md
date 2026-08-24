@@ -142,6 +142,17 @@ per cui la marginale effettiva in quella fascia supera il 60% (§4).
 Nota: gli scaglioni regionali sono ancora quelli **a cinque fasce pre-riforma**, non allineati
 ai tre scaglioni IRPEF. È un disallineamento reale della norma, non un errore del modello.
 
+**Nessuna delle due è dovuta se l'IRPEF netta è zero.** L'art. 50 c. 2 del D.Lgs. 446/1997
+(regionale) e l'art. 1 c. 4 del D.Lgs. 360/1998 (comunale) subordinano l'addizionale al fatto
+che l'IRPEF, al netto delle detrazioni, risulti dovuta. È la *no tax area*: fino a 8.500 € di
+reddito la detrazione dell'art. 13 (1.955 €) azzera esattamente l'imposta, perché
+8.500 × 23% = 1.955. Chi non paga IRPEF non paga nemmeno le addizionali.
+
+Nel motore questo si traduce in un vincolo di ordine: le addizionali vanno calcolate **dopo**
+l'IRPEF netta, e la funzione la riceve come argomento. Senza, calcolerebbe un'imposta su un
+contribuente che non deve nulla — ed è esattamente l'errore che il modello conteneva prima del
+confronto descritto in §3.4.
+
 **Comunale — Milano**: aliquota unica **0,80%**, con **soglia di esenzione a 23.000 €**.
 Attenzione: è una *soglia*, non una *franchigia*. Sotto i 23.000 non si paga nulla; superati i
 23.000 si paga lo 0,80% **sull'intero imponibile**, non sulla sola eccedenza. Da qui il salto
@@ -186,7 +197,7 @@ passaggio si rompe, il test dice **quale**.
 
 ### 3.2 Suite di test
 
-`npm test` esegue 19 test. Sedici sul motore, in tre famiglie:
+`npm test` esegue 20 test. Diciassette sul motore, in tre famiglie:
 
 1. **Casi di riferimento** (15k / 25k / 35k / 60k): ogni voce intermedia verificata, non solo
    il totale. Un test che controlla solo il netto finale non dice dove si è rotto il calcolo.
@@ -261,6 +272,33 @@ applica circa 130 (1.712 − 1.581,52 = 130,48). L'art. 13 c. 1.1 TUIR, introdot
 L. 234/2021, prevede **65 euro**, non rapportati al periodo di lavoro. La divergenza è quindi
 attribuibile all'altro calcolatore.
 
+**RAL 9.000 — il confronto trova un errore nel modello.**
+
+| Voce | Modello (prima) | PMI.it | Modello (dopo la correzione) |
+|---|---:|---:|---:|
+| IRPEF netta | 0 | 0 (*no tax area*) | 0 |
+| Addizionali | **100,53** | **0** | **0** |
+| Somma esente (cuneo) | 580,28 | 639,00 | 580,28 |
+| Netto annuo | 8.652,65 | 8.812 | 8.753,18 |
+
+Due divergenze, con esito opposto.
+
+*Le addizionali: l'errore era nostro.* Il modello le calcolava anche con IRPEF netta pari a
+zero. L'art. 50 c. 2 D.Lgs. 446/1997 e l'art. 1 c. 4 D.Lgs. 360/1998 le subordinano al fatto
+che l'IRPEF sia dovuta: nella no tax area non spettano. Corretto (§2.7): `calcolaAddizionali`
+riceve ora l'IRPEF netta e restituisce zero se questa è nulla, con un test dedicato. È il
+motivo per cui questo confronto valeva la pena farlo: nessun test interno avrebbe potuto
+trovare una regola che il modello non conosceva.
+
+*La somma esente: la divergenza è loro.* 639,00 è esattamente 9.000 × 7,1%, cioè la percentuale
+applicata alla **RAL**. La circolare 4/E del 16 maggio 2025 dell'Agenzia delle Entrate precisa
+che la percentuale va applicata alla sola **quota imponibile del reddito di lavoro dipendente**,
+cioè al netto dei contributi previdenziali: 8.172,90 × 7,1% = 580,28. Su una RAL di 9.000 la
+differenza vale 58,72 €, e cresce con il reddito fino alla soglia dei 20.000.
+
+Residuo dopo la correzione: 8.812 − 8.753,18 = 58,82, cioè esattamente la sola divergenza sulla
+base della somma esente. Anche in questo caso il confronto si chiude senza voci inspiegate.
+
 > Nota terminologica emersa proprio da questa verifica: la maggiorazione sta al **comma 1.1**,
 > non al comma 1-bis. Il comma 1-bis dell'art. 13 conteneva il credito noto come "bonus Renzi",
 > abrogato dal D.L. 3/2020 e sostituito dal trattamento integrativo. Una versione precedente di
@@ -283,6 +321,7 @@ risultato è che **il netto non è una funzione monotona della RAL**.
 | Soglia | RAL corrispondente | Cosa si perde | Salto |
 |---|---:|---|---:|
 | reddito 8.500 € | 9.360,20 € | somma esente: 7,1% → 5,3% sull'intero reddito | −152,96 € |
+| reddito 8.500 € | 9.360,24 € | uscita dalla no tax area: scattano le addizionali | −104,53 € |
 | reddito 15.000 € | 16.518,00 € | trattamento integrativo (1.200 €) | −129,97 € |
 | imponibile 23.000 € | 25.327,61 € | esenzione addizionale comunale Milano | −183,96 € |
 | reddito 35.000 € | 38.542,01 € | maggiorazione art. 13 c. 1.1 (65 €) | −64,98 € |

@@ -176,7 +176,29 @@ export function calcolaTrattamentoIntegrativo(redditoComplessivo, irpefLorda, de
  * 5. Addizionali regionali e comunali
  * -------------------------------------------------------------------------- */
 
-export function calcolaAddizionali(imponibile, parametri) {
+/**
+ * Le addizionali non sono dovute quando l'IRPEF, al netto delle detrazioni,
+ * risulta pari a zero: art. 50 c. 2 D.Lgs. 446/1997 per la regionale, art. 1
+ * c. 4 D.Lgs. 360/1998 per la comunale. E' la cosiddetta "no tax area": chi
+ * non paga IRPEF non paga nemmeno le addizionali.
+ *
+ * Per questo la funzione riceve l'IRPEF netta: senza, calcolerebbe addizionali
+ * su un contribuente che non deve nulla.
+ */
+export function calcolaAddizionali(imponibile, parametri, opzioni = {}) {
+  const irpefNetta = opzioni.irpefNetta ?? Infinity;
+
+  if (irpefNetta <= 0) {
+    return {
+      regionale: 0,
+      regionaleDettaglio: [],
+      comunale: 0,
+      comunaleEsente: true,
+      totale: 0,
+      nonDovutePerImpostaZero: true,
+    };
+  }
+
   const regionale = applicaScaglioni(imponibile, parametri.addizionaleRegionale.scaglioni);
 
   const c = parametri.addizionaleComunale;
@@ -190,6 +212,7 @@ export function calcolaAddizionali(imponibile, parametri) {
     comunale: euro(comunale),
     comunaleEsente: imponibile <= c.sogliaEsenzione,
     totale: euro(regionale.totale + comunale),
+    nonDovutePerImpostaZero: false,
   };
 }
 
@@ -235,7 +258,8 @@ export function calcolaNetto(input, parametri = PARAMETRI_DEFAULT) {
   const detrazioniNonGodute = euro(Math.max(0, detrazioniTotali - irpefLorda));
 
   // --- Addizionali ---------------------------------------------------------
-  const addizionali = calcolaAddizionali(imponibileFiscale, parametri);
+  // Vanno calcolate DOPO l'IRPEF netta: se questa e' zero non sono dovute.
+  const addizionali = calcolaAddizionali(imponibileFiscale, parametri, { irpefNetta });
 
   // --- Somme non imponibili in busta paga ----------------------------------
   const sommaEsente = calcolaSommaEsente(redditoComplessivo, imponibileFiscale, parametri);
@@ -331,7 +355,7 @@ function calcolaNettoSemplice(input, parametri) {
   const detrLavoro = calcolaDetrazioneLavoro(imponibile, parametri, giorni);
   const detrTotali = detrLavoro.totale + calcolaUlterioreDetrazione(imponibile, parametri);
   const irpefNetta = Math.max(0, irpefLorda - detrTotali);
-  const addizionali = calcolaAddizionali(imponibile, parametri);
+  const addizionali = calcolaAddizionali(imponibile, parametri, { irpefNetta });
   const sommaEsente = calcolaSommaEsente(imponibile, imponibile, parametri).importo;
   const ti = calcolaTrattamentoIntegrativo(
     imponibile,
