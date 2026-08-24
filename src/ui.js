@@ -2,35 +2,50 @@
  * ui.js — Unico modulo che tocca il DOM.
  *
  * Non contiene nessuna regola fiscale: legge il modulo, chiama il motore,
- * disegna il risultato. Se domani il calcolo cambia, qui non si tocca nulla.
+ * disegna il risultato. Le fonti e il perimetro escluso non sono scritti qui
+ * ma GENERATI dai parametri, cosi' la pagina non puo' raccontare qualcosa di
+ * diverso da quello che il motore calcola.
  */
 
 import { calcolaNetto } from './motore.js';
-import { PARAMETRI_DEFAULT as P } from './parametri.js';
+import { PARAMETRI_DEFAULT as P, FONTI } from './parametri.js';
 import { eur, eurTondo, pct, etichettaScaglione } from './formato.js';
 import { disegnaGrafico } from './grafico.js';
 
 const $ = (sel) => document.querySelector(sel);
 
 /* ---------------------------------------------------------------- *
- * Costruzione delle righe della cascata
+ * Righe della cascata
  * ---------------------------------------------------------------- */
 
-function riga({ voce, nota, importo, quota, classe = '', segno = '' }) {
-  const testoImporto = segno && importo !== 0 ? `${segno} ${eur(Math.abs(importo))}` : eur(importo);
+/**
+ * @param {number} [peso] frazione della RAL rappresentata dalla voce: disegna
+ *   la barra proporzionale sotto la riga. Serve a far vedere il peso relativo
+ *   delle voci senza costringere a confrontare cifre.
+ */
+function riga({ voce, nota, norma, importo, quota, classe = '', segno = '', peso }) {
+  const testo = segno && importo !== 0 ? `${segno} ${eur(Math.abs(importo))}` : eur(importo);
+  const barra =
+    peso === undefined
+      ? ''
+      : `<div class="barra"><span style="width:${Math.min(100, Math.abs(peso) * 100).toFixed(2)}%"></span></div>`;
+
   return `
     <div class="riga ${classe}">
-      <div class="voce">${voce}${nota ? `<small>${nota}</small>` : ''}</div>
-      <div class="importo">${testoImporto}</div>
+      <div class="voce">${voce}${nota ? `<small>${nota}</small>` : ''}${
+        norma ? `<span class="norma">${norma}</span>` : ''
+      }</div>
+      <div class="importo">${testo}</div>
       <div class="quota">${quota ?? ''}</div>
+      ${barra}
     </div>`;
 }
 
-function gruppo({ voce, nota, importo, quota, classe, segno, dettagli }) {
-  if (!dettagli.length) return riga({ voce, nota, importo, quota, classe, segno });
+function gruppo({ dettagli, ...resto }) {
+  if (!dettagli.length) return riga(resto);
   return `
     <details class="gruppo">
-      <summary>${riga({ voce, nota: `${nota} — apri il dettaglio`, importo, quota, classe, segno })}</summary>
+      <summary>${riga(resto)}</summary>
       ${dettagli.map((d) => riga({ voce: d.voce, importo: d.importo, classe: 'dettaglio' })).join('')}
     </details>`;
 }
@@ -41,51 +56,46 @@ function gruppo({ voce, nota, importo, quota, classe, segno, dettagli }) {
 
 function mostraRisultato(r) {
   const su = (x) => (r.input.ral > 0 ? pct(x / r.input.ral) : '');
+  const peso = (x) => (r.input.ral > 0 ? Math.abs(x) / r.input.ral : 0);
 
-  /* --- Indicatori principali --- */
+  /* --- Indicatori --- */
   $('#indicatori').innerHTML = `
-    <div class="indicatore positivo">
-      <div class="titolo">Netto annuo</div>
-      <div class="valore">${eur(r.netto.annuo)}</div>
-      <div class="nota">${pct(r.indici.incidenzaNetto)} della RAL</div>
+    <div class="indicatore principale">
+      <span class="occhiello">Netto annuo</span>
+      <span class="valore">${eur(r.netto.annuo)}</span>
+      <span class="nota">${pct(r.indici.incidenzaNetto)} della RAL</span>
     </div>
     <div class="indicatore">
-      <div class="titolo">Netto mensile</div>
-      <div class="valore">${eur(r.netto.mensile)}</div>
-      <div class="nota">su ${r.input.mensilita} mensilità</div>
+      <span class="occhiello">Netto mensile</span>
+      <span class="valore">${eur(r.netto.mensile)}</span>
+      <span class="nota">su ${r.input.mensilita} mensilità</span>
     </div>
-    <div class="indicatore negativo">
-      <div class="titolo">Trattenute totali</div>
-      <div class="valore">${eur(r.totali.trattenute)}</div>
-      <div class="nota">contributi ${eurTondo(r.totali.contributi)} + imposte ${eurTondo(
+    <div class="indicatore onere">
+      <span class="occhiello">Trattenute totali</span>
+      <span class="valore">${eur(r.totali.trattenute)}</span>
+      <span class="nota">contributi ${eurTondo(r.totali.contributi)} + imposte ${eurTondo(
         r.totali.imposte,
-      )}</div>
+      )}</span>
     </div>
     <div class="indicatore">
-      <div class="titolo">Aliquota marginale</div>
-      <div class="valore">${pct(r.indici.aliquotaMarginale)}</div>
-      <div class="nota">su 100 € di aumento lordo restano ${eur(
+      <span class="occhiello">Aliquota marginale</span>
+      <span class="valore">${pct(r.indici.aliquotaMarginale)}</span>
+      <span class="nota">di 100 € di aumento lordo restano ${eur(
         100 * (1 - r.indici.aliquotaMarginale),
-      )}</div>
+      )}</span>
     </div>`;
 
-  /* --- Cascata dal lordo al netto --- */
-  const scaglioniIrpef = r.irpef.scaglioni.map((d) => ({
-    voce: etichettaScaglione(d),
-    importo: d.imposta,
-  }));
-  const scaglioniReg = r.addizionali.regionaleDettaglio.map((d) => ({
-    voce: etichettaScaglione(d),
-    importo: d.imposta,
-  }));
+  /* --- Cascata --- */
+  const scaglioni = (dettaglio) =>
+    dettaglio.map((d) => ({ voce: etichettaScaglione(d), importo: -d.imposta }));
 
   const detrazioni = [
-    { voce: `Detrazione lavoro dipendente (art. 13 TUIR)`, importo: -r.irpef.detrazioneLavoro },
+    { voce: 'Detrazione lavoro dipendente (art. 13 c. 1)', importo: r.irpef.detrazioneLavoro },
     r.irpef.maggiorazione65
-      ? { voce: 'Maggiorazione art. 13 c. 1.1 (65 €)', importo: -r.irpef.maggiorazione65 }
+      ? { voce: 'Maggiorazione art. 13 c. 1.1 (65 €)', importo: r.irpef.maggiorazione65 }
       : null,
     r.irpef.ulterioreDetrazione
-      ? { voce: 'Ulteriore detrazione taglio cuneo (L. 207/2024)', importo: -r.irpef.ulterioreDetrazione }
+      ? { voce: 'Ulteriore detrazione taglio cuneo', importo: r.irpef.ulterioreDetrazione }
       : null,
   ].filter(Boolean);
 
@@ -93,11 +103,12 @@ function mostraRisultato(r) {
 
   pezzi.push(
     riga({
-      voce: 'Retribuzione annua lorda (RAL)',
-      nota: 'quanto costa il dipendente in busta paga, al lordo di tutto',
+      voce: 'Retribuzione annua lorda',
+      nota: 'il costo del dipendente in busta paga, al lordo di tutto',
       importo: r.input.ral,
       quota: '100,00%',
       classe: 'parziale',
+      peso: 1,
     }),
   );
 
@@ -107,14 +118,22 @@ function mostraRisultato(r) {
       nota: `IVS ${pct(P.inps.aliquotaIvs)}${
         r.contributi.aggiuntivo ? ` + 1% oltre ${eurTondo(P.inps.primaFasciaPensionabile)}` : ''
       }`,
+      norma: 'art. 3-ter D.L. 384/1992 · INPS circ. 6/2026',
       importo: -r.contributi.totale,
       quota: su(-r.contributi.totale),
       classe: 'trattenuta',
       segno: '−',
+      peso: peso(r.contributi.totale),
       dettagli: [
-        { voce: `IVS ${pct(P.inps.aliquotaIvs)} su ${eurTondo(r.contributi.baseImponibile)}`, importo: -r.contributi.ivs },
+        {
+          voce: `IVS ${pct(P.inps.aliquotaIvs)} su ${eurTondo(r.contributi.baseImponibile)}`,
+          importo: -r.contributi.ivs,
+        },
         r.contributi.aggiuntivo
-          ? { voce: `Aliquota aggiuntiva 1% oltre ${eurTondo(P.inps.primaFasciaPensionabile)}`, importo: -r.contributi.aggiuntivo }
+          ? {
+              voce: `Aliquota aggiuntiva 1% sulla quota oltre ${eurTondo(P.inps.primaFasciaPensionabile)}`,
+              importo: -r.contributi.aggiuntivo,
+            }
           : null,
         r.contributi.massimaleApplicato
           ? { voce: `Massimale contributivo applicato (${eurTondo(P.inps.massimaleAnnuo)})`, importo: 0 }
@@ -126,22 +145,26 @@ function mostraRisultato(r) {
   pezzi.push(
     riga({
       voce: 'Imponibile fiscale IRPEF',
-      nota: 'RAL al netto dei contributi previdenziali',
+      nota: 'RAL al netto dei contributi previdenziali, deducibili per legge',
+      norma: 'art. 51 c. 2 lett. a TUIR',
       importo: r.imponibileFiscale,
       quota: su(r.imponibileFiscale),
       classe: 'parziale',
+      peso: peso(r.imponibileFiscale),
     }),
   );
 
   pezzi.push(
     gruppo({
       voce: 'IRPEF lorda',
-      nota: 'scaglioni 23% / 33% / 43% (L. 199/2025)',
+      nota: 'scaglioni 23% / 33% / 43%',
+      norma: 'art. 11 TUIR · L. 199/2025',
       importo: -r.irpef.lorda,
       quota: su(-r.irpef.lorda),
       classe: 'trattenuta',
       segno: '−',
-      dettagli: scaglioniIrpef.map((d) => ({ ...d, importo: -d.importo })),
+      peso: peso(r.irpef.lorda),
+      dettagli: scaglioni(r.irpef.scaglioni),
     }),
   );
 
@@ -151,11 +174,13 @@ function mostraRisultato(r) {
       nota: r.irpef.detrazioniNonGodute
         ? `di cui ${eur(r.irpef.detrazioniNonGodute)} non godute per incapienza`
         : 'abbattono l’IRPEF lorda',
+      norma: 'art. 13 TUIR · L. 207/2024',
       importo: Math.min(r.irpef.detrazioniTotali, r.irpef.lorda),
       quota: su(Math.min(r.irpef.detrazioniTotali, r.irpef.lorda)),
       classe: 'bonus',
       segno: '+',
-      dettagli: detrazioni.map((d) => ({ ...d, importo: -d.importo })),
+      peso: peso(Math.min(r.irpef.detrazioniTotali, r.irpef.lorda)),
+      dettagli: detrazioni,
     }),
   );
 
@@ -167,6 +192,7 @@ function mostraRisultato(r) {
       quota: su(-r.irpef.netta),
       classe: 'trattenuta',
       segno: '−',
+      peso: peso(r.irpef.netta),
     }),
   );
 
@@ -174,13 +200,15 @@ function mostraRisultato(r) {
     gruppo({
       voce: `Addizionale regionale ${P.addizionaleRegionale.regione}`,
       nota: r.addizionali.nonDovutePerImpostaZero
-        ? 'non dovuta: l’IRPEF netta è zero (no tax area)'
+        ? 'non dovuta: l’IRPEF netta è zero'
         : 'aliquote per scaglioni sull’imponibile IRPEF',
+      norma: 'art. 50 D.Lgs. 446/1997',
       importo: -r.addizionali.regionale,
       quota: su(-r.addizionali.regionale),
       classe: 'trattenuta',
-      segno: '−',
-      dettagli: scaglioniReg.map((d) => ({ ...d, importo: -d.importo })),
+      segno: r.addizionali.regionale ? '−' : '',
+      peso: peso(r.addizionali.regionale),
+      dettagli: scaglioni(r.addizionali.regionaleDettaglio),
     }),
   );
 
@@ -188,26 +216,30 @@ function mostraRisultato(r) {
     riga({
       voce: `Addizionale comunale ${P.addizionaleComunale.comune}`,
       nota: r.addizionali.nonDovutePerImpostaZero
-        ? 'non dovuta: l’IRPEF netta è zero (no tax area)'
+        ? 'non dovuta: l’IRPEF netta è zero'
         : r.addizionali.comunaleEsente
           ? `esente: imponibile sotto la soglia di ${eurTondo(P.addizionaleComunale.sogliaEsenzione)}`
           : `${pct(P.addizionaleComunale.aliquota)} sull’intero imponibile`,
+      norma: 'art. 1 D.Lgs. 360/1998',
       importo: -r.addizionali.comunale,
       quota: su(-r.addizionali.comunale),
       classe: 'trattenuta',
       segno: r.addizionali.comunale ? '−' : '',
+      peso: peso(r.addizionali.comunale),
     }),
   );
 
   if (r.bonus.sommaEsente) {
     pezzi.push(
       riga({
-        voce: 'Somma esente taglio cuneo (L. 207/2024)',
+        voce: 'Somma esente taglio cuneo',
         nota: `${pct(r.bonus.sommaEsentePercentuale)} del reddito di lavoro dipendente, non imponibile`,
+        norma: 'L. 207/2024 art. 1 c. 4',
         importo: r.bonus.sommaEsente,
         quota: su(r.bonus.sommaEsente),
         classe: 'bonus',
         segno: '+',
+        peso: peso(r.bonus.sommaEsente),
       }),
     );
   }
@@ -215,12 +247,14 @@ function mostraRisultato(r) {
   if (r.bonus.trattamentoIntegrativo) {
     pezzi.push(
       riga({
-        voce: 'Trattamento integrativo (D.L. 3/2020)',
+        voce: 'Trattamento integrativo',
         nota: 'credito erogato in busta paga, non imponibile',
+        norma: 'art. 1 D.L. 3/2020',
         importo: r.bonus.trattamentoIntegrativo,
         quota: su(r.bonus.trattamentoIntegrativo),
         classe: 'bonus',
         segno: '+',
+        peso: peso(r.bonus.trattamentoIntegrativo),
       }),
     );
   }
@@ -236,11 +270,8 @@ function mostraRisultato(r) {
   );
 
   $('#cascata').innerHTML = pezzi.join('');
-
-  /* --- Avvisi contestuali sugli effetti soglia --- */
   $('#avvisi').innerHTML = avvisi(r).map((a) => `<div class="avviso">${a}</div>`).join('');
 
-  /* --- Grafico --- */
   disegnaGrafico($('#grafico'), r.input.ral, {
     giorniLavorati: r.input.giorniLavorati,
     applicaMassimale: r.input.applicaMassimale,
@@ -250,16 +281,19 @@ function mostraRisultato(r) {
 }
 
 /**
- * Avvisi generati confrontando il caso corrente con quello immediatamente
- * sopra e sotto: è il modo onesto di mostrare gli effetti soglia invece di
- * lasciarli nascosti dentro le formule.
+ * Avvisi contestuali. Sono generati confrontando il caso corrente con quelli
+ * vicini: e' il modo onesto di mostrare gli effetti soglia invece di lasciarli
+ * nascosti dentro le formule.
  */
 function avvisi(r) {
   const messaggi = [];
-  const ral = r.input.ral;
-  const opz = { mensilita: r.input.mensilita, giorniLavorati: r.input.giorniLavorati, applicaMassimale: r.input.applicaMassimale };
+  const opz = {
+    mensilita: r.input.mensilita,
+    giorniLavorati: r.input.giorniLavorati,
+    applicaMassimale: r.input.applicaMassimale,
+  };
 
-  const piu1000 = calcolaNetto({ ...opz, ral: ral + 1000 });
+  const piu1000 = calcolaNetto({ ...opz, ral: r.input.ral + 1000 });
   if (piu1000.netto.annuo < r.netto.annuo) {
     messaggi.push(
       `<strong>Effetto soglia.</strong> Con 1.000 € di RAL in più il netto <em>scende</em> di ` +
@@ -271,18 +305,25 @@ function avvisi(r) {
   if (r.addizionali.nonDovutePerImpostaZero) {
     messaggi.push(
       `<strong>No tax area.</strong> Le detrazioni azzerano l’IRPEF, e senza IRPEF non sono ` +
-        `dovute nemmeno le addizionali regionale e comunale (art. 50 c. 2 D.Lgs. 446/1997 e ` +
-        `art. 1 c. 4 D.Lgs. 360/1998). Appena l’imposta diventa dovuta, le addizionali si ` +
-        `pagano sull’intero imponibile.`,
+        `dovute nemmeno le addizionali (art. 50 c. 2 D.Lgs. 446/1997 e art. 1 c. 4 D.Lgs. ` +
+        `360/1998). Appena l’imposta diventa dovuta, le addizionali si pagano sull’intero imponibile.`,
     );
   }
 
-  const distanzaComunale = P.addizionaleComunale.sogliaEsenzione - r.imponibileFiscale;
-  if (distanzaComunale > 0 && distanzaComunale < 1500) {
+  if (r.irpef.netta === 0 && r.bonus.trattamentoIntegrativo > 0) {
     messaggi.push(
-      `L’imponibile è ${eur(distanzaComunale)} sotto la soglia di esenzione dell’addizionale ` +
-        `comunale di ${P.addizionaleComunale.comune}: superandola l’addizionale si paga ` +
-        `sull’intero imponibile, non solo sull’eccedenza.`,
+      `<strong>Finestra del trattamento integrativo.</strong> L’IRPEF netta è zero, eppure i ` +
+        `1.200 € spettano: la condizione di capienza guarda l’imposta <em>lorda</em> contro la ` +
+        `detrazione diminuita di 75 €. Fra 8.173,91 e 8.500 € di reddito le due cose convivono.`,
+    );
+  }
+
+  const distanza = P.addizionaleComunale.sogliaEsenzione - r.imponibileFiscale;
+  if (distanza > 0 && distanza < 1500 && !r.addizionali.nonDovutePerImpostaZero) {
+    messaggi.push(
+      `L’imponibile è ${eur(distanza)} sotto la soglia di esenzione dell’addizionale comunale ` +
+        `di ${P.addizionaleComunale.comune}: superandola l’addizionale si paga sull’intero ` +
+        `imponibile, non solo sull’eccedenza.`,
     );
   }
 
@@ -296,11 +337,42 @@ function avvisi(r) {
   if (r.contributi.massimaleApplicato) {
     messaggi.push(
       `Contributi calcolati fino al massimale annuo di ${eurTondo(P.inps.massimaleAnnuo)} ` +
-        `(ipotesi: iscritto INPS dopo il 31/12/1995). L’opzione è modificabile nei parametri avanzati.`,
+        `(ipotesi: iscritto INPS dopo il 31/12/1995). Modificabile nei parametri avanzati.`,
     );
   }
 
   return messaggi;
+}
+
+/* ---------------------------------------------------------------- *
+ * Fonti e perimetro: generati dai parametri, non scritti a mano
+ * ---------------------------------------------------------------- */
+
+function mostraFonti() {
+  $('#fonti').innerHTML = Object.values(FONTI)
+    .map(
+      (f) => `
+      <article class="fonte">
+        <h3>${f.etichetta}</h3>
+        <p class="norma">${f.norma}</p>
+        <p>${f.dettaglio}</p>
+        ${f.prassi ? `<p class="prassi">${f.prassi}</p>` : ''}
+        <p class="verifica">Verifica: ${f.verifica}</p>
+        ${f.url ? `<a href="${f.url}" rel="noopener" target="_blank">Fonte →</a>` : ''}
+      </article>`,
+    )
+    .join('');
+
+  $('#perimetro').innerHTML = P.fuoriPerimetro
+    .map(
+      (v) => `
+      <li>
+        <div class="voce">${v.voce}</div>
+        <div class="norma">${v.norma}</div>
+        <p class="motivo">${v.motivo}</p>
+      </li>`,
+    )
+    .join('');
 }
 
 /* ---------------------------------------------------------------- *
@@ -325,17 +397,23 @@ function esegui(evento) {
     $('#risultato').classList.add('nascosto');
     return;
   }
-  if (input.giorniLavorati < 1 || input.giorniLavorati > 365) {
-    $('#avvisi').innerHTML = '<div class="avviso errore">I giorni di lavoro devono essere tra 1 e 365.</div>';
+  if (!(input.giorniLavorati >= 1 && input.giorniLavorati <= 365)) {
+    $('#avvisi').innerHTML =
+      '<div class="avviso errore">I giorni di lavoro devono essere un numero tra 1 e 365.</div>';
     return;
   }
 
   mostraRisultato(calcolaNetto(input));
-  // La RAL resta nell'URL: il risultato è condivisibile e riproducibile.
-  const url = new URL(location.href);
-  url.searchParams.set('ral', input.ral);
-  url.searchParams.set('mensilita', input.mensilita);
-  history.replaceState(null, '', url);
+
+  // Il risultato resta nell'URL: e' condivisibile e riproducibile.
+  try {
+    const url = new URL(location.href);
+    url.searchParams.set('ral', input.ral);
+    url.searchParams.set('mensilita', input.mensilita);
+    history.replaceState(null, '', url);
+  } catch {
+    /* contesti sandboxed: l'URL non e' aggiornabile, il calcolo resta valido */
+  }
 }
 
 function inizializza() {
@@ -350,8 +428,14 @@ function inizializza() {
       esegui();
     }),
   );
+  // Dopo il primo calcolo la pagina resta viva: cambiare un parametro
+  // aggiorna subito, senza dover ripremere "Calcola".
+  $('#modulo').addEventListener('change', () => {
+    if (!$('#risultato').classList.contains('nascosto')) esegui();
+  });
 
   $('#anno-parametri').textContent = P.anno;
+  mostraFonti();
   esegui();
 }
 

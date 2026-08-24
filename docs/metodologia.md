@@ -463,6 +463,12 @@ lavoro straordinario e indennità.
 
 ## 7. Fonti
 
+> Questa tabella è la versione narrativa del registro `FONTI` in
+> `src/parametri.js`. La pagina **genera** la propria sezione "Fonti dei parametri" da quel
+> registro, quindi ciò che l'utente legge non può divergere da ciò che il motore calcola. Quattro
+> test garantiscono che ogni parametro dichiari una fonte esistente e completa, che nessuna fonte
+> resti orfana e che il perimetro escluso sia dichiarato voce per voce.
+
 | Argomento | Riferimento |
 |---|---|
 | Scaglioni e aliquote IRPEF 2026 (2ª aliquota al 33%) | L. 199/2025 (Legge di bilancio 2026), art. 11 TUIR |

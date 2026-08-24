@@ -25,7 +25,7 @@ python3 -m http.server 8080     # oppure: npx serve .
 Test del motore di calcolo (nessuna dipendenza, solo Node ≥ 18):
 
 ```bash
-npm test                               # 21 test con node --test
+npm test                               # 26 test con node --test
 npm run build                          # rigenera il bundle in dist/
 node scripts/tabella-riferimento.mjs   # tabella dei casi di riferimento in markdown
 ```
@@ -70,12 +70,13 @@ Il vincolo di progetto è uno solo: **il motore di calcolo non deve finire dentr
 
 | File | Ruolo |
 |---|---|
-| `src/parametri.js` | Tutte le aliquote, soglie e importi, ognuno con la fonte normativa accanto. Nel motore non esiste un solo numero magico. Cambiare anno d'imposta = aggiungere un oggetto qui. |
+| `src/parametri.js` | Tutte le aliquote, soglie e importi, più il registro `FONTI`: ogni blocco di parametri dichiara norma primaria, prassi, dettaglio applicativo e nota di verifica. Le fonti sono **dati**, e la pagina genera da qui la propria sezione "Fonti", quindi non possono divergere dal calcolo. Nel motore non esiste un solo numero magico. |
 | `src/motore.js` | Funzioni **pure**: zero DOM, zero I/O, zero dipendenze. `calcolaNetto(input, parametri)`. |
 | `src/ui.js` | L'unico modulo che tocca il DOM. Non conosce nessuna regola fiscale. |
 | `src/grafico.js` | Curva netto/RAL e aliquota marginale, SVG generato a mano. |
 | `src/formato.js` | Unico posto in cui i numeri diventano stringhe. |
-| `test/motore.test.mjs` | 18 test sul motore, con `node --test`. |
+| `test/motore.test.mjs` | 19 test sul motore, con `node --test`. |
+| `test/fonti.test.mjs` | 4 test che tengono onesto il registro delle fonti: nessun parametro senza fonte, nessuna fonte incompleta o orfana, perimetro escluso dichiarato voce per voce. |
 | `test/bundle.test.mjs` | 3 test che tengono il bundle allineato ai sorgenti. |
 | `scripts/bundle.mjs` | Impacchetta tutto in un file HTML autoportante (`dist/`). Esporta `costruisci()` così che un test possa verificare che il bundle non sia divergente. |
 | `scripts/tabella-riferimento.mjs` | Tabella dei casi di riferimento, per il confronto con calcolatori esterni. |

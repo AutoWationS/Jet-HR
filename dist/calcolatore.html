@@ -7,297 +7,605 @@
   <meta name="description" content="Prototipo di calcolo della retribuzione netta annua e mensile a partire dalla RAL. Anno d'imposta 2026, impiegato a tempo indeterminato, Milano.">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#129534;</text></svg>">
   <style>
-  /* ------------------------------------------------------------------ *
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+/* ==========================================================================
    Calcolatore netto — foglio di stile
-   Nessun framework: poche variabili, layout a griglia, tipografia di sistema.
- * ------------------------------------------------------------------ */
+
+   Nessun framework. Tre regole:
+   1. i componenti leggono SOLO token, mai un colore letterale: il tema scuro
+      e' quindi una sola lista di token ridefiniti;
+   2. gli spazi li fa il layout (grid/flex + gap), non i margini per elemento;
+   3. i numeri sono monospaziati e tabulari, perche' vanno letti in colonna.
+
+   Tipografia: IBM Plex Sans per l'interfaccia, IBM Plex Mono per gli importi.
+   Scelta deliberata: e' un carattere da documentazione tecnica, non da landing
+   page, ed e' quello che serve a uno strumento fiscale.
+   ========================================================================== */
 
 :root {
-  --blu: #123a63;
-  --blu-chiaro: #1f6feb;
-  --blu-tenue: #eef4fb;
-  --verde: #0f7b52;
-  --verde-tenue: #e8f5ef;
-  --rosso: #b4342a;
-  --rosso-tenue: #fdeeec;
-  --ambra: #8a6100;
-  --ambra-tenue: #fdf5e3;
+  /* --- colore ------------------------------------------------------- */
+  --inchiostro: #101820;
+  --inchiostro-tenue: #5a6875;
+  --inchiostro-debole: #8b98a5;
 
-  --blu-scuro: #0d2b4a;
-  --blu-chiaro-forte: #1a5fd0;
-  --verde-bordo: #bfe3d3;
-  --rosso-bordo: #f3cdc8;
-  --ambra-bordo: #efdcae;
-
-  --testo: #16202b;
-  --testo-tenue: #5c6b7a;
-  --bordo: #dde4ec;
-  --sfondo: #f4f7fa;
-  --superficie: #ffffff;
+  --carta: #ffffff;
+  --fondo: #f3f6f9;
   --campo: #ffffff;
-  --griglia: #eef2f6;
+  --linea: #dfe6ed;
+  --linea-forte: #c3cfda;
+  --griglia: #ecf1f6;
 
-  /* Colori usati sopra il blu dell'intestazione */
-  --su-blu: #ffffff;
-  --su-blu-tenue: #b9cde3;
-  --su-blu-velo: rgba(255, 255, 255, 0.12);
-  --su-blu-bordo: rgba(255, 255, 255, 0.18);
+  --accento: #12507e;
+  --accento-vivo: #1a6ba8;
+  --accento-velo: #e9f1f8;
   --su-accento: #ffffff;
 
-  --raggio: 12px;
-  --ombra: 0 1px 2px rgba(16, 32, 48, 0.06), 0 8px 24px rgba(16, 32, 48, 0.06);
-  --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  --positivo: #0d6f4c;
+  --positivo-velo: #e6f4ee;
+  --positivo-linea: #b9e0cd;
+  --negativo: #a63328;
+  --negativo-velo: #fceeec;
+  --negativo-linea: #f0cdc8;
+  --attenzione: #7d5a06;
+  --attenzione-velo: #fcf4e2;
+  --attenzione-linea: #eddcae;
+
+  --testa: #0c2438;
+  --testa-fondo: #071829;
+  --su-testa: #f2f7fb;
+  --su-testa-tenue: #9fb9d0;
+  --su-testa-velo: rgba(255, 255, 255, 0.1);
+  --su-testa-linea: rgba(255, 255, 255, 0.16);
+
+  /* --- forma -------------------------------------------------------- */
+  --raggio: 10px;
+  --raggio-piccolo: 6px;
+  --ombra: 0 1px 2px rgba(16, 32, 48, 0.05), 0 6px 18px rgba(16, 32, 48, 0.05);
+  --ombra-alta: 0 2px 4px rgba(16, 32, 48, 0.06), 0 12px 32px rgba(16, 32, 48, 0.08);
+
+  /* --- tipografia --------------------------------------------------- */
+  --sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  --t-micro: 0.7rem;
+  --t-piccolo: 0.8rem;
+  --t-corpo: 0.9rem;
+  --t-medio: 1rem;
+  --t-grande: 1.35rem;
+  --t-cifra: 1.6rem;
+  --t-titolo: 2.1rem;
 }
-
-* { box-sizing: border-box; }
-
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
-  color: var(--testo);
-  background: var(--sfondo);
-  line-height: 1.55;
-  -webkit-font-smoothing: antialiased;
-}
-
-.contenitore { max-width: 1080px; margin: 0 auto; padding: 0 20px 80px; }
-
-/* ---------- Intestazione ---------- */
-
-header.principale {
-  background: linear-gradient(160deg, var(--blu) 0%, var(--blu-scuro) 100%);
-  color: var(--su-blu);
-  padding: 40px 0 56px;
-  margin-bottom: -32px;
-}
-header.principale h1 { margin: 0 0 8px; font-size: 1.9rem; letter-spacing: -0.02em; }
-header.principale p { margin: 0; color: var(--su-blu-tenue); max-width: 62ch; }
-.etichette { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
-.etichetta {
-  font-size: 0.78rem; padding: 4px 10px; border-radius: 999px;
-  background: var(--su-blu-velo); border: 1px solid var(--su-blu-bordo);
-}
-
-/* ---------- Schede ---------- */
-
-.scheda {
-  background: var(--superficie);
-  border: 1px solid var(--bordo);
-  border-radius: var(--raggio);
-  box-shadow: var(--ombra);
-  padding: 24px;
-  margin-bottom: 20px;
-}
-.scheda > h2 {
-  margin: 0 0 4px; font-size: 1.05rem; letter-spacing: -0.01em;
-}
-.scheda > h2 + .sottotitolo { margin: 0 0 20px; color: var(--testo-tenue); font-size: 0.88rem; }
-
-/* ---------- Modulo ---------- */
-
-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 18px; align-items: end; }
-.campo { display: flex; flex-direction: column; gap: 6px; }
-.campo label { font-size: 0.82rem; font-weight: 600; color: var(--testo-tenue); }
-.campo .aiuto { font-size: 0.74rem; color: var(--testo-tenue); font-weight: 400; }
-
-input[type="number"], select {
-  font: inherit; padding: 11px 12px; border: 1px solid var(--bordo);
-  border-radius: 8px; background: var(--campo); color: var(--testo); width: 100%;
-}
-input[type="number"]:focus, select:focus {
-  outline: 2px solid var(--blu-chiaro); outline-offset: -1px; border-color: var(--blu-chiaro);
-}
-
-button.calcola {
-  font: inherit; font-weight: 600; padding: 12px 22px; border: 0; border-radius: 8px;
-  background: var(--blu-chiaro); color: var(--su-accento); cursor: pointer; transition: background 0.15s;
-}
-button.calcola:hover { background: var(--blu-chiaro-forte); }
-
-.avanzate { grid-column: 1 / -1; margin: 0; }
-.avanzate summary { cursor: pointer; font-size: 0.85rem; color: var(--blu-chiaro); font-weight: 600; }
-.avanzate .corpo { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 18px; margin-top: 14px; }
-.interruttore { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; }
-
-/* ---------- Indicatori principali ---------- */
-
-.indicatori { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin-bottom: 20px; }
-.indicatore {
-  background: var(--superficie); border: 1px solid var(--bordo); border-radius: var(--raggio);
-  padding: 20px; box-shadow: var(--ombra);
-}
-.indicatore .titolo { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--testo-tenue); font-weight: 700; }
-.indicatore .valore { font-size: 1.85rem; font-weight: 700; letter-spacing: -0.03em; margin: 6px 0 2px; font-variant-numeric: tabular-nums; }
-.indicatore .nota { font-size: 0.8rem; color: var(--testo-tenue); }
-.indicatore.positivo { background: var(--verde-tenue); border-color: var(--verde-bordo); }
-.indicatore.positivo .valore { color: var(--verde); }
-.indicatore.negativo .valore { color: var(--rosso); }
-
-/* ---------- Cascata ---------- */
-
-.cascata { display: flex; flex-direction: column; }
-.riga {
-  display: grid; grid-template-columns: 1fr auto 92px; gap: 12px; align-items: baseline;
-  padding: 11px 0; border-bottom: 1px solid var(--bordo);
-}
-.riga:last-child { border-bottom: 0; }
-.riga .voce { font-size: 0.92rem; }
-.riga .voce small { display: block; color: var(--testo-tenue); font-size: 0.78rem; }
-.riga .importo { font-variant-numeric: tabular-nums; font-weight: 600; font-family: var(--mono); font-size: 0.92rem; }
-.riga .quota { font-variant-numeric: tabular-nums; color: var(--testo-tenue); font-size: 0.8rem; text-align: right; }
-
-.riga.trattenuta .importo { color: var(--rosso); }
-.riga.bonus .importo { color: var(--verde); }
-.riga.parziale { background: var(--blu-tenue); margin: 0 -12px; padding: 12px; border-radius: 8px; border-bottom: 0; }
-.riga.parziale .voce { font-weight: 700; }
-.riga.totale {
-  background: var(--verde-tenue); margin: 12px -12px 0; padding: 16px 12px; border-radius: 8px; border-bottom: 0;
-}
-.riga.totale .voce { font-weight: 700; font-size: 1rem; }
-.riga.totale .importo { font-size: 1.15rem; color: var(--verde); }
-.riga.dettaglio { padding: 5px 0 5px 18px; border-bottom: 0; border-left: 2px solid var(--bordo); margin-left: 4px; }
-.riga.dettaglio .voce, .riga.dettaglio .importo { font-size: 0.8rem; color: var(--testo-tenue); font-weight: 400; }
-
-.gruppo > summary {
-  cursor: pointer; list-style: none; display: block;
-}
-.gruppo > summary::-webkit-details-marker { display: none; }
-.gruppo[open] > summary .voce small::after { content: " — chiudi"; }
-
-/* ---------- Avvisi ---------- */
-
-.avviso {
-  border-radius: 8px; padding: 12px 14px; font-size: 0.85rem; margin-bottom: 14px;
-  background: var(--ambra-tenue); border: 1px solid var(--ambra-bordo); color: var(--ambra);
-}
-.avviso.errore { background: var(--rosso-tenue); border-color: var(--rosso-bordo); color: var(--rosso); }
-
-/* ---------- Grafico ---------- */
-
-.grafico svg { width: 100%; height: auto; display: block; }
-.legenda { display: flex; gap: 18px; flex-wrap: wrap; font-size: 0.8rem; color: var(--testo-tenue); margin-top: 10px; }
-.legenda span::before {
-  content: ""; display: inline-block; width: 12px; height: 3px; border-radius: 2px;
-  margin-right: 6px; vertical-align: middle; background: currentColor;
-}
-.legenda .netto { color: var(--blu-chiaro); }
-.legenda .marginale { color: var(--rosso); }
-
-/* ---------- Metodologia ---------- */
-
-.metodologia h3 { font-size: 0.92rem; margin: 22px 0 8px; }
-.metodologia ul { margin: 0; padding-left: 20px; font-size: 0.88rem; color: var(--testo-tenue); }
-.metodologia li { margin-bottom: 6px; }
-.metodologia a { color: var(--blu-chiaro); }
-.metodologia code { font-family: var(--mono); font-size: 0.85em; background: var(--blu-tenue); padding: 1px 5px; border-radius: 4px; color: var(--blu); }
-
-footer { text-align: center; color: var(--testo-tenue); font-size: 0.82rem; padding: 24px 0; }
-
-.nascosto { display: none !important; }
-
-@media (max-width: 600px) {
-  header.principale h1 { font-size: 1.5rem; }
-  .riga { grid-template-columns: 1fr auto; }
-  .riga .quota { display: none; }
-}
-
-/* ------------------------------------------------------------------ *
-   Tema scuro. Solo i token vengono ridefiniti: nessun componente qui
-   sotto conosce un colore letterale, quindi la pagina si converte
-   interamente cambiando queste righe.
-
-   Tre stati da coprire: scelta esplicita "chiaro", scelta esplicita
-   "scuro", e nessuna scelta (impostazione di sistema) - che e' il caso
-   piu' comune e non marca nulla sull'elemento radice.
- * ------------------------------------------------------------------ */
 
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) { color-scheme: dark; }
-  :root:not([data-theme="light"]) {
-    --blu: #0a1a2a;
-    --blu-scuro: #060f19;
-    --blu-chiaro: #58a6ff;
-    --blu-chiaro-forte: #79b8ff;
-    --blu-tenue: #16242f;
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
 
-    --verde: #4fd4a0;
-    --verde-tenue: #10261f;
-    --verde-bordo: #1e4d3d;
-    --rosso: #ff8b7e;
-    --rosso-tenue: #2b1614;
-    --rosso-bordo: #55241f;
-    --ambra: #e6c173;
-    --ambra-tenue: #2a2113;
-    --ambra-bordo: #4c3c1c;
+    --inchiostro: #e8eef4;
+    --inchiostro-tenue: #9aabbb;
+    --inchiostro-debole: #6f8093;
 
-    --testo: #e6edf4;
-    --testo-tenue: #9aabbc;
-    --bordo: #27333f;
-    --sfondo: #0c131a;
-    --superficie: #141d26;
-    --campo: #0f1821;
-    --griglia: #1d2833;
+    --carta: #141d26;
+    --fondo: #0b1219;
+    --campo: #0e1720;
+    --linea: #26333f;
+    --linea-forte: #354553;
+    --griglia: #1c2731;
 
-    --su-blu: #eaf2fb;
-    --su-blu-tenue: #9dbbd7;
-    --su-accento: #08121c;
+    --accento: #5aa3e0;
+    --accento-vivo: #7cbaf0;
+    --accento-velo: #14242f;
+    --su-accento: #06131e;
 
-    --ombra: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.28);
+    --positivo: #4fd2a0;
+    --positivo-velo: #0f2620;
+    --positivo-linea: #1e4c3c;
+    --negativo: #ff8f82;
+    --negativo-velo: #2a1614;
+    --negativo-linea: #55241f;
+    --attenzione: #e5c176;
+    --attenzione-velo: #282011;
+    --attenzione-linea: #4a3b1b;
+
+    --testa: #0a1a27;
+    --testa-fondo: #050e17;
+    --su-testa: #e6eff7;
+    --su-testa-tenue: #93aec5;
+
+    --ombra: 0 1px 2px rgba(0, 0, 0, 0.4), 0 6px 18px rgba(0, 0, 0, 0.3);
+    --ombra-alta: 0 2px 4px rgba(0, 0, 0, 0.45), 0 12px 32px rgba(0, 0, 0, 0.4);
   }
 }
 
-:root[data-theme="dark"] {
+:root[data-theme='dark'] {
   color-scheme: dark;
-  --blu: #0a1a2a;
-  --blu-scuro: #060f19;
-  --blu-chiaro: #58a6ff;
-  --blu-chiaro-forte: #79b8ff;
-  --blu-tenue: #16242f;
 
-  --verde: #4fd4a0;
-  --verde-tenue: #10261f;
-  --verde-bordo: #1e4d3d;
-  --rosso: #ff8b7e;
-  --rosso-tenue: #2b1614;
-  --rosso-bordo: #55241f;
-  --ambra: #e6c173;
-  --ambra-tenue: #2a2113;
-  --ambra-bordo: #4c3c1c;
+  --inchiostro: #e8eef4;
+  --inchiostro-tenue: #9aabbb;
+  --inchiostro-debole: #6f8093;
 
-  --testo: #e6edf4;
-  --testo-tenue: #9aabbc;
-  --bordo: #27333f;
-  --sfondo: #0c131a;
-  --superficie: #141d26;
-  --campo: #0f1821;
-  --griglia: #1d2833;
+  --carta: #141d26;
+  --fondo: #0b1219;
+  --campo: #0e1720;
+  --linea: #26333f;
+  --linea-forte: #354553;
+  --griglia: #1c2731;
 
-  --su-blu: #eaf2fb;
-  --su-blu-tenue: #9dbbd7;
-  --su-accento: #08121c;
+  --accento: #5aa3e0;
+  --accento-vivo: #7cbaf0;
+  --accento-velo: #14242f;
+  --su-accento: #06131e;
 
-  --ombra: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.28);
+  --positivo: #4fd2a0;
+  --positivo-velo: #0f2620;
+  --positivo-linea: #1e4c3c;
+  --negativo: #ff8f82;
+  --negativo-velo: #2a1614;
+  --negativo-linea: #55241f;
+  --attenzione: #e5c176;
+  --attenzione-velo: #282011;
+  --attenzione-linea: #4a3b1b;
+
+  --testa: #0a1a27;
+  --testa-fondo: #050e17;
+  --su-testa: #e6eff7;
+  --su-testa-tenue: #93aec5;
+
+  --ombra: 0 1px 2px rgba(0, 0, 0, 0.4), 0 6px 18px rgba(0, 0, 0, 0.3);
+  --ombra-alta: 0 2px 4px rgba(0, 0, 0, 0.45), 0 12px 32px rgba(0, 0, 0, 0.4);
 }
 
-/* ---------- Grafico: i colori stanno qui, non nell'SVG ---------- */
-.grafico .griglia { stroke: var(--griglia); }
-.grafico .asse { stroke: var(--bordo); }
-.grafico .guida { stroke: var(--testo-tenue); stroke-opacity: 0.7; }
-.grafico .tacca { fill: var(--testo-tenue); }
-.grafico .tacca-marginale { fill: var(--rosso); }
-.grafico .linea-netto { stroke: var(--blu-chiaro); }
-.grafico .linea-marginale { stroke: var(--rosso); }
-.grafico .punto { fill: var(--blu-chiaro); stroke: var(--superficie); }
-.grafico .punto-etichetta { fill: var(--testo); stroke: var(--superficie); }
+/* ==========================================================================
+   Base
+   ========================================================================== */
 
-/* ---------- Esempi rapidi ---------- */
-.esempi-campo { grid-column: span 1; }
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: var(--t-corpo);
+  line-height: 1.55;
+  color: var(--inchiostro);
+  background: var(--fondo);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3 { text-wrap: balance; margin: 0; letter-spacing: -0.015em; }
+
+a { color: var(--accento-vivo); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+
+:focus-visible {
+  outline: 2px solid var(--accento-vivo);
+  outline-offset: 2px;
+  border-radius: var(--raggio-piccolo);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+.contenitore { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+.nascosto { display: none !important; }
+
+/* Etichette in maiuscoletto: usate per i titoli di sezione e delle schede */
+.occhiello {
+  font-size: var(--t-micro);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--inchiostro-tenue);
+}
+
+/* ==========================================================================
+   Intestazione
+   ========================================================================== */
+
+header.principale {
+  background: linear-gradient(165deg, var(--testa) 0%, var(--testa-fondo) 100%);
+  color: var(--su-testa);
+  padding: 44px 0 68px;
+}
+header.principale h1 { font-size: var(--t-titolo); font-weight: 600; margin-bottom: 10px; }
+header.principale p { margin: 0; color: var(--su-testa-tenue); max-width: 60ch; }
+
+.etichette { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+.etichetta {
+  font-size: var(--t-micro);
+  letter-spacing: 0.02em;
+  padding: 5px 11px;
+  border-radius: 100px;
+  background: var(--su-testa-velo);
+  border: 1px solid var(--su-testa-linea);
+}
+.etichetta b { font-weight: 600; }
+
+/* ==========================================================================
+   Impianto a due colonne: pannello di input a sinistra, esiti a destra
+   ========================================================================== */
+
+.impianto {
+  display: grid;
+  grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+  margin-top: -44px;
+  padding-bottom: 72px;
+}
+
+@media (max-width: 900px) {
+  .impianto { grid-template-columns: minmax(0, 1fr); }
+}
+
+.colonna-esiti { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+
+.pannello { position: sticky; top: 20px; }
+@media (max-width: 900px) {
+  .pannello { position: static; }
+}
+
+/* ==========================================================================
+   Schede
+   ========================================================================== */
+
+.scheda {
+  background: var(--carta);
+  border: 1px solid var(--linea);
+  border-radius: var(--raggio);
+  box-shadow: var(--ombra);
+  padding: 22px;
+}
+.scheda > header { display: flex; flex-direction: column; gap: 3px; margin-bottom: 18px; }
+.scheda h2 { font-size: var(--t-medio); font-weight: 600; }
+.scheda .sottotitolo { color: var(--inchiostro-tenue); font-size: var(--t-piccolo); margin: 0; }
+
+/* ==========================================================================
+   Modulo
+   ========================================================================== */
+
+form { display: flex; flex-direction: column; gap: 16px; }
+.campo { display: flex; flex-direction: column; gap: 5px; }
+.campo > label { font-size: var(--t-piccolo); font-weight: 600; }
+.campo .aiuto { font-size: var(--t-micro); color: var(--inchiostro-tenue); line-height: 1.45; }
+
+input[type='number'],
+select {
+  font: 500 var(--t-medio) var(--sans);
+  font-variant-numeric: tabular-nums;
+  padding: 10px 12px;
+  border: 1px solid var(--linea-forte);
+  border-radius: var(--raggio-piccolo);
+  background: var(--campo);
+  color: var(--inchiostro);
+  width: 100%;
+  transition: border-color 0.12s, box-shadow 0.12s;
+}
+input[type='number']:hover,
+select:hover { border-color: var(--accento-vivo); }
+input[type='number']:focus,
+select:focus {
+  border-color: var(--accento-vivo);
+  box-shadow: 0 0 0 3px var(--accento-velo);
+  outline: none;
+}
+input[type='number'] { font-family: var(--mono); }
+
+button.calcola {
+  font: 600 var(--t-corpo) var(--sans);
+  padding: 12px 18px;
+  border: 0;
+  border-radius: var(--raggio-piccolo);
+  background: var(--accento);
+  color: var(--su-accento);
+  cursor: pointer;
+  transition: background 0.12s;
+}
+button.calcola:hover { background: var(--accento-vivo); }
+
 .esempi { display: flex; flex-wrap: wrap; gap: 6px; }
 .esempi button {
-  font: inherit; font-size: 0.8rem; padding: 6px 12px; cursor: pointer;
-  border: 1px solid var(--bordo); background: var(--campo); border-radius: 999px; color: var(--blu-chiaro);
+  font: 500 var(--t-micro) var(--mono);
+  padding: 5px 10px;
+  cursor: pointer;
+  border: 1px solid var(--linea-forte);
+  background: var(--campo);
+  border-radius: 100px;
+  color: var(--inchiostro-tenue);
+  transition: all 0.12s;
 }
-.esempi button:hover { background: var(--blu-tenue); border-color: var(--blu-chiaro); }
+.esempi button:hover { border-color: var(--accento-vivo); color: var(--accento-vivo); background: var(--accento-velo); }
+
+.avanzate { border-top: 1px solid var(--linea); padding-top: 14px; }
+.avanzate summary {
+  cursor: pointer;
+  font-size: var(--t-piccolo);
+  font-weight: 600;
+  color: var(--accento-vivo);
+  list-style: none;
+}
+.avanzate summary::-webkit-details-marker { display: none; }
+.avanzate summary::before { content: '▸ '; }
+.avanzate[open] summary::before { content: '▾ '; }
+.avanzate .corpo { display: flex; flex-direction: column; gap: 14px; margin-top: 14px; }
+.interruttore { display: flex; align-items: center; gap: 8px; font-size: var(--t-piccolo); font-weight: 400; }
+.interruttore input { accent-color: var(--accento-vivo); }
+
+/* ==========================================================================
+   Indicatori principali
+   ========================================================================== */
+
+/* Due colonne fisse invece di auto-fit: nella colonna degli esiti l'auto-fit
+   lasciava una scheda orfana su una riga da sola. */
+.indicatori { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
+@media (min-width: 520px) {
+  .indicatori { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.indicatore {
+  background: var(--carta);
+  border: 1px solid var(--linea);
+  border-radius: var(--raggio);
+  box-shadow: var(--ombra);
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.indicatore .valore {
+  font-family: var(--mono);
+  font-size: var(--t-cifra);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin-top: 6px;
+}
+.indicatore .nota { font-size: var(--t-micro); color: var(--inchiostro-tenue); }
+
+.indicatore.principale {
+  background: var(--positivo-velo);
+  border-color: var(--positivo-linea);
+  box-shadow: var(--ombra-alta);
+}
+.indicatore.principale .valore { color: var(--positivo); }
+.indicatore.onere .valore { color: var(--negativo); }
+
+/* ==========================================================================
+   Cascata dal lordo al netto
+   ========================================================================== */
+
+.cascata { display: flex; flex-direction: column; }
+
+.riga {
+  display: grid;
+  grid-template-columns: 1fr auto 76px;
+  gap: 14px;
+  align-items: baseline;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--linea);
+}
+.riga:last-child { border-bottom: 0; }
+
+.riga .voce { font-size: var(--t-corpo); min-width: 0; }
+.riga .voce small {
+  display: block;
+  color: var(--inchiostro-tenue);
+  font-size: var(--t-micro);
+  line-height: 1.45;
+}
+.riga .voce .norma {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  color: var(--inchiostro-debole);
+  border: 1px solid var(--linea);
+  border-radius: 4px;
+  padding: 0 4px;
+  margin-top: 3px;
+}
+.riga .importo {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  font-size: var(--t-corpo);
+  white-space: nowrap;
+}
+.riga .quota {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--inchiostro-tenue);
+  font-size: var(--t-micro);
+  text-align: right;
+}
+
+/* Barra proporzionale: rende leggibile il peso di ogni voce senza numeri */
+.riga .barra {
+  grid-column: 1 / -1;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--griglia);
+  overflow: hidden;
+  margin-top: 2px;
+}
+.riga .barra span { display: block; height: 100%; border-radius: 2px; }
+
+.riga.trattenuta .importo { color: var(--negativo); }
+.riga.trattenuta .barra span { background: var(--negativo); opacity: 0.75; }
+.riga.bonus .importo { color: var(--positivo); }
+.riga.bonus .barra span { background: var(--positivo); opacity: 0.75; }
+.riga.parziale .barra span { background: var(--accento); opacity: 0.5; }
+
+.riga.parziale {
+  background: var(--accento-velo);
+  margin: 0 -12px;
+  padding: 12px;
+  border-radius: var(--raggio-piccolo);
+  border-bottom: 0;
+}
+.riga.parziale .voce { font-weight: 600; }
+
+.riga.totale {
+  background: var(--positivo-velo);
+  border: 1px solid var(--positivo-linea);
+  margin: 12px -12px 0;
+  padding: 16px 12px;
+  border-radius: var(--raggio-piccolo);
+  border-bottom: 0;
+}
+.riga.totale .voce { font-weight: 600; font-size: var(--t-medio); }
+.riga.totale .importo { font-size: var(--t-grande); font-weight: 600; color: var(--positivo); }
+
+.riga.dettaglio {
+  padding: 4px 0 4px 16px;
+  border-bottom: 0;
+  border-left: 2px solid var(--linea);
+  margin-left: 3px;
+}
+.riga.dettaglio .voce,
+.riga.dettaglio .importo {
+  font-size: var(--t-micro);
+  color: var(--inchiostro-tenue);
+  font-weight: 400;
+}
+
+.gruppo > summary { cursor: pointer; list-style: none; display: block; }
+.gruppo > summary::-webkit-details-marker { display: none; }
+.gruppo > summary .voce::after {
+  content: ' ▸';
+  color: var(--inchiostro-debole);
+  font-size: 0.7em;
+}
+.gruppo[open] > summary .voce::after { content: ' ▾'; }
+
+/* ==========================================================================
+   Avvisi
+   ========================================================================== */
+
+.avviso {
+  border-radius: var(--raggio-piccolo);
+  padding: 12px 14px;
+  font-size: var(--t-piccolo);
+  line-height: 1.5;
+  background: var(--attenzione-velo);
+  border: 1px solid var(--attenzione-linea);
+  color: var(--attenzione);
+}
+.avviso + .avviso { margin-top: 10px; }
+.avviso.errore { background: var(--negativo-velo); border-color: var(--negativo-linea); color: var(--negativo); }
+.avviso strong { font-weight: 600; }
+
+/* ==========================================================================
+   Grafico
+   ========================================================================== */
+
+.grafico { overflow-x: auto; }
+.grafico svg { width: 100%; min-width: 460px; height: auto; display: block; }
+
+.legenda { display: flex; gap: 18px; flex-wrap: wrap; font-size: var(--t-micro); color: var(--inchiostro-tenue); margin-top: 12px; }
+.legenda span::before {
+  content: '';
+  display: inline-block;
+  width: 14px;
+  height: 3px;
+  border-radius: 2px;
+  margin-right: 6px;
+  vertical-align: middle;
+  background: currentColor;
+}
+.legenda .netto { color: var(--accento-vivo); }
+.legenda .marginale { color: var(--negativo); }
+
+.grafico .griglia { stroke: var(--griglia); }
+.grafico .asse { stroke: var(--linea-forte); }
+.grafico .guida { stroke: var(--inchiostro-debole); stroke-opacity: 0.8; }
+.grafico .tacca { fill: var(--inchiostro-tenue); font-family: var(--mono); }
+.grafico .tacca-marginale { fill: var(--negativo); font-family: var(--mono); }
+.grafico .linea-netto { stroke: var(--accento-vivo); }
+.grafico .linea-marginale { stroke: var(--negativo); }
+.grafico .punto { fill: var(--accento-vivo); stroke: var(--carta); }
+.grafico .punto-etichetta { fill: var(--inchiostro); stroke: var(--carta); font-family: var(--mono); }
+
+/* ==========================================================================
+   Fonti e perimetro (generati dai parametri)
+   ========================================================================== */
+
+.fonti { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
+
+.fonte {
+  border: 1px solid var(--linea);
+  border-radius: var(--raggio-piccolo);
+  padding: 14px 16px;
+  background: var(--fondo);
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.fonte h3 { font-size: var(--t-piccolo); font-weight: 600; }
+.fonte .norma {
+  font-family: var(--mono);
+  font-size: var(--t-micro);
+  color: var(--accento);
+  line-height: 1.45;
+}
+.fonte p { margin: 0; font-size: var(--t-micro); color: var(--inchiostro-tenue); line-height: 1.5; }
+.fonte .prassi { border-left: 2px solid var(--linea-forte); padding-left: 9px; }
+.fonte .verifica { color: var(--inchiostro-debole); font-style: italic; }
+.fonte a { font-size: var(--t-micro); }
+
+.perimetro { display: flex; flex-direction: column; gap: 12px; }
+.perimetro li {
+  list-style: none;
+  border-left: 2px solid var(--negativo-linea);
+  padding-left: 12px;
+}
+.perimetro ul { margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.perimetro .voce { font-size: var(--t-piccolo); font-weight: 600; }
+.perimetro .norma { font-family: var(--mono); font-size: var(--t-micro); color: var(--inchiostro-debole); }
+.perimetro .motivo { font-size: var(--t-micro); color: var(--inchiostro-tenue); margin: 3px 0 0; line-height: 1.5; }
+
+/* ==========================================================================
+   Metodologia
+   ========================================================================== */
+
+.metodologia h3 { font-size: var(--t-piccolo); margin: 20px 0 8px; font-weight: 600; }
+.metodologia ul { margin: 0; padding-left: 18px; font-size: var(--t-piccolo); color: var(--inchiostro-tenue); }
+.metodologia li { margin-bottom: 6px; line-height: 1.55; }
+.metodologia li b { color: var(--inchiostro); font-weight: 600; }
+.metodologia code {
+  font-family: var(--mono);
+  font-size: 0.85em;
+  background: var(--accento-velo);
+  padding: 1px 5px;
+  border-radius: 4px;
+  color: var(--accento);
+}
+
+footer {
+  text-align: center;
+  color: var(--inchiostro-debole);
+  font-size: var(--t-micro);
+  padding: 8px 0 32px;
+}
+
+/* ==========================================================================
+   Stampa — uno strumento fiscale che si stampa male non sembra serio
+   ========================================================================== */
+
+@media print {
+  body { background: #fff; color: #000; font-size: 10pt; }
+  header.principale { background: none; color: #000; padding: 0 0 12pt; }
+  header.principale p, .etichetta { color: #333; }
+  .impianto { display: block; margin: 0; }
+  .scheda { box-shadow: none; border: 1px solid #bbb; page-break-inside: avoid; margin-bottom: 12pt; }
+  .pannello, .grafico, .esempi, button, .avanzate { display: none; }
+  .gruppo > summary .voce::after { content: ''; }
+  details { display: block; }
+  details > summary { list-style: none; }
+}
 
   </style>
   </head>
@@ -307,190 +615,183 @@ footer { text-align: center; color: var(--testo-tenue); font-size: 0.82rem; padd
     <h1>Dal lordo al netto</h1>
     <p>
       Proiezione della retribuzione netta annua e mensile a partire dalla RAL, con il dettaglio
-      di ogni voce trattenuta sul lordo. Prototipo: modello semplificato ma verificabile,
-      con le fonti normative dichiarate a fondo pagina.
+      di ogni voce trattenuta sul lordo. Modello semplificato ma verificabile: parametri, fonti
+      normative e perimetro escluso sono dichiarati in fondo alla pagina.
     </p>
     <div class="etichette">
       <span class="etichetta">Anno d'imposta <b id="anno-parametri">2026</b></span>
       <span class="etichetta">Impiegato · tempo indeterminato</span>
       <span class="etichetta">Lombardia · Milano</span>
-      <span class="etichetta">Nessuna agevolazione</span>
+      <span class="etichetta">Nessun familiare a carico</span>
     </div>
   </div>
 </header>
 
 <main class="contenitore">
+  <div class="impianto">
 
-  <section class="scheda">
-    <h2>Dati del rapporto di lavoro</h2>
-    <p class="sottotitolo">Il minimo indispensabile in alto, le ipotesi meno frequenti sotto.</p>
+    <!-- ---------- Colonna sinistra: input ---------- -->
+    <aside class="pannello">
+      <section class="scheda">
+        <header>
+          <h2>Dati del rapporto</h2>
+          <p class="sottotitolo">Il minimo indispensabile in alto, le ipotesi meno frequenti sotto.</p>
+        </header>
 
-    <form id="modulo">
-      <div class="campo">
-        <label for="ral">Retribuzione annua lorda (RAL)</label>
-        <input type="number" id="ral" name="ral" value="35000" min="0" step="500" inputmode="numeric" required>
-        <span class="aiuto">Lordo annuo comprensivo di tutte le mensilità.</span>
-      </div>
-
-      <div class="campo">
-        <label for="mensilita">Mensilità</label>
-        <select id="mensilita" name="mensilita">
-          <option value="12">12</option>
-          <option value="13" selected>13 (con tredicesima)</option>
-          <option value="14">14 (tredicesima e quattordicesima)</option>
-        </select>
-        <span class="aiuto">Cambia solo la rata mensile, non il netto annuo.</span>
-      </div>
-
-      <div class="campo">
-        <button type="submit" class="calcola">Calcola</button>
-      </div>
-
-      <div class="campo esempi-campo">
-        <label>Esempi rapidi</label>
-        <div class="esempi">
-          <button type="button" data-esempio="15000">15k</button>
-          <button type="button" data-esempio="25000">25k</button>
-          <button type="button" data-esempio="35000">35k</button>
-          <button type="button" data-esempio="60000">60k</button>
-          <button type="button" data-esempio="120000">120k</button>
-        </div>
-      </div>
-
-      <details class="avanzate">
-        <summary>Parametri avanzati</summary>
-        <div class="corpo">
+        <form id="modulo">
           <div class="campo">
-            <label for="giorni">Giorni di lavoro nell'anno</label>
-            <input type="number" id="giorni" name="giorni" value="365" min="1" max="365" step="1">
-            <span class="aiuto">Le detrazioni art. 13 TUIR sono rapportate al periodo di lavoro.</span>
+            <label for="ral">Retribuzione annua lorda</label>
+            <input type="number" id="ral" name="ral" value="35000" min="0" step="500"
+                   inputmode="numeric" required aria-describedby="aiuto-ral">
+            <span class="aiuto" id="aiuto-ral">Lordo annuo comprensivo di tutte le mensilità.</span>
           </div>
+
           <div class="campo">
-            <label>Massimale contributivo</label>
-            <label class="interruttore">
-              <input type="checkbox" id="massimale" checked>
-              Iscritto INPS dopo il 31/12/1995
-            </label>
-            <span class="aiuto">Se attivo, i contributi si fermano al massimale annuo.</span>
+            <label for="mensilita">Mensilità</label>
+            <select id="mensilita" name="mensilita" aria-describedby="aiuto-mensilita">
+              <option value="12">12</option>
+              <option value="13" selected>13 — con tredicesima</option>
+              <option value="14">14 — tredicesima e quattordicesima</option>
+            </select>
+            <span class="aiuto" id="aiuto-mensilita">Cambia la rata mensile, non il netto annuo.</span>
           </div>
-        </div>
-      </details>
-    </form>
-  </section>
 
-  <div id="avvisi"></div>
-  <div id="risultato" class="nascosto">
+          <button type="submit" class="calcola">Calcola</button>
 
-    <div class="indicatori" id="indicatori"></div>
+          <div class="campo">
+            <span class="occhiello">Esempi</span>
+            <div class="esempi">
+              <button type="button" data-esempio="15000">15k</button>
+              <button type="button" data-esempio="25000">25k</button>
+              <button type="button" data-esempio="35000">35k</button>
+              <button type="button" data-esempio="60000">60k</button>
+              <button type="button" data-esempio="120000">120k</button>
+            </div>
+          </div>
 
-    <section class="scheda">
-      <h2>Dal lordo al netto, voce per voce</h2>
-      <p class="sottotitolo">
-        Le righe con il triangolino si aprono sul dettaglio del calcolo (scaglioni, detrazioni).
-      </p>
-      <div class="cascata" id="cascata"></div>
-    </section>
+          <details class="avanzate">
+            <summary>Parametri avanzati</summary>
+            <div class="corpo">
+              <div class="campo">
+                <label for="giorni">Giorni di lavoro nell'anno</label>
+                <input type="number" id="giorni" name="giorni" value="365" min="1" max="365" step="1"
+                       aria-describedby="aiuto-giorni">
+                <span class="aiuto" id="aiuto-giorni">
+                  Detrazioni, ulteriore detrazione del cuneo e trattamento integrativo sono
+                  rapportati al periodo di lavoro.
+                </span>
+              </div>
+              <div class="campo">
+                <span class="occhiello">Massimale contributivo</span>
+                <label class="interruttore">
+                  <input type="checkbox" id="massimale" checked>
+                  Iscritto INPS dopo il 31/12/1995
+                </label>
+                <span class="aiuto">Se attivo, i contributi si fermano al massimale annuo.</span>
+              </div>
+            </div>
+          </details>
+        </form>
+      </section>
+    </aside>
 
-    <section class="scheda">
-      <h2>Curva del netto e aliquota marginale</h2>
-      <p class="sottotitolo">
-        In blu il netto annuo al variare della RAL (asse sinistro), in rosso quanto viene assorbito
-        dall'euro lordo successivo (asse destro). I picchi rossi sono gli effetti soglia della norma;
-        dove escono dall'asse il valore è tagliato (a 9.100 € di RAL la marginale vale −1.196%,
-        perché 100 € di aumento fanno scattare 1.200 € di trattamento integrativo).
-      </p>
-      <div class="grafico" id="grafico"></div>
-      <div class="legenda">
-        <span class="netto">Netto annuo</span>
-        <span class="marginale">Aliquota marginale effettiva</span>
+    <!-- ---------- Colonna destra: esiti ---------- -->
+    <div class="colonna-esiti">
+
+      <div id="avvisi" role="status" aria-live="polite"></div>
+
+      <div id="risultato" class="colonna-esiti nascosto">
+        <div class="indicatori" id="indicatori"></div>
+
+        <section class="scheda">
+          <header>
+            <h2>Dal lordo al netto, voce per voce</h2>
+            <p class="sottotitolo">
+              Le righe con il triangolino si aprono sul dettaglio del calcolo. La barra sotto
+              ogni voce ne mostra il peso sulla RAL.
+            </p>
+          </header>
+          <div class="cascata" id="cascata"></div>
+        </section>
+
+        <section class="scheda">
+          <header>
+            <h2>Curva del netto e aliquota marginale</h2>
+            <p class="sottotitolo">
+              In blu il netto annuo al variare della RAL (asse sinistro), in rosso quanto viene
+              assorbito dall'euro lordo successivo (asse destro). I picchi rossi sono gli effetti
+              soglia della norma; dove escono dall'asse il valore è tagliato.
+            </p>
+          </header>
+          <div class="grafico" id="grafico"></div>
+          <div class="legenda">
+            <span class="netto">Netto annuo</span>
+            <span class="marginale">Aliquota marginale effettiva</span>
+          </div>
+        </section>
       </div>
-    </section>
+
+      <section class="scheda metodologia">
+        <header>
+          <h2>Come è calcolato</h2>
+          <p class="sottotitolo">La catena, nell'ordine in cui la percorre una busta paga.</p>
+        </header>
+        <ul>
+          <li><b>RAL − contributi INPS a carico dipendente</b> (IVS 9,19%, più 1% sulla quota
+            oltre la prima fascia di retribuzione pensionabile) <b>= imponibile fiscale</b>.</li>
+          <li><b>IRPEF lorda</b> per scaglioni: 23% fino a 28.000, 33% da 28.000 a 50.000,
+            43% oltre.</li>
+          <li><b>− detrazione per lavoro dipendente</b> (art. 13 c. 1 TUIR), rapportata ai giorni
+            di lavoro, più la maggiorazione di 65 € (c. 1.1) tra 25.000 e 35.000.</li>
+          <li><b>− ulteriore detrazione</b> del taglio del cuneo: 1.000 € tra 20.000 e 32.000,
+            in <i>décalage</i> lineare fino ad azzerarsi a 40.000.</li>
+          <li><b>− addizionale regionale Lombardia</b> per scaglioni e <b>addizionale comunale
+            Milano</b> 0,80% sopra i 23.000 di imponibile. Nessuna delle due è dovuta se
+            l'IRPEF netta è zero.</li>
+          <li><b>+ somme non imponibili</b> erogate in busta paga: somma esente del cuneo
+            (percentuale unica per fascia, individuata sul reddito rapportato all'anno) e
+            trattamento integrativo di 1.200 € fino a 15.000, se c'è capienza.</li>
+        </ul>
+
+        <h3>Semplificazioni consapevoli</h3>
+        <ul>
+          <li><b>Reddito complessivo = imponibile fiscale.</b> Nessun altro reddito, nessun onere
+            deducibile, nessuna rendita dell'abitazione principale. Esatto per chi ha solo questo
+            reddito, approssimato altrimenti.</li>
+          <li><b>Addizionali per competenza, non per cassa.</b> In busta paga si versano come
+            saldo dell'anno precedente più acconto dell'anno corrente.</li>
+          <li><b>Calcolo a saldo d'anno.</b> La singola busta può differire per effetto del
+            conguaglio di fine anno e dei ratei delle mensilità aggiuntive.</li>
+        </ul>
+      </section>
+
+      <section class="scheda">
+        <header>
+          <h2>Fonti dei parametri</h2>
+          <p class="sottotitolo">
+            Generate dal file dei parametri, non scritte a mano: non possono divergere da ciò
+            che il motore calcola davvero.
+          </p>
+        </header>
+        <div class="fonti" id="fonti"></div>
+      </section>
+
+      <section class="scheda perimetro">
+        <header>
+          <h2>Cosa resta fuori</h2>
+          <p class="sottotitolo">
+            Un perimetro dichiarato vale quanto un calcolo corretto: ecco cosa il modello non
+            rappresenta, e perché.
+          </p>
+        </header>
+        <ul id="perimetro"></ul>
+      </section>
+
+      <footer>
+        Prototipo a scopo dimostrativo. Non sostituisce un cedolino paga né una consulenza fiscale.
+      </footer>
+    </div>
   </div>
-
-  <section class="scheda metodologia">
-    <h2>Metodologia, semplificazioni e fonti</h2>
-    <p class="sottotitolo">
-      Il prototipo è deliberatamente semplificato. Qui c'è l'elenco esplicito di cosa è dentro
-      e cosa è fuori: senza questo, un numero preciso è solo un numero convincente.
-    </p>
-
-    <h3>Catena di calcolo</h3>
-    <ul>
-      <li><b>RAL − contributi INPS c/dipendente</b> (IVS 9,19%, +1% sulla quota oltre la prima
-        fascia di retribuzione pensionabile) <b>= imponibile fiscale</b>.</li>
-      <li><b>IRPEF lorda</b> per scaglioni: 23% fino a 28.000, 33% da 28.000 a 50.000, 43% oltre
-        (seconda aliquota ridotta dal 35% al 33% dalla Legge di bilancio 2026).</li>
-      <li><b>− detrazione per lavoro dipendente</b> (art. 13 TUIR), rapportata ai giorni di lavoro,
-        più la maggiorazione di 65 € (c. 1.1) tra 25.000 e 35.000.</li>
-      <li><b>− ulteriore detrazione</b> del taglio del cuneo: 1.000 € tra 20.000 e 32.000,
-        in <i>décalage</i> lineare fino ad azzerarsi a 40.000.</li>
-      <li><b>− addizionale regionale Lombardia</b> per scaglioni (1,23% / 1,58% / 1,72% / 1,73%)
-        e <b>addizionale comunale Milano</b> 0,80%, con esenzione sotto i 23.000 di imponibile.
-        Nessuna delle due è dovuta se l'IRPEF netta è zero (<i>no tax area</i>).</li>
-      <li><b>+ somme non imponibili</b> erogate in busta paga: somma esente del taglio del cuneo
-        (7,1% / 5,3% / 4,8% fino a 20.000 di reddito complessivo) e trattamento integrativo
-        di 1.200 € fino a 15.000.</li>
-    </ul>
-
-    <h3>Semplificazioni consapevoli</h3>
-    <ul>
-      <li><b>Reddito complessivo = imponibile fiscale.</b> Nessun altro reddito, nessun onere
-        deducibile, nessuna rendita dell'abitazione principale. Le soglie del cuneo e delle
-        detrazioni sono quindi lette sull'imponibile da lavoro dipendente.</li>
-      <li><b>Addizionali per competenza, non per cassa.</b> In busta paga si versano come saldo
-        dell'anno precedente più acconto dell'anno corrente; qui sono calcolate sull'anno in corso.
-        Su una carriera stabile la differenza si annulla, sul singolo anno no.</li>
-      <li><b>Il TFR è escluso</b> dal netto: è accantonato (circa 7,4% della retribuzione utile,
-        1/13,5 al netto del contributo dello 0,50%) e non transita nella retribuzione corrente.</li>
-      <li><b>Nessuna detrazione per carichi di famiglia</b> (art. 12 TUIR), nessun fringe benefit,
-        nessun welfare, nessun premio di risultato a tassazione agevolata, nessuna trattenuta
-        sindacale o previdenza complementare.</li>
-      <li><b>Riduzioni delle detrazioni per oneri non applicate</b>: i tagli forfettari di 260 €
-        oltre 50.000 (L. 207/2024) e di 440 € oltre 200.000 (L. 199/2025) incidono sulle detrazioni
-        art. 15 TUIR, che questo modello non rappresenta perché non ci sono oneri detraibili.</li>
-      <li><b>Aliquota IVS 9,19%</b>: è la quota a carico del lavoratore per un impiegato del settore
-        privato non agricolo. Dirigenti, apprendisti e alcuni settori hanno aliquote diverse.</li>
-      <li><b>Conguaglio annuo</b>: il calcolo è a saldo d'anno. La singola busta paga mensile può
-        differire per effetto del conguaglio di fine anno e del ratei delle mensilità aggiuntive.</li>
-    </ul>
-
-    <h3>Fonti</h3>
-    <ul>
-      <li>Scaglioni e aliquote IRPEF 2026 (seconda aliquota al 33%): Legge di bilancio 2026
-        (L. 199/2025), art. 11 TUIR — <a href="https://www.mef.gov.it/focus/Principali-misure-della-legge-di-bilancio-2026/" rel="noopener">MEF, principali misure</a>.</li>
-      <li>Detrazione per redditi di lavoro dipendente: art. 13 D.P.R. 917/1986 (TUIR) —
-        <a href="https://def.finanze.it/DocTribFrontend/getAttoNormativoDetail.do?ACTION=getArticolo&id=%7bEC138E97-9B72-4177-A24C-C50AB0B0AEFA%7d&codiceOrdinamento=200001300000000&articolo=Articolo%2013" rel="noopener">testo coordinato, def.finanze.it</a>.</li>
-      <li>Taglio del cuneo fiscale (somma esente e ulteriore detrazione): L. 207/2024 art. 1
-        cc. 4-9, reso strutturale dalla L. 199/2025 —
-        <a href="https://www.agenziaentrate.gov.it/portale/circolari-anno-2025" rel="noopener">circolari Agenzia delle Entrate</a>.</li>
-      <li>Trattamento integrativo: art. 1 D.L. 3/2020 conv. L. 21/2020, come modificato dalla
-        L. 234/2021.</li>
-      <li>Aliquota IVS, prima fascia di retribuzione pensionabile (56.224 €) e massimale annuo
-        (122.295 €): <a href="https://www.inps.it/it/it/dettaglio-approfondimento.circolari-e-messaggi.html" rel="noopener">INPS, circolare n. 6 del 30/01/2026</a>.
-        Aliquota aggiuntiva 1%: art. 3-ter D.L. 384/1992.</li>
-      <li>Addizionale regionale IRPEF Lombardia, aliquote per scaglioni —
-        <a href="https://www.regione.lombardia.it/wps/portal/istituzionale/HP/servizi-e-informazioni/cittadini/Tributi/addizionale-regionale-irpef" rel="noopener">Regione Lombardia</a>.</li>
-      <li>Addizionale comunale IRPEF Milano 0,80% con soglia di esenzione a 23.000 € —
-        <a href="https://www.comune.milano.it/aree-tematiche/tributi/addizionale-comunale-irpef" rel="noopener">Comune di Milano</a> e
-        <a href="https://www1.finanze.gov.it/finanze2/dipartimentopolitichefiscali/fiscalitalocale/addcomirpef/sceltaregione.htm" rel="noopener">portale del Federalismo Fiscale, MEF</a>.</li>
-    </ul>
-
-    <h3>Come è fatto</h3>
-    <ul>
-      <li><code>src/parametri.js</code> — tutte le aliquote, soglie e importi, con la fonte accanto.
-        Nel motore non c'è nessun numero magico.</li>
-      <li><code>src/motore.js</code> — funzioni pure, zero DOM, zero dipendenze:
-        <code>calcolaNetto(input, parametri)</code>.</li>
-      <li><code>src/ui.js</code> — l'unico modulo che tocca la pagina. Non conosce nessuna regola fiscale.</li>
-      <li><code>test/motore.test.mjs</code> — 21 test con <code>node --test</code>: casi di riferimento
-        ricalcolati a mano, continuità delle formule sui confini di fascia, e un test che verifica
-        che il netto scenda <i>solo</i> attraversando le soglie dichiarate.</li>
-    </ul>
-  </section>
-
-  <footer>
-    Prototipo a scopo dimostrativo. Non sostituisce un cedolino paga né una consulenza fiscale.
-  </footer>
 </main>
   <script type="module">
   
@@ -1373,7 +1674,9 @@ const P = PARAMETRI_DEFAULT;
  * ui.js — Unico modulo che tocca il DOM.
  *
  * Non contiene nessuna regola fiscale: legge il modulo, chiama il motore,
- * disegna il risultato. Se domani il calcolo cambia, qui non si tocca nulla.
+ * disegna il risultato. Le fonti e il perimetro escluso non sono scritti qui
+ * ma GENERATI dai parametri, cosi' la pagina non puo' raccontare qualcosa di
+ * diverso da quello che il motore calcola.
  */
 
 
@@ -1383,24 +1686,37 @@ const P = PARAMETRI_DEFAULT;
 const $ = (sel) => document.querySelector(sel);
 
 /* ---------------------------------------------------------------- *
- * Costruzione delle righe della cascata
+ * Righe della cascata
  * ---------------------------------------------------------------- */
 
-function riga({ voce, nota, importo, quota, classe = '', segno = '' }) {
-  const testoImporto = segno && importo !== 0 ? `${segno} ${eur(Math.abs(importo))}` : eur(importo);
+/**
+ * @param {number} [peso] frazione della RAL rappresentata dalla voce: disegna
+ *   la barra proporzionale sotto la riga. Serve a far vedere il peso relativo
+ *   delle voci senza costringere a confrontare cifre.
+ */
+function riga({ voce, nota, norma, importo, quota, classe = '', segno = '', peso }) {
+  const testo = segno && importo !== 0 ? `${segno} ${eur(Math.abs(importo))}` : eur(importo);
+  const barra =
+    peso === undefined
+      ? ''
+      : `<div class="barra"><span style="width:${Math.min(100, Math.abs(peso) * 100).toFixed(2)}%"></span></div>`;
+
   return `
     <div class="riga ${classe}">
-      <div class="voce">${voce}${nota ? `<small>${nota}</small>` : ''}</div>
-      <div class="importo">${testoImporto}</div>
+      <div class="voce">${voce}${nota ? `<small>${nota}</small>` : ''}${
+        norma ? `<span class="norma">${norma}</span>` : ''
+      }</div>
+      <div class="importo">${testo}</div>
       <div class="quota">${quota ?? ''}</div>
+      ${barra}
     </div>`;
 }
 
-function gruppo({ voce, nota, importo, quota, classe, segno, dettagli }) {
-  if (!dettagli.length) return riga({ voce, nota, importo, quota, classe, segno });
+function gruppo({ dettagli, ...resto }) {
+  if (!dettagli.length) return riga(resto);
   return `
     <details class="gruppo">
-      <summary>${riga({ voce, nota: `${nota} — apri il dettaglio`, importo, quota, classe, segno })}</summary>
+      <summary>${riga(resto)}</summary>
       ${dettagli.map((d) => riga({ voce: d.voce, importo: d.importo, classe: 'dettaglio' })).join('')}
     </details>`;
 }
@@ -1411,51 +1727,46 @@ function gruppo({ voce, nota, importo, quota, classe, segno, dettagli }) {
 
 function mostraRisultato(r) {
   const su = (x) => (r.input.ral > 0 ? pct(x / r.input.ral) : '');
+  const peso = (x) => (r.input.ral > 0 ? Math.abs(x) / r.input.ral : 0);
 
-  /* --- Indicatori principali --- */
+  /* --- Indicatori --- */
   $('#indicatori').innerHTML = `
-    <div class="indicatore positivo">
-      <div class="titolo">Netto annuo</div>
-      <div class="valore">${eur(r.netto.annuo)}</div>
-      <div class="nota">${pct(r.indici.incidenzaNetto)} della RAL</div>
+    <div class="indicatore principale">
+      <span class="occhiello">Netto annuo</span>
+      <span class="valore">${eur(r.netto.annuo)}</span>
+      <span class="nota">${pct(r.indici.incidenzaNetto)} della RAL</span>
     </div>
     <div class="indicatore">
-      <div class="titolo">Netto mensile</div>
-      <div class="valore">${eur(r.netto.mensile)}</div>
-      <div class="nota">su ${r.input.mensilita} mensilità</div>
+      <span class="occhiello">Netto mensile</span>
+      <span class="valore">${eur(r.netto.mensile)}</span>
+      <span class="nota">su ${r.input.mensilita} mensilità</span>
     </div>
-    <div class="indicatore negativo">
-      <div class="titolo">Trattenute totali</div>
-      <div class="valore">${eur(r.totali.trattenute)}</div>
-      <div class="nota">contributi ${eurTondo(r.totali.contributi)} + imposte ${eurTondo(
+    <div class="indicatore onere">
+      <span class="occhiello">Trattenute totali</span>
+      <span class="valore">${eur(r.totali.trattenute)}</span>
+      <span class="nota">contributi ${eurTondo(r.totali.contributi)} + imposte ${eurTondo(
         r.totali.imposte,
-      )}</div>
+      )}</span>
     </div>
     <div class="indicatore">
-      <div class="titolo">Aliquota marginale</div>
-      <div class="valore">${pct(r.indici.aliquotaMarginale)}</div>
-      <div class="nota">su 100 € di aumento lordo restano ${eur(
+      <span class="occhiello">Aliquota marginale</span>
+      <span class="valore">${pct(r.indici.aliquotaMarginale)}</span>
+      <span class="nota">di 100 € di aumento lordo restano ${eur(
         100 * (1 - r.indici.aliquotaMarginale),
-      )}</div>
+      )}</span>
     </div>`;
 
-  /* --- Cascata dal lordo al netto --- */
-  const scaglioniIrpef = r.irpef.scaglioni.map((d) => ({
-    voce: etichettaScaglione(d),
-    importo: d.imposta,
-  }));
-  const scaglioniReg = r.addizionali.regionaleDettaglio.map((d) => ({
-    voce: etichettaScaglione(d),
-    importo: d.imposta,
-  }));
+  /* --- Cascata --- */
+  const scaglioni = (dettaglio) =>
+    dettaglio.map((d) => ({ voce: etichettaScaglione(d), importo: -d.imposta }));
 
   const detrazioni = [
-    { voce: `Detrazione lavoro dipendente (art. 13 TUIR)`, importo: -r.irpef.detrazioneLavoro },
+    { voce: 'Detrazione lavoro dipendente (art. 13 c. 1)', importo: r.irpef.detrazioneLavoro },
     r.irpef.maggiorazione65
-      ? { voce: 'Maggiorazione art. 13 c. 1.1 (65 €)', importo: -r.irpef.maggiorazione65 }
+      ? { voce: 'Maggiorazione art. 13 c. 1.1 (65 €)', importo: r.irpef.maggiorazione65 }
       : null,
     r.irpef.ulterioreDetrazione
-      ? { voce: 'Ulteriore detrazione taglio cuneo (L. 207/2024)', importo: -r.irpef.ulterioreDetrazione }
+      ? { voce: 'Ulteriore detrazione taglio cuneo', importo: r.irpef.ulterioreDetrazione }
       : null,
   ].filter(Boolean);
 
@@ -1463,11 +1774,12 @@ function mostraRisultato(r) {
 
   pezzi.push(
     riga({
-      voce: 'Retribuzione annua lorda (RAL)',
-      nota: 'quanto costa il dipendente in busta paga, al lordo di tutto',
+      voce: 'Retribuzione annua lorda',
+      nota: 'il costo del dipendente in busta paga, al lordo di tutto',
       importo: r.input.ral,
       quota: '100,00%',
       classe: 'parziale',
+      peso: 1,
     }),
   );
 
@@ -1477,14 +1789,22 @@ function mostraRisultato(r) {
       nota: `IVS ${pct(P.inps.aliquotaIvs)}${
         r.contributi.aggiuntivo ? ` + 1% oltre ${eurTondo(P.inps.primaFasciaPensionabile)}` : ''
       }`,
+      norma: 'art. 3-ter D.L. 384/1992 · INPS circ. 6/2026',
       importo: -r.contributi.totale,
       quota: su(-r.contributi.totale),
       classe: 'trattenuta',
       segno: '−',
+      peso: peso(r.contributi.totale),
       dettagli: [
-        { voce: `IVS ${pct(P.inps.aliquotaIvs)} su ${eurTondo(r.contributi.baseImponibile)}`, importo: -r.contributi.ivs },
+        {
+          voce: `IVS ${pct(P.inps.aliquotaIvs)} su ${eurTondo(r.contributi.baseImponibile)}`,
+          importo: -r.contributi.ivs,
+        },
         r.contributi.aggiuntivo
-          ? { voce: `Aliquota aggiuntiva 1% oltre ${eurTondo(P.inps.primaFasciaPensionabile)}`, importo: -r.contributi.aggiuntivo }
+          ? {
+              voce: `Aliquota aggiuntiva 1% sulla quota oltre ${eurTondo(P.inps.primaFasciaPensionabile)}`,
+              importo: -r.contributi.aggiuntivo,
+            }
           : null,
         r.contributi.massimaleApplicato
           ? { voce: `Massimale contributivo applicato (${eurTondo(P.inps.massimaleAnnuo)})`, importo: 0 }
@@ -1496,22 +1816,26 @@ function mostraRisultato(r) {
   pezzi.push(
     riga({
       voce: 'Imponibile fiscale IRPEF',
-      nota: 'RAL al netto dei contributi previdenziali',
+      nota: 'RAL al netto dei contributi previdenziali, deducibili per legge',
+      norma: 'art. 51 c. 2 lett. a TUIR',
       importo: r.imponibileFiscale,
       quota: su(r.imponibileFiscale),
       classe: 'parziale',
+      peso: peso(r.imponibileFiscale),
     }),
   );
 
   pezzi.push(
     gruppo({
       voce: 'IRPEF lorda',
-      nota: 'scaglioni 23% / 33% / 43% (L. 199/2025)',
+      nota: 'scaglioni 23% / 33% / 43%',
+      norma: 'art. 11 TUIR · L. 199/2025',
       importo: -r.irpef.lorda,
       quota: su(-r.irpef.lorda),
       classe: 'trattenuta',
       segno: '−',
-      dettagli: scaglioniIrpef.map((d) => ({ ...d, importo: -d.importo })),
+      peso: peso(r.irpef.lorda),
+      dettagli: scaglioni(r.irpef.scaglioni),
     }),
   );
 
@@ -1521,11 +1845,13 @@ function mostraRisultato(r) {
       nota: r.irpef.detrazioniNonGodute
         ? `di cui ${eur(r.irpef.detrazioniNonGodute)} non godute per incapienza`
         : 'abbattono l’IRPEF lorda',
+      norma: 'art. 13 TUIR · L. 207/2024',
       importo: Math.min(r.irpef.detrazioniTotali, r.irpef.lorda),
       quota: su(Math.min(r.irpef.detrazioniTotali, r.irpef.lorda)),
       classe: 'bonus',
       segno: '+',
-      dettagli: detrazioni.map((d) => ({ ...d, importo: -d.importo })),
+      peso: peso(Math.min(r.irpef.detrazioniTotali, r.irpef.lorda)),
+      dettagli: detrazioni,
     }),
   );
 
@@ -1537,6 +1863,7 @@ function mostraRisultato(r) {
       quota: su(-r.irpef.netta),
       classe: 'trattenuta',
       segno: '−',
+      peso: peso(r.irpef.netta),
     }),
   );
 
@@ -1544,13 +1871,15 @@ function mostraRisultato(r) {
     gruppo({
       voce: `Addizionale regionale ${P.addizionaleRegionale.regione}`,
       nota: r.addizionali.nonDovutePerImpostaZero
-        ? 'non dovuta: l’IRPEF netta è zero (no tax area)'
+        ? 'non dovuta: l’IRPEF netta è zero'
         : 'aliquote per scaglioni sull’imponibile IRPEF',
+      norma: 'art. 50 D.Lgs. 446/1997',
       importo: -r.addizionali.regionale,
       quota: su(-r.addizionali.regionale),
       classe: 'trattenuta',
-      segno: '−',
-      dettagli: scaglioniReg.map((d) => ({ ...d, importo: -d.importo })),
+      segno: r.addizionali.regionale ? '−' : '',
+      peso: peso(r.addizionali.regionale),
+      dettagli: scaglioni(r.addizionali.regionaleDettaglio),
     }),
   );
 
@@ -1558,26 +1887,30 @@ function mostraRisultato(r) {
     riga({
       voce: `Addizionale comunale ${P.addizionaleComunale.comune}`,
       nota: r.addizionali.nonDovutePerImpostaZero
-        ? 'non dovuta: l’IRPEF netta è zero (no tax area)'
+        ? 'non dovuta: l’IRPEF netta è zero'
         : r.addizionali.comunaleEsente
           ? `esente: imponibile sotto la soglia di ${eurTondo(P.addizionaleComunale.sogliaEsenzione)}`
           : `${pct(P.addizionaleComunale.aliquota)} sull’intero imponibile`,
+      norma: 'art. 1 D.Lgs. 360/1998',
       importo: -r.addizionali.comunale,
       quota: su(-r.addizionali.comunale),
       classe: 'trattenuta',
       segno: r.addizionali.comunale ? '−' : '',
+      peso: peso(r.addizionali.comunale),
     }),
   );
 
   if (r.bonus.sommaEsente) {
     pezzi.push(
       riga({
-        voce: 'Somma esente taglio cuneo (L. 207/2024)',
+        voce: 'Somma esente taglio cuneo',
         nota: `${pct(r.bonus.sommaEsentePercentuale)} del reddito di lavoro dipendente, non imponibile`,
+        norma: 'L. 207/2024 art. 1 c. 4',
         importo: r.bonus.sommaEsente,
         quota: su(r.bonus.sommaEsente),
         classe: 'bonus',
         segno: '+',
+        peso: peso(r.bonus.sommaEsente),
       }),
     );
   }
@@ -1585,12 +1918,14 @@ function mostraRisultato(r) {
   if (r.bonus.trattamentoIntegrativo) {
     pezzi.push(
       riga({
-        voce: 'Trattamento integrativo (D.L. 3/2020)',
+        voce: 'Trattamento integrativo',
         nota: 'credito erogato in busta paga, non imponibile',
+        norma: 'art. 1 D.L. 3/2020',
         importo: r.bonus.trattamentoIntegrativo,
         quota: su(r.bonus.trattamentoIntegrativo),
         classe: 'bonus',
         segno: '+',
+        peso: peso(r.bonus.trattamentoIntegrativo),
       }),
     );
   }
@@ -1606,11 +1941,8 @@ function mostraRisultato(r) {
   );
 
   $('#cascata').innerHTML = pezzi.join('');
-
-  /* --- Avvisi contestuali sugli effetti soglia --- */
   $('#avvisi').innerHTML = avvisi(r).map((a) => `<div class="avviso">${a}</div>`).join('');
 
-  /* --- Grafico --- */
   disegnaGrafico($('#grafico'), r.input.ral, {
     giorniLavorati: r.input.giorniLavorati,
     applicaMassimale: r.input.applicaMassimale,
@@ -1620,16 +1952,19 @@ function mostraRisultato(r) {
 }
 
 /**
- * Avvisi generati confrontando il caso corrente con quello immediatamente
- * sopra e sotto: è il modo onesto di mostrare gli effetti soglia invece di
- * lasciarli nascosti dentro le formule.
+ * Avvisi contestuali. Sono generati confrontando il caso corrente con quelli
+ * vicini: e' il modo onesto di mostrare gli effetti soglia invece di lasciarli
+ * nascosti dentro le formule.
  */
 function avvisi(r) {
   const messaggi = [];
-  const ral = r.input.ral;
-  const opz = { mensilita: r.input.mensilita, giorniLavorati: r.input.giorniLavorati, applicaMassimale: r.input.applicaMassimale };
+  const opz = {
+    mensilita: r.input.mensilita,
+    giorniLavorati: r.input.giorniLavorati,
+    applicaMassimale: r.input.applicaMassimale,
+  };
 
-  const piu1000 = calcolaNetto({ ...opz, ral: ral + 1000 });
+  const piu1000 = calcolaNetto({ ...opz, ral: r.input.ral + 1000 });
   if (piu1000.netto.annuo < r.netto.annuo) {
     messaggi.push(
       `<strong>Effetto soglia.</strong> Con 1.000 € di RAL in più il netto <em>scende</em> di ` +
@@ -1641,18 +1976,25 @@ function avvisi(r) {
   if (r.addizionali.nonDovutePerImpostaZero) {
     messaggi.push(
       `<strong>No tax area.</strong> Le detrazioni azzerano l’IRPEF, e senza IRPEF non sono ` +
-        `dovute nemmeno le addizionali regionale e comunale (art. 50 c. 2 D.Lgs. 446/1997 e ` +
-        `art. 1 c. 4 D.Lgs. 360/1998). Appena l’imposta diventa dovuta, le addizionali si ` +
-        `pagano sull’intero imponibile.`,
+        `dovute nemmeno le addizionali (art. 50 c. 2 D.Lgs. 446/1997 e art. 1 c. 4 D.Lgs. ` +
+        `360/1998). Appena l’imposta diventa dovuta, le addizionali si pagano sull’intero imponibile.`,
     );
   }
 
-  const distanzaComunale = P.addizionaleComunale.sogliaEsenzione - r.imponibileFiscale;
-  if (distanzaComunale > 0 && distanzaComunale < 1500) {
+  if (r.irpef.netta === 0 && r.bonus.trattamentoIntegrativo > 0) {
     messaggi.push(
-      `L’imponibile è ${eur(distanzaComunale)} sotto la soglia di esenzione dell’addizionale ` +
-        `comunale di ${P.addizionaleComunale.comune}: superandola l’addizionale si paga ` +
-        `sull’intero imponibile, non solo sull’eccedenza.`,
+      `<strong>Finestra del trattamento integrativo.</strong> L’IRPEF netta è zero, eppure i ` +
+        `1.200 € spettano: la condizione di capienza guarda l’imposta <em>lorda</em> contro la ` +
+        `detrazione diminuita di 75 €. Fra 8.173,91 e 8.500 € di reddito le due cose convivono.`,
+    );
+  }
+
+  const distanza = P.addizionaleComunale.sogliaEsenzione - r.imponibileFiscale;
+  if (distanza > 0 && distanza < 1500 && !r.addizionali.nonDovutePerImpostaZero) {
+    messaggi.push(
+      `L’imponibile è ${eur(distanza)} sotto la soglia di esenzione dell’addizionale comunale ` +
+        `di ${P.addizionaleComunale.comune}: superandola l’addizionale si paga sull’intero ` +
+        `imponibile, non solo sull’eccedenza.`,
     );
   }
 
@@ -1666,11 +2008,42 @@ function avvisi(r) {
   if (r.contributi.massimaleApplicato) {
     messaggi.push(
       `Contributi calcolati fino al massimale annuo di ${eurTondo(P.inps.massimaleAnnuo)} ` +
-        `(ipotesi: iscritto INPS dopo il 31/12/1995). L’opzione è modificabile nei parametri avanzati.`,
+        `(ipotesi: iscritto INPS dopo il 31/12/1995). Modificabile nei parametri avanzati.`,
     );
   }
 
   return messaggi;
+}
+
+/* ---------------------------------------------------------------- *
+ * Fonti e perimetro: generati dai parametri, non scritti a mano
+ * ---------------------------------------------------------------- */
+
+function mostraFonti() {
+  $('#fonti').innerHTML = Object.values(FONTI)
+    .map(
+      (f) => `
+      <article class="fonte">
+        <h3>${f.etichetta}</h3>
+        <p class="norma">${f.norma}</p>
+        <p>${f.dettaglio}</p>
+        ${f.prassi ? `<p class="prassi">${f.prassi}</p>` : ''}
+        <p class="verifica">Verifica: ${f.verifica}</p>
+        ${f.url ? `<a href="${f.url}" rel="noopener" target="_blank">Fonte →</a>` : ''}
+      </article>`,
+    )
+    .join('');
+
+  $('#perimetro').innerHTML = P.fuoriPerimetro
+    .map(
+      (v) => `
+      <li>
+        <div class="voce">${v.voce}</div>
+        <div class="norma">${v.norma}</div>
+        <p class="motivo">${v.motivo}</p>
+      </li>`,
+    )
+    .join('');
 }
 
 /* ---------------------------------------------------------------- *
@@ -1695,17 +2068,23 @@ function esegui(evento) {
     $('#risultato').classList.add('nascosto');
     return;
   }
-  if (input.giorniLavorati < 1 || input.giorniLavorati > 365) {
-    $('#avvisi').innerHTML = '<div class="avviso errore">I giorni di lavoro devono essere tra 1 e 365.</div>';
+  if (!(input.giorniLavorati >= 1 && input.giorniLavorati <= 365)) {
+    $('#avvisi').innerHTML =
+      '<div class="avviso errore">I giorni di lavoro devono essere un numero tra 1 e 365.</div>';
     return;
   }
 
   mostraRisultato(calcolaNetto(input));
-  // La RAL resta nell'URL: il risultato è condivisibile e riproducibile.
-  const url = new URL(location.href);
-  url.searchParams.set('ral', input.ral);
-  url.searchParams.set('mensilita', input.mensilita);
-  history.replaceState(null, '', url);
+
+  // Il risultato resta nell'URL: e' condivisibile e riproducibile.
+  try {
+    const url = new URL(location.href);
+    url.searchParams.set('ral', input.ral);
+    url.searchParams.set('mensilita', input.mensilita);
+    history.replaceState(null, '', url);
+  } catch {
+    /* contesti sandboxed: l'URL non e' aggiornabile, il calcolo resta valido */
+  }
 }
 
 function inizializza() {
@@ -1720,8 +2099,14 @@ function inizializza() {
       esegui();
     }),
   );
+  // Dopo il primo calcolo la pagina resta viva: cambiare un parametro
+  // aggiorna subito, senza dover ripremere "Calcola".
+  $('#modulo').addEventListener('change', () => {
+    if (!$('#risultato').classList.contains('nascosto')) esegui();
+  });
 
   $('#anno-parametri').textContent = P.anno;
+  mostraFonti();
   esegui();
 }
 
