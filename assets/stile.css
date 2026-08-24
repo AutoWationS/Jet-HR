@@ -14,11 +14,26 @@
   --ambra: #8a6100;
   --ambra-tenue: #fdf5e3;
 
+  --blu-scuro: #0d2b4a;
+  --blu-chiaro-forte: #1a5fd0;
+  --verde-bordo: #bfe3d3;
+  --rosso-bordo: #f3cdc8;
+  --ambra-bordo: #efdcae;
+
   --testo: #16202b;
   --testo-tenue: #5c6b7a;
   --bordo: #dde4ec;
   --sfondo: #f4f7fa;
   --superficie: #ffffff;
+  --campo: #ffffff;
+  --griglia: #eef2f6;
+
+  /* Colori usati sopra il blu dell'intestazione */
+  --su-blu: #ffffff;
+  --su-blu-tenue: #b9cde3;
+  --su-blu-velo: rgba(255, 255, 255, 0.12);
+  --su-blu-bordo: rgba(255, 255, 255, 0.18);
+  --su-accento: #ffffff;
 
   --raggio: 12px;
   --ombra: 0 1px 2px rgba(16, 32, 48, 0.06), 0 8px 24px rgba(16, 32, 48, 0.06);
@@ -41,17 +56,17 @@ body {
 /* ---------- Intestazione ---------- */
 
 header.principale {
-  background: linear-gradient(160deg, var(--blu) 0%, #0d2b4a 100%);
-  color: #fff;
+  background: linear-gradient(160deg, var(--blu) 0%, var(--blu-scuro) 100%);
+  color: var(--su-blu);
   padding: 40px 0 56px;
   margin-bottom: -32px;
 }
 header.principale h1 { margin: 0 0 8px; font-size: 1.9rem; letter-spacing: -0.02em; }
-header.principale p { margin: 0; color: #b9cde3; max-width: 62ch; }
+header.principale p { margin: 0; color: var(--su-blu-tenue); max-width: 62ch; }
 .etichette { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
 .etichetta {
   font-size: 0.78rem; padding: 4px 10px; border-radius: 999px;
-  background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 255, 255, 0.18);
+  background: var(--su-blu-velo); border: 1px solid var(--su-blu-bordo);
 }
 
 /* ---------- Schede ---------- */
@@ -78,7 +93,7 @@ form { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)
 
 input[type="number"], select {
   font: inherit; padding: 11px 12px; border: 1px solid var(--bordo);
-  border-radius: 8px; background: #fff; color: var(--testo); width: 100%;
+  border-radius: 8px; background: var(--campo); color: var(--testo); width: 100%;
 }
 input[type="number"]:focus, select:focus {
   outline: 2px solid var(--blu-chiaro); outline-offset: -1px; border-color: var(--blu-chiaro);
@@ -86,9 +101,9 @@ input[type="number"]:focus, select:focus {
 
 button.calcola {
   font: inherit; font-weight: 600; padding: 12px 22px; border: 0; border-radius: 8px;
-  background: var(--blu-chiaro); color: #fff; cursor: pointer; transition: background 0.15s;
+  background: var(--blu-chiaro); color: var(--su-accento); cursor: pointer; transition: background 0.15s;
 }
-button.calcola:hover { background: #1a5fd0; }
+button.calcola:hover { background: var(--blu-chiaro-forte); }
 
 .avanzate { grid-column: 1 / -1; margin: 0; }
 .avanzate summary { cursor: pointer; font-size: 0.85rem; color: var(--blu-chiaro); font-weight: 600; }
@@ -105,7 +120,7 @@ button.calcola:hover { background: #1a5fd0; }
 .indicatore .titolo { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--testo-tenue); font-weight: 700; }
 .indicatore .valore { font-size: 1.85rem; font-weight: 700; letter-spacing: -0.03em; margin: 6px 0 2px; font-variant-numeric: tabular-nums; }
 .indicatore .nota { font-size: 0.8rem; color: var(--testo-tenue); }
-.indicatore.positivo { background: var(--verde-tenue); border-color: #bfe3d3; }
+.indicatore.positivo { background: var(--verde-tenue); border-color: var(--verde-bordo); }
 .indicatore.positivo .valore { color: var(--verde); }
 .indicatore.negativo .valore { color: var(--rosso); }
 
@@ -144,9 +159,9 @@ button.calcola:hover { background: #1a5fd0; }
 
 .avviso {
   border-radius: 8px; padding: 12px 14px; font-size: 0.85rem; margin-bottom: 14px;
-  background: var(--ambra-tenue); border: 1px solid #efdcae; color: var(--ambra);
+  background: var(--ambra-tenue); border: 1px solid var(--ambra-bordo); color: var(--ambra);
 }
-.avviso.errore { background: var(--rosso-tenue); border-color: #f3cdc8; color: var(--rosso); }
+.avviso.errore { background: var(--rosso-tenue); border-color: var(--rosso-bordo); color: var(--rosso); }
 
 /* ---------- Grafico ---------- */
 
@@ -177,11 +192,100 @@ footer { text-align: center; color: var(--testo-tenue); font-size: 0.82rem; padd
   .riga .quota { display: none; }
 }
 
+/* ------------------------------------------------------------------ *
+   Tema scuro. Solo i token vengono ridefiniti: nessun componente qui
+   sotto conosce un colore letterale, quindi la pagina si converte
+   interamente cambiando queste righe.
+
+   Tre stati da coprire: scelta esplicita "chiaro", scelta esplicita
+   "scuro", e nessuna scelta (impostazione di sistema) - che e' il caso
+   piu' comune e non marca nulla sull'elemento radice.
+ * ------------------------------------------------------------------ */
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { color-scheme: dark; }
+  :root:not([data-theme="light"]) {
+    --blu: #0a1a2a;
+    --blu-scuro: #060f19;
+    --blu-chiaro: #58a6ff;
+    --blu-chiaro-forte: #79b8ff;
+    --blu-tenue: #16242f;
+
+    --verde: #4fd4a0;
+    --verde-tenue: #10261f;
+    --verde-bordo: #1e4d3d;
+    --rosso: #ff8b7e;
+    --rosso-tenue: #2b1614;
+    --rosso-bordo: #55241f;
+    --ambra: #e6c173;
+    --ambra-tenue: #2a2113;
+    --ambra-bordo: #4c3c1c;
+
+    --testo: #e6edf4;
+    --testo-tenue: #9aabbc;
+    --bordo: #27333f;
+    --sfondo: #0c131a;
+    --superficie: #141d26;
+    --campo: #0f1821;
+    --griglia: #1d2833;
+
+    --su-blu: #eaf2fb;
+    --su-blu-tenue: #9dbbd7;
+    --su-accento: #08121c;
+
+    --ombra: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.28);
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --blu: #0a1a2a;
+  --blu-scuro: #060f19;
+  --blu-chiaro: #58a6ff;
+  --blu-chiaro-forte: #79b8ff;
+  --blu-tenue: #16242f;
+
+  --verde: #4fd4a0;
+  --verde-tenue: #10261f;
+  --verde-bordo: #1e4d3d;
+  --rosso: #ff8b7e;
+  --rosso-tenue: #2b1614;
+  --rosso-bordo: #55241f;
+  --ambra: #e6c173;
+  --ambra-tenue: #2a2113;
+  --ambra-bordo: #4c3c1c;
+
+  --testo: #e6edf4;
+  --testo-tenue: #9aabbc;
+  --bordo: #27333f;
+  --sfondo: #0c131a;
+  --superficie: #141d26;
+  --campo: #0f1821;
+  --griglia: #1d2833;
+
+  --su-blu: #eaf2fb;
+  --su-blu-tenue: #9dbbd7;
+  --su-accento: #08121c;
+
+  --ombra: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.28);
+}
+
+/* ---------- Grafico: i colori stanno qui, non nell'SVG ---------- */
+.grafico .griglia { stroke: var(--griglia); }
+.grafico .asse { stroke: var(--bordo); }
+.grafico .guida { stroke: var(--testo-tenue); stroke-opacity: 0.7; }
+.grafico .tacca { fill: var(--testo-tenue); }
+.grafico .tacca-marginale { fill: var(--rosso); }
+.grafico .linea-netto { stroke: var(--blu-chiaro); }
+.grafico .linea-marginale { stroke: var(--rosso); }
+.grafico .punto { fill: var(--blu-chiaro); stroke: var(--superficie); }
+.grafico .punto-etichetta { fill: var(--testo); stroke: var(--superficie); }
+
 /* ---------- Esempi rapidi ---------- */
 .esempi-campo { grid-column: span 1; }
 .esempi { display: flex; flex-wrap: wrap; gap: 6px; }
 .esempi button {
   font: inherit; font-size: 0.8rem; padding: 6px 12px; cursor: pointer;
-  border: 1px solid var(--bordo); background: #fff; border-radius: 999px; color: var(--blu);
+  border: 1px solid var(--bordo); background: var(--campo); border-radius: 999px; color: var(--blu-chiaro);
 }
 .esempi button:hover { background: var(--blu-tenue); border-color: var(--blu-chiaro); }

@@ -37,20 +37,20 @@ export function disegnaGrafico(contenitore, ralCorrente, opzioni = {}) {
   const passoX = max > 120000 ? 40000 : max > 60000 ? 20000 : 10000;
   const tacche = [];
   for (let v = 0; v <= max; v += passoX) {
-    tacche.push(`<line x1="${x(v)}" y1="${T}" x2="${x(v)}" y2="${H - B}" stroke="#eef2f6"/>
-      <text x="${x(v)}" y="${H - B + 16}" text-anchor="middle" font-size="10" fill="#5c6b7a">${
+    tacche.push(`<line x1="${x(v)}" y1="${T}" x2="${x(v)}" y2="${H - B}" class="griglia"/>
+      <text x="${x(v)}" y="${H - B + 16}" text-anchor="middle" font-size="10" class="tacca">${
         v === 0 ? '0' : `${v / 1000}k`
       }</text>`);
   }
   const passoY = dominioY[1] > 80000 ? 25000 : 20000;
   for (let v = 0; v <= dominioY[1]; v += passoY) {
-    tacche.push(`<line x1="${L}" y1="${y(v)}" x2="${W - R}" y2="${y(v)}" stroke="#eef2f6"/>
-      <text x="${L - 8}" y="${y(v) + 3}" text-anchor="end" font-size="10" fill="#5c6b7a">${
+    tacche.push(`<line x1="${L}" y1="${y(v)}" x2="${W - R}" y2="${y(v)}" class="griglia"/>
+      <text x="${L - 8}" y="${y(v) + 3}" text-anchor="end" font-size="10" class="tacca">${
         v === 0 ? '0' : `${v / 1000}k`
       }</text>`);
   }
   for (const m of [0, 0.2, 0.4, 0.6, 0.8]) {
-    tacche.push(`<text x="${W - R + 8}" y="${ym(m) + 3}" font-size="10" fill="#b4342a">${Math.round(
+    tacche.push(`<text x="${W - R + 8}" y="${ym(m) + 3}" font-size="10" class="tacca-marginale">${Math.round(
       m * 100,
     )}%</text>`);
   }
@@ -72,17 +72,16 @@ export function disegnaGrafico(contenitore, ralCorrente, opzioni = {}) {
           punti.map((p) => ({ ...p, marginale: limita(p.marginale) })),
           ym,
           'marginale',
-        )}" fill="none" stroke="#b4342a" stroke-width="1.2" stroke-opacity="0.75"/>
-        <path d="${linea(punti, y)}" fill="none" stroke="#1f6feb" stroke-width="2.2"/>
+        )}" fill="none" class="linea-marginale" stroke-width="1.2" stroke-opacity="0.8"/>
+        <path d="${linea(punti, y)}" fill="none" class="linea-netto" stroke-width="2.2"/>
       </g>
       <line x1="${x(corrente.ral)}" y1="${T}" x2="${x(corrente.ral)}" y2="${H - B}"
-            stroke="#123a63" stroke-dasharray="3 3"/>
-      <circle cx="${x(corrente.ral)}" cy="${y(corrente.netto)}" r="5" fill="#1f6feb"
-              stroke="#fff" stroke-width="2"/>
+            class="guida" stroke-dasharray="3 3"/>
+      <circle cx="${x(corrente.ral)}" cy="${y(corrente.netto)}" r="5" class="punto" stroke-width="2"/>
       <text x="${x(corrente.ral) + (corrente.ral > max * 0.7 ? -10 : 10)}" y="${y(corrente.netto) - 12}"
             text-anchor="${corrente.ral > max * 0.7 ? 'end' : 'start'}"
-            font-size="11" font-weight="700" fill="#123a63"
-            stroke="#fff" stroke-width="3" paint-order="stroke">${eurTondo(corrente.netto)}</text>
-      <line x1="${L}" y1="${H - B}" x2="${W - R}" y2="${H - B}" stroke="#dde4ec"/>
+            font-size="11" font-weight="700" class="punto-etichetta"
+            stroke-width="3" paint-order="stroke">${eurTondo(corrente.netto)}</text>
+      <line x1="${L}" y1="${H - B}" x2="${W - R}" y2="${H - B}" class="asse"/>
     </svg>`;
 }

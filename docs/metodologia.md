@@ -186,7 +186,7 @@ passaggio si rompe, il test dice **quale**.
 
 ### 3.2 Suite di test
 
-`npm test` esegue 16 test in tre famiglie:
+`npm test` esegue 19 test. Sedici sul motore, in tre famiglie:
 
 1. **Casi di riferimento** (15k / 25k / 35k / 60k): ogni voce intermedia verificata, non solo
    il totale. Un test che controlla solo il netto finale non dice dove si è rotto il calcolo.
@@ -328,3 +328,18 @@ sono deliberate ogni anno dal Comune. Il Comune di Milano ha discusso un innalza
 soglia di esenzione a decorrere dal 2026: prima di usare il calcolatore in produzione, il valore
 va riverificato sulla delibera vigente. È l'unico parametro del modello che può cambiare senza
 un intervento del legislatore nazionale.
+
+---
+
+## 8. Nota sul bundle
+
+`dist/calcolatore.html` è la versione a file singolo (CSS e JavaScript inline), apribile con
+doppio clic e pubblicabile ovunque senza build step. È **generata** da `scripts/bundle.mjs` a
+partire dagli stessi sorgenti della versione modulare: appiattisce i moduli ES in un unico
+`<script type="module">` inline e incorpora il foglio di stile.
+
+Il rischio ovvio di un bundle committato è che diverga dai sorgenti. `test/bundle.test.mjs` lo
+esclude: rigenera il bundle in memoria e lo confronta byte per byte con il file su disco, e
+verifica che la pagina sia davvero autoportante (nessun `<link>` o `<script src>` esterno,
+nessun `import` residuo). Se qualcuno modifica il motore e non esegue `npm run build`, la suite
+fallisce.

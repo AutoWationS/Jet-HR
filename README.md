@@ -25,9 +25,17 @@ python3 -m http.server 8080     # oppure: npx serve .
 Test del motore di calcolo (nessuna dipendenza, solo Node ≥ 18):
 
 ```bash
-npm test                          # node --test test/**/*.test.mjs
+npm test                               # 19 test con node --test
+npm run build                          # rigenera il bundle in dist/
 node scripts/tabella-riferimento.mjs   # tabella dei casi di riferimento in markdown
 ```
+
+### Versione a file singolo
+
+`dist/calcolatore.html` è la stessa pagina con CSS e JavaScript inline: si apre con
+**doppio clic**, senza server. Non è una seconda implementazione — è generata dagli stessi
+sorgenti da `scripts/bundle.mjs`, e un test verifica che il file in `dist/` sia allineato al
+codice: se si tocca il motore e ci si dimentica di `npm run build`, la suite fallisce.
 
 ---
 
@@ -66,7 +74,9 @@ Il vincolo di progetto è uno solo: **il motore di calcolo non deve finire dentr
 | `src/ui.js` | L'unico modulo che tocca il DOM. Non conosce nessuna regola fiscale. |
 | `src/grafico.js` | Curva netto/RAL e aliquota marginale, SVG generato a mano. |
 | `src/formato.js` | Unico posto in cui i numeri diventano stringhe. |
-| `test/motore.test.mjs` | 16 test con `node --test`. |
+| `test/motore.test.mjs` | 16 test sul motore, con `node --test`. |
+| `test/bundle.test.mjs` | 3 test che tengono il bundle allineato ai sorgenti. |
+| `scripts/bundle.mjs` | Impacchetta tutto in un file HTML autoportante (`dist/`). Esporta `costruisci()` così che un test possa verificare che il bundle non sia divergente. |
 | `scripts/tabella-riferimento.mjs` | Tabella dei casi di riferimento, per il confronto con calcolatori esterni. |
 | `docs/metodologia.md` | Fonti, semplificazioni, verifiche e questioni aperte. |
 
@@ -81,6 +91,10 @@ Il vincolo di progetto è uno solo: **il motore di calcolo non deve finire dentr
 | 35.000 | 3.216,50 | 31.783,50 | 5.042,04 | 709,25 | — | **26.032,22** | 2.002,48 | 74,38% | 49,33% |
 | 60.000 | 5.551,76 | 54.448,24 | 15.612,74 | 1.280,84 | — | **37.554,66** | 2.888,82 | 62,59% | 51,08% |
 | 120.000 | 11.665,76 | 108.334,24 | 38.783,72 | 2.644,15 | — | **66.906,36** | 5.146,64 | 55,76% | 51,08% |
+
+La pagina è progettata per **tema chiaro e scuro**: i componenti leggono solo token CSS,
+i tre stati del tema (chiaro esplicito, scuro esplicito, impostazione di sistema) sono coperti,
+e anche i colori del grafico SVG stanno nel foglio di stile, non nel codice che lo disegna.
 
 Il caso 35.000 è ricalcolato passaggio per passaggio, a mano, in
 [`docs/metodologia.md`](docs/metodologia.md) e nel primo test della suite.

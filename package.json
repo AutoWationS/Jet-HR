@@ -6,6 +6,7 @@
   "private": true,
   "scripts": {
     "test": "node --test \"test/**/*.test.mjs\"",
+    "build": "node scripts/bundle.mjs",
     "start": "python3 -m http.server 8080"
   },
   "license": "MIT"
