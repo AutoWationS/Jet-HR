@@ -178,21 +178,44 @@ test('detrazione art. 13: rapporto ai giorni e pavimento di 690 euro', () => {
 });
 
 test('ulteriore detrazione: decalage lineare tra 32.000 e 40.000', () => {
-  assert.equal(calcolaUlterioreDetrazione(20000, P), 0);
-  vicino(calcolaUlterioreDetrazione(20000.01, P), 1000);
-  vicino(calcolaUlterioreDetrazione(32000, P), 1000);
-  vicino(calcolaUlterioreDetrazione(36000, P), 500);
-  vicino(calcolaUlterioreDetrazione(39000, P), 125);
-  assert.equal(calcolaUlterioreDetrazione(40000, P), 0);
-  assert.equal(calcolaUlterioreDetrazione(45000, P), 0);
+  const d = (r, giorni = 365) => calcolaUlterioreDetrazione(r, P, giorni);
+  assert.equal(d(20000), 0);
+  vicino(d(20000.01), 1000);
+  vicino(d(32000), 1000);
+  vicino(d(36000), 500);
+  vicino(d(39000), 125);
+  assert.equal(d(40000), 0);
+  assert.equal(d(45000), 0);
+
+  // L. 207/2024 c. 6: la detrazione e' rapportata al periodo di lavoro
+  vicino(d(25000, 182), (1000 * 182) / 365);
 });
 
 test('somma esente: percentuale unica per fascia, non per scaglioni', () => {
-  vicino(calcolaSommaEsente(8000, 8000, P).importo, 8000 * 0.071);
-  vicino(calcolaSommaEsente(12000, 12000, P).importo, 12000 * 0.053);
-  vicino(calcolaSommaEsente(18000, 18000, P).importo, 18000 * 0.048);
+  const s = (r, giorni = 365) => calcolaSommaEsente(r, r, P, giorni);
+  vicino(s(8000).importo, 8000 * 0.071);
+  vicino(s(12000).importo, 12000 * 0.053);
+  vicino(s(18000).importo, 18000 * 0.048);
   // Oltre 20.000 di reddito complessivo non spetta nulla
-  assert.equal(calcolaSommaEsente(20000.01, 20000.01, P).importo, 0);
+  assert.equal(s(20000.01).importo, 0);
+
+  // Se fosse un calcolo per scaglioni, su 18.000 darebbe circa 1.092:
+  // la norma dice "la percentuale corrispondente", al singolare.
+  assert.ok(Math.abs(s(18000).importo - 1092) > 200);
+});
+
+test('somma esente: la percentuale si individua sul reddito annuale teorico', () => {
+  // Circ. 4/E/2025 par. 1.2, esempio 1: 2.000 euro percepiti in 62 giorni.
+  // Reddito annuale teorico = 2.000 / 62 x 365 = 11.774,19 -> fascia 5,3%,
+  // applicata pero' ai 2.000 effettivamente percepiti.
+  const r = calcolaSommaEsente(6000, 2000, P, 62);
+  vicino(r.redditoAnnualeTeorico, (2000 * 365) / 62, 0.01);
+  assert.equal(r.percentuale, 0.053);
+  vicino(r.importo, 2000 * 0.053);
+
+  // Senza il rapporto all'anno la fascia sarebbe stata il 7,1% (2.000 < 8.500)
+  // e l'importo quasi il doppio: e' esattamente l'errore che la regola evita.
+  assert.notEqual(r.percentuale, 0.071);
 });
 
 /* ========================================================================== *

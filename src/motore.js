@@ -132,49 +132,76 @@ export function calcolaDetrazioneLavoro(redditoComplessivo, parametri, giorni) {
  *  - la percentuale e' UNICA, scelta in base alla fascia in cui cade il reddito,
  *    non applicata per scaglioni successivi.
  */
-export function calcolaSommaEsente(redditoComplessivo, redditoLavoroDipendente, parametri) {
+export function calcolaSommaEsente(redditoComplessivo, redditoLavoroDipendente, parametri, giorni) {
   const p = parametri.cuneoFiscale.sommaEsente;
-  if (redditoComplessivo > p.limiteRedditoComplessivo) return { percentuale: 0, importo: 0 };
+  const giorniAnno = parametri.detrazioneLavoroDipendente.giorniAnno;
 
-  const fascia = p.fasce.find((f) => redditoLavoroDipendente <= f.fino);
+  if (redditoComplessivo > p.limiteRedditoComplessivo) {
+    return { percentuale: 0, importo: 0, redditoAnnualeTeorico: 0 };
+  }
+
+  // Circ. 4/E/2025, par. 1.2: la percentuale si individua sul reddito di lavoro
+  // dipendente RAPPORTATO ALL'INTERO ANNO ("reddito annuale teorico"), ma si
+  // applica poi al reddito effettivamente percepito. Su un anno intero le due
+  // grandezze coincidono; su un rapporto parziale no, ed e' li' che si vede.
+  const redditoAnnualeTeorico = (redditoLavoroDipendente * giorniAnno) / giorni;
+  const fascia = p.fasce.find((f) => redditoAnnualeTeorico <= f.fino);
   const importo = redditoLavoroDipendente * fascia.percentuale;
 
-  return { percentuale: fascia.percentuale, importo: euro(importo) };
+  return {
+    percentuale: fascia.percentuale,
+    importo: euro(importo),
+    redditoAnnualeTeorico: euro(redditoAnnualeTeorico),
+  };
 }
 
-/** (b) Ulteriore detrazione d'imposta, con decalage lineare 32k -> 40k. */
-export function calcolaUlterioreDetrazione(redditoComplessivo, parametri) {
+/**
+ * (b) Ulteriore detrazione d'imposta, con decalage lineare 32k -> 40k.
+ * L. 207/2024 art. 1 c. 6: e' "rapportata al periodo di lavoro nell'anno".
+ */
+export function calcolaUlterioreDetrazione(redditoComplessivo, parametri, giorni) {
   const p = parametri.cuneoFiscale.ulterioreDetrazione;
+  const giorniAnno = parametri.detrazioneLavoroDipendente.giorniAnno;
   const R = redditoComplessivo;
 
-  if (R <= p.da || R > p.azzeramento) return 0;
-  if (R <= p.pienoFino) return euro(p.importo);
+  let importo = 0;
+  if (R > p.da && R <= p.pienoFino) importo = p.importo;
+  else if (R > p.pienoFino && R <= p.azzeramento) {
+    importo = (p.importo * (p.azzeramento - R)) / (p.azzeramento - p.pienoFino);
+  }
 
-  const quota = (p.azzeramento - R) / (p.azzeramento - p.pienoFino);
-  return euro(p.importo * quota);
+  return euro((importo * giorni) / giorniAnno);
 }
 
 /* -------------------------------------------------------------------------- *
  * 4. Trattamento integrativo (art. 1 D.L. 3/2020)
  * -------------------------------------------------------------------------- */
 
-export function calcolaTrattamentoIntegrativo(redditoComplessivo, irpefLorda, detrazioni, parametri) {
+export function calcolaTrattamentoIntegrativo(redditoComplessivo, irpefLorda, detrazioni, parametri, giorni) {
   const p = parametri.trattamentoIntegrativo;
+  const giorniAnno = parametri.detrazioneLavoroDipendente.giorniAnno;
   const R = redditoComplessivo;
+  const rapporta = (x) => (x * giorni) / giorniAnno;
 
   if (R <= p.sogliaPiena) {
-    // Spetta per intero solo se c'e' "capienza": IRPEF lorda superiore alla
-    // detrazione da lavoro dipendente diminuita di 75 euro.
-    const soglia = detrazioni.lavoroDipendente - p.scartoCapienza;
-    return irpefLorda > soglia ? euro(p.importo) : 0;
+    // Capienza: IRPEF lorda superiore alla detrazione dell'art. 13 COMMA 1
+    // (quindi senza la maggiorazione del c. 1.1) diminuita di 75 euro,
+    // anch'essi rapportati al periodo di lavoro nell'anno.
+    // L. 207/2024 c. 3; circ. 4/E/2025, par. 1.1.
+    const soglia = detrazioni.articolo13Comma1 - rapporta(p.scartoCapienza);
+    return irpefLorda > soglia ? euro(rapporta(p.importo)) : 0;
   }
 
   if (R <= p.sogliaMassima) {
-    // Spetta per la differenza (incapienza) tra detrazioni spettanti e IRPEF
-    // lorda, nel limite di 1.200 euro. Con le sole detrazioni art. 13 modellate
-    // qui questa differenza e' quasi sempre negativa -> nessun trattamento.
-    const incapienza = detrazioni.totaliPerIncapienza - irpefLorda;
-    return incapienza > 0 ? euro(Math.min(p.importo, incapienza)) : 0;
+    // Tra 15.000 e 28.000 spetta per la differenza tra la SOMMA DELLE
+    // DETRAZIONI elencate dall'art. 1 c. 1 D.L. 3/2020 (artt. 12 e 13 c. 1
+    // TUIR, art. 15 c. 1 lett. a e b e c. 1-ter per mutui ante 2022, rate di
+    // art. 15 c. 1 lett. c e 16-bis per spese ante 2022) e l'IRPEF lorda, nel
+    // limite di 1.200 euro. L'ulteriore detrazione del cuneo NON e' in quella
+    // lista. Di quelle voci il modello rappresenta solo l'art. 13 c. 1, quindi
+    // qui il risultato e' sempre zero: e' una conseguenza del perimetro.
+    const incapienza = detrazioni.articolo13Comma1 - irpefLorda;
+    return incapienza > 0 ? euro(Math.min(rapporta(p.importo), incapienza)) : 0;
   }
 
   return 0;
@@ -258,7 +285,7 @@ export function calcolaNetto(input, parametri = PARAMETRI_DEFAULT) {
 
   // --- Detrazioni ----------------------------------------------------------
   const detrazioneLavoro = calcolaDetrazioneLavoro(redditoComplessivo, parametri, giorniLavorati);
-  const ulterioreDetrazione = calcolaUlterioreDetrazione(redditoComplessivo, parametri);
+  const ulterioreDetrazione = calcolaUlterioreDetrazione(redditoComplessivo, parametri, giorniLavorati);
   const detrazioniTotali = euro(detrazioneLavoro.totale + ulterioreDetrazione);
 
   // --- IRPEF netta (mai negativa: l'eccedenza di detrazioni si perde) ------
@@ -270,15 +297,18 @@ export function calcolaNetto(input, parametri = PARAMETRI_DEFAULT) {
   const addizionali = calcolaAddizionali(imponibileFiscale, parametri, { irpefNetta });
 
   // --- Somme non imponibili in busta paga ----------------------------------
-  const sommaEsente = calcolaSommaEsente(redditoComplessivo, imponibileFiscale, parametri);
+  const sommaEsente = calcolaSommaEsente(
+    redditoComplessivo,
+    imponibileFiscale,
+    parametri,
+    giorniLavorati,
+  );
   const trattamentoIntegrativo = calcolaTrattamentoIntegrativo(
     redditoComplessivo,
     irpefLorda,
-    {
-      lavoroDipendente: detrazioneLavoro.totale,
-      totaliPerIncapienza: detrazioniTotali,
-    },
+    { articolo13Comma1: detrazioneLavoro.base },
     parametri,
+    giorniLavorati,
   );
 
   // --- Netto ---------------------------------------------------------------
@@ -313,6 +343,7 @@ export function calcolaNetto(input, parametri = PARAMETRI_DEFAULT) {
     bonus: {
       sommaEsente: sommaEsente.importo,
       sommaEsentePercentuale: sommaEsente.percentuale,
+      sommaEsenteRedditoTeorico: sommaEsente.redditoAnnualeTeorico,
       trattamentoIntegrativo,
       totale: totaleBonus,
     },
@@ -361,15 +392,16 @@ function calcolaNettoSemplice(input, parametri) {
   const imponibile = ral - contributi.totale;
   const irpefLorda = applicaScaglioni(imponibile, parametri.irpef.scaglioni).totale;
   const detrLavoro = calcolaDetrazioneLavoro(imponibile, parametri, giorni);
-  const detrTotali = detrLavoro.totale + calcolaUlterioreDetrazione(imponibile, parametri);
+  const detrTotali = detrLavoro.totale + calcolaUlterioreDetrazione(imponibile, parametri, giorni);
   const irpefNetta = Math.max(0, irpefLorda - detrTotali);
   const addizionali = calcolaAddizionali(imponibile, parametri, { irpefNetta });
-  const sommaEsente = calcolaSommaEsente(imponibile, imponibile, parametri).importo;
+  const sommaEsente = calcolaSommaEsente(imponibile, imponibile, parametri, giorni).importo;
   const ti = calcolaTrattamentoIntegrativo(
     imponibile,
     irpefLorda,
-    { lavoroDipendente: detrLavoro.totale, totaliPerIncapienza: detrTotali },
+    { articolo13Comma1: detrLavoro.base },
     parametri,
+    giorni,
   );
   return ral - contributi.totale - irpefNetta - addizionali.totale + sommaEsente + ti;
 }
