@@ -60,6 +60,48 @@ test('nessuna fonte orfana: ognuna e citata da un parametro o dichiarata trasver
   }
 });
 
+const STATI = [
+  'atto-letto', // il testo applicabile e' stato letto
+  'atto-corrispondente', // letto un testo corrispondente (es. il TUIR riordinato)
+  'prassi-letta', // letto dentro una circolare che riporta la norma per esteso
+  'fonte-istituzionale', // letto sul sito dell'ente che emana l'atto, non sull'atto
+  'non-verificata', // nessuna lettura diretta
+];
+
+test('ogni fonte dichiara uno stato di verifica tipizzato', () => {
+  for (const [chiave, fonte] of Object.entries(FONTI)) {
+    assert.ok(
+      STATI.includes(fonte.statoVerifica),
+      `fonte ${chiave}: statoVerifica mancante o non valido ("${fonte.statoVerifica}")`,
+    );
+  }
+});
+
+test('solo un atto davvero letto puo dirsi VERIFICATO', () => {
+  // Il difetto che questo test previene: la prosa che si autopromuove. Prima
+  // sei fonti dicevano "VERIFICATO sul testo normativo" mentre il testo letto
+  // era quello riordinato, applicabile dal 2027, e non quello vigente nel 2026.
+  for (const [chiave, fonte] of Object.entries(FONTI)) {
+    if (/\bVERIFICATO\b/.test(fonte.verifica)) {
+      assert.equal(
+        fonte.statoVerifica,
+        'atto-letto',
+        `fonte ${chiave}: la prosa dice VERIFICATO ma lo stato e' "${fonte.statoVerifica}"`,
+      );
+    }
+  }
+});
+
+test('ogni fonte non pienamente verificata dichiara la propria lacuna', () => {
+  for (const [chiave, fonte] of Object.entries(FONTI)) {
+    if (fonte.statoVerifica === 'atto-letto' && !fonte.lacuna) continue;
+    assert.ok(
+      fonte.lacuna && fonte.lacuna.length > 20,
+      `fonte ${chiave}: stato "${fonte.statoVerifica}" senza lacuna dichiarata`,
+    );
+  }
+});
+
 test('ogni fonte dichiara il proprio livello nella gerarchia', () => {
   for (const [chiave, fonte] of Object.entries(FONTI)) {
     assert.ok([1, 2].includes(fonte.livello), `fonte ${chiave}: livello mancante o non valido`);

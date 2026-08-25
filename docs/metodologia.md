@@ -446,6 +446,39 @@ livello 1 non può puntare a una scheda divulgativa invece che a una banca dati 
 numeri scritti in prosa nelle fonti devono coincidere con i parametri usati dal motore.
 `node scripts/verifica-fonti.mjs` stampa il registro come checklist con i link da aprire.
 
+### 3.5.1 Lo stato di verifica, e perché non basta scriverlo in prosa
+
+A verifiche concluse il registro conteneva sei fonti che aprivano con *«VERIFICATO sul testo
+normativo»*. Rileggendole, il testo letto era in tutti e sei i casi il **testo unico riordinato**
+pubblicato in Gazzetta il 3 luglio 2026, che si applica **dal 2027**. Il testo vigente per l'anno
+d'imposta modellato non è mai stato aperto: che i due coincidano è un'inferenza dalla nota di
+corrispondenza, ragionevole ma non verificata.
+
+La prosa si era autopromossa. È lo stesso difetto che aveva prodotto l'errore sul minimo di 690 €
+(§3.5), in forma più sottile: lì una citazione imprecisa aveva portato a un calcolo sbagliato,
+qui una parola generosa dava per chiusa una verifica aperta.
+
+Ogni fonte dichiara ora uno **stato tipizzato**, e la pagina lo mostra come etichetta accanto al
+livello:
+
+| Stato | Significato | Quante |
+|---|---|:--:|
+| `atto-letto` | il testo applicabile è stato letto | 2 |
+| `atto-corrispondente` | letto un testo che vi corrisponde, non quello vigente | 6 |
+| `prassi-letta` | letto dentro una circolare che riporta la norma per esteso | 2 |
+| `fonte-istituzionale` | letto sul sito dell'ente che emana l'atto, non sull'atto | 2 |
+| `non-verificata` | nessuna lettura diretta | 2 |
+
+Ogni fonte che non sia `atto-letto` dichiara inoltre un campo **`lacuna`** che nomina
+esattamente ciò che manca — *«l'art. 51 del D.P.R. 917/1986, applicabile al 2026, non è stato
+aperto»*, *«le delibere n. 36/2013 e n. 46/2020 non sono state aperte»* — e la pagina lo stampa
+sotto la verifica, in rosso.
+
+Tre test lo presidiano. Lo stato dev'essere uno dei cinque previsti; **la parola VERIFICATO può
+comparire nella prosa solo se lo stato è `atto-letto`**; e nessuna fonte incompleta può restare
+senza lacuna dichiarata. Non è più possibile che il registro si dica verificato senza esserlo:
+la suite cade.
+
 ### 3.6 Verifica sul testo normativo
 
 Gli artt. 11 e 13 sono stati infine letti sul **testo unico pubblicato in Gazzetta Ufficiale**

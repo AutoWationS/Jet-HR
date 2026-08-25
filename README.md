@@ -20,7 +20,7 @@ Oppure apri direttamente `dist/calcolatore.html` con un doppio clic: è la stess
 tutto inline, generata dai medesimi sorgenti.
 
 ```bash
-npm test                               # 29 test, nessuna dipendenza da installare
+npm test                               # 33 test, nessuna dipendenza da installare
 node scripts/tabella-riferimento.mjs   # 11 RAL con tutte le voci intermedie
 ```
 
@@ -102,13 +102,18 @@ Nessun test interno poteva trovarlo: il modello non conosceva la regola.
 prassi, non norma primaria — è stata letta integralmente: ha confermato tre scelte e corretto
 quattro dettagli sul rapporto al periodo di lavoro. Gli esempi 1 e 2 sono due casi di test.
 
-**5. Lettura del testo normativo.** Gli artt. 11 e 13 sono stati letti sul testo unico
+**5. Stato di verifica tipizzato.** Ogni fonte dichiara *come* è stata verificata — atto letto,
+testo corrispondente, prassi, fonte dell'ente, non verificata — e, se incompleta, un campo
+`lacuna` che nomina ciò che manca. Un test impedisce alla prosa di dirsi «VERIFICATO» quando lo
+stato non lo consente: è la correzione di un difetto reale, sei fonti si erano autopromosse.
+
+**6. Lettura del testo normativo.** Gli artt. 11 e 13 sono stati letti sul testo unico
 pubblicato in Gazzetta Ufficiale. Hanno confermato le aliquote, la formula della capienza e la
 maggiorazione di 65 € — il valore più esposto del progetto — e hanno rivelato una regola che
 mancava: il rapporto interno alla formula della detrazione va assunto **nelle prime quattro
 cifre decimali** (art. 13 c. 6 TUIR). Implementata: sul caso di riferimento vale 4 centesimi.
 
-**6. Audit delle fonti.** Ogni fonte del registro dichiara il proprio **livello** nella gerarchia
+**7. Audit delle fonti.** Ogni fonte del registro dichiara il proprio **livello** nella gerarchia
 (1 = norma primaria, 2 = prassi e atti locali) e un test impedisce che una fonte di livello 1
 punti a una scheda divulgativa invece che a una banca dati normativa. Un secondo test confronta
 i numeri scritti in prosa nelle fonti con i parametri effettivi: se un valore cambia e la
@@ -125,7 +130,7 @@ descrizione no, la suite cade.
 | `src/ui.js` | L'unico modulo che tocca il DOM. Non conosce nessuna regola fiscale. |
 | `src/grafico.js` | Curva netto/RAL e aliquota marginale, SVG generato a mano. |
 | `src/formato.js` | Unico posto in cui i numeri diventano stringhe. |
-| `test/` | 19 test sul motore, 7 sulle fonti, 3 sul bundle. |
+| `test/` | 19 test sul motore, 11 sulle fonti, 3 sul bundle. |
 | `scripts/bundle.mjs` | Genera `dist/` dai sorgenti; un test verifica che non possa divergere. |
 | `docs/metodologia.md` | Decisioni, catena di calcolo, verifiche, semplificazioni, fonti. |
 

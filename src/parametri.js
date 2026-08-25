@@ -27,6 +27,10 @@
 export const FONTI = {
   irpef: {
     livello: 1,
+    statoVerifica: 'atto-corrispondente',
+    lacuna:
+      'il testo applicabile al 2026 — D.P.R. 917/1986 come modificato dalla L. 199/2025 — non è ' +
+      'stato letto: la lettura è sul testo unico riordinato che vi corrisponde',
     etichetta: 'Aliquote e scaglioni IRPEF',
     norma:
       'Art. 11 c. 1 lett. b) TUIR (D.P.R. 917/1986), come modificato dall’art. 1 c. 3 ' +
@@ -43,7 +47,7 @@ export const FONTI = {
       'scaglioni, non l’aliquota vigente.',
     url: 'https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2025-12-30;199',
     verifica:
-      'VERIFICATO sul testo normativo: le tre aliquote 23% / 33% / 43% e le soglie 28.000 e ' +
+      'Le tre aliquote 23% / 33% / 43% e le soglie 28.000 e ' +
       '50.000 sono state lette sull’art. 11 c. 1 del testo unico pubblicato in Gazzetta ' +
       'Ufficiale (S.O. n. 26/L alla G.U. n. 152 del 3/7/2026), che riporta la nota di ' +
       'corrispondenza con l’art. 11 del D.P.R. 917/1986. Quel testo si applica dal 2027, ma ' +
@@ -52,6 +56,10 @@ export const FONTI = {
 
   imposta: {
     livello: 1,
+    statoVerifica: 'atto-corrispondente',
+    lacuna:
+      'letto sul testo unico riordinato (c. 4); il c. 3 del D.P.R. 917/1986, che è il ' +
+      'riferimento per il 2026, non è stato aperto',
     etichetta: 'Imposta netta e limite di capienza',
     norma: 'Art. 11 c. 3 TUIR',
     dettaglio:
@@ -62,7 +70,7 @@ export const FONTI = {
     url:
       'https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.del.presidente.della.repubblica:1986-12-22;917',
     verifica:
-      'VERIFICATO: la formula “fino alla concorrenza del suo ammontare” è stata letta sul ' +
+      'La formula “fino alla concorrenza del suo ammontare” è stata letta sul ' +
       'testo normativo. Nel testo unico riordinato la regola sta al comma 4 anziché al ' +
       'comma 3, effetto della rinumerazione: per l’anno d’imposta 2026 il riferimento ' +
       'corretto resta il comma 3 del D.P.R. 917/1986',
@@ -70,6 +78,10 @@ export const FONTI = {
 
   detrazioneLavoro: {
     livello: 1,
+    statoVerifica: 'atto-corrispondente',
+    lacuna:
+      'la collocazione della maggiorazione al c. 1.1 del testo 2026 è dedotta dalla nota di ' +
+      'corrispondenza del riordino, non letta sul D.P.R. 917/1986',
     etichetta: 'Detrazione per redditi di lavoro dipendente',
     norma:
       'Art. 13 c. 1 TUIR (importo base elevato a 1.955 € dall’art. 1 c. 2 lett. b della ' +
@@ -88,7 +100,7 @@ export const FONTI = {
     url:
       'https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.del.presidente.della.repubblica:1986-12-22;917',
     verifica:
-      'VERIFICATO sul testo normativo (S.O. n. 26/L alla G.U. n. 152 del 3/7/2026), che porta ' +
+      'Letto sul testo unico riordinato (S.O. n. 26/L alla G.U. n. 152 del 3/7/2026), che porta ' +
       'la nota di corrispondenza con l’art. 13 del D.P.R. 917/1986. Confermati: gli importi ' +
       '1.955, 1.910, 1.190 e le due formule per fascia; il fatto che i minimi di 690 e 1.380 € ' +
       'stiano DENTRO la lettera a) — la lettura che ha corretto un errore del motore; la ' +
@@ -100,6 +112,9 @@ export const FONTI = {
 
   arrotondamentoRapporti: {
     livello: 1,
+    statoVerifica: 'atto-corrispondente',
+    lacuna:
+      'letto al c. 8 del riordino; il c. 6 del D.P.R. 917/1986 non è stato aperto',
     etichetta: 'Le quattro cifre decimali dell’art. 13',
     norma: 'Art. 13 c. 6 TUIR (c. 8 nel testo unico riordinato)',
     dettaglio:
@@ -112,13 +127,17 @@ export const FONTI = {
     url:
       'https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.del.presidente.della.repubblica:1986-12-22;917',
     verifica:
-      'VERIFICATO sul testo normativo. Resta un margine interpretativo su “si assume”: il ' +
+      'Letto sul testo unico riordinato. Resta un margine interpretativo su “si assume”: il ' +
       'motore tronca, che è la prassi corrente dei software di paghe; leggerlo come ' +
       'arrotondamento cambierebbe l’esito di pochi centesimi',
   },
 
   baseContributiva: {
     livello: 1,
+    statoVerifica: 'non-verificata',
+    lacuna:
+      'nessuna lettura diretta: la norma è citata, non verificata. Non incide su alcun valore ' +
+      'calcolato dal modello',
     etichetta: 'Base imponibile previdenziale',
     norma: 'Art. 12 L. 153/1969, come riscritto dall’art. 6 del D.Lgs. 314/1997',
     dettaglio:
@@ -134,6 +153,9 @@ export const FONTI = {
 
   contributi: {
     livello: 2,
+    statoVerifica: 'atto-letto',
+    lacuna:
+      'l’aliquota IVS del 9,19% non è coperta da questa circolare né da alcuna fonte letta',
     etichetta: 'Aliquote e limiti contributivi a carico del dipendente',
     norma:
       'Aliquota IVS 9,19% (quota lavoratore, FPLD settore privato non agricolo: aliquota di ' +
@@ -160,7 +182,8 @@ export const FONTI = {
       'ogni anno.',
     url: 'https://www.inps.it/it/it/inps-comunica/atti/circolari-messaggi-e-normativa.html',
     verifica:
-      'VERIFICATO sul testo della circolare INPS n. 6 del 30/01/2026: prima fascia di ' +
+      'VERIFICATO sul testo della circolare INPS n. 6 del 30/01/2026, letta nella parte ' +
+      'rilevante: prima fascia di ' +
       'retribuzione pensionabile annua 56.224,00 € e massimale annuo 122.295,00 € (122.295,40 ' +
       'prima dell’arrotondamento). Confermati anche la condizione dell’aliquota inferiore al ' +
       '10% e il fatto che il massimale operi anche ai fini dell’1%, che è ciò che il motore ' +
@@ -172,6 +195,10 @@ export const FONTI = {
 
   nonConcorrenzaContributi: {
     livello: 1,
+    statoVerifica: 'atto-corrispondente',
+    lacuna:
+      'letto all’art. 53 del riordino; l’art. 51 del D.P.R. 917/1986, applicabile al 2026, non è ' +
+      'stato aperto',
     etichetta: 'I contributi obbligatori non formano reddito',
     norma: 'Artt. 49 e 51 c. 2 lett. a) TUIR',
     dettaglio:
@@ -184,7 +211,7 @@ export const FONTI = {
     url:
       'https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.del.presidente.della.repubblica:1986-12-22;917',
     verifica:
-      'VERIFICATO sul testo normativo (S.O. n. 26/L alla G.U. n. 152 del 3/7/2026, art. 53, ' +
+      'Letto sul testo unico riordinato (S.O. n. 26/L alla G.U. n. 152 del 3/7/2026, art. 53, ' +
       'con nota di corrispondenza all’art. 51 del D.P.R. 917/1986): “Non concorrono a formare ' +
       'il reddito: a) i contributi previdenziali e assistenziali versati dal datore di lavoro o ' +
       'dal lavoratore in ottemperanza a disposizioni di legge”. Il testo conferma anche il ' +
@@ -195,6 +222,10 @@ export const FONTI = {
 
   cuneoFiscale: {
     livello: 1,
+    statoVerifica: 'prassi-letta',
+    lacuna:
+      'il testo dei commi è stato letto nelle note della circolare, che li riporta per esteso, ' +
+      'non sulla L. 207/2024 in originale',
     etichetta: 'Taglio del cuneo fiscale',
     norma: 'L. 30 dicembre 2024, n. 207, art. 1 cc. 4-9',
     dettaglio:
@@ -221,6 +252,10 @@ export const FONTI = {
 
   trattamentoIntegrativo: {
     livello: 1,
+    statoVerifica: 'prassi-letta',
+    lacuna:
+      'il testo è stato letto nelle note della circolare; il D.L. 3/2020 consolidato non è stato ' +
+      'aperto',
     etichetta: 'Trattamento integrativo',
     norma:
       'Art. 1 c. 1 del D.L. 5 febbraio 2020, n. 3, conv. con mod. dalla L. 2 aprile 2020, ' +
@@ -248,6 +283,9 @@ export const FONTI = {
 
   addizionaleRegionale: {
     livello: 2,
+    statoVerifica: 'fonte-istituzionale',
+    lacuna:
+      'aliquote e scaglioni letti sulla pagina della Regione, non sull’art. 72 della l.r. 10/2003',
     etichetta: 'Addizionale regionale IRPEF — Lombardia',
     norma:
       'Art. 50 del D.Lgs. 446/1997 per l’istituzione e la disciplina; per la Lombardia, ' +
@@ -267,7 +305,7 @@ export const FONTI = {
       'delle addizionali e sul regime transitorio.',
     url: 'https://www.regione.lombardia.it/wps/portal/istituzionale/HP/servizi-e-informazioni/cittadini/Tributi/addizionale-regionale-irpef',
     verifica:
-      'VERIFICATO sulla pagina istituzionale di Regione Lombardia: le quattro aliquote e i ' +
+      'Letto sulla pagina istituzionale di Regione Lombardia: le quattro aliquote e i ' +
       'quattro scaglioni coincidono con quelli implementati, la base è il reddito complessivo ' +
       'al netto degli oneri deducibili, e le aliquote sono dichiarate PROGRESSIVE — cioè ' +
       'applicate per scaglioni successivi e non in misura unica sull’intero reddito, che era ' +
@@ -283,6 +321,10 @@ export const FONTI = {
 
   addizionaleComunale: {
     livello: 2,
+    statoVerifica: 'fonte-istituzionale',
+    lacuna:
+      'aliquota, soglia ed estremi delle delibere letti sulla pagina del Comune; le delibere ' +
+      'n. 36/2013 e n. 46/2020 non sono state aperte',
     etichetta: 'Addizionale comunale IRPEF — Milano',
     norma:
       'Art. 1 del D.Lgs. 360/1998: c. 3 per l’aliquota, c. 3-bis per la soglia di esenzione, ' +
@@ -305,7 +347,7 @@ export const FONTI = {
       'in sede di conguaglio e trattenuto in un massimo di 11 rate.',
     url: 'https://www.comune.milano.it/servizi/addizionale-comunale-irpef',
     verifica:
-      'VERIFICATO sulla pagina istituzionale del Comune di Milano e sull’elenco dei suoi ' +
+      'Letto sulla pagina istituzionale del Comune di Milano e sull’elenco dei suoi ' +
       'riferimenti normativi. Entrambi i valori hanno ora la delibera che li fissa: l’aliquota ' +
       'la n. 36/2013, la soglia la n. 46/2020, che la eleva a 23.000 € “a decorrere dall’anno ' +
       '2020”. Sono i due atti ancora citati come vigenti dal Comune, quindi i valori non sono ' +
@@ -317,6 +359,7 @@ export const FONTI = {
 
   addizionaliNoTaxArea: {
     livello: 1,
+    statoVerifica: 'atto-letto',
     etichetta: 'Addizionali non dovute in assenza di IRPEF',
     norma: 'Art. 50 c. 2 D.Lgs. 446/1997 (regionale); art. 1 c. 4 D.Lgs. 360/1998 (comunale)',
     dettaglio:
@@ -338,7 +381,8 @@ export const FONTI = {
       'istituiscono.',
     url: 'https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:1997-12-15;446',
     verifica:
-      'VERIFICATO per entrambe le addizionali sul testo dei rispettivi commi: art. 50 c. 2 del ' +
+      'VERIFICATO sul testo vigente di entrambi i decreti, letti per intero nella parte ' +
+      'rilevante: art. 50 c. 2 del ' +
       'D.Lgs. 446/1997 per la regionale, art. 1 c. 4 del D.Lgs. 360/1998 per la comunale. ' +
       'Il modello le tratta allo stesso modo perché le norme sono formulate allo stesso modo, ' +
       'non per analogia. L’anomalia era emersa dal confronto con un calcolatore esterno ' +
@@ -348,6 +392,10 @@ export const FONTI = {
 
   redditoComplessivo: {
     livello: 1,
+    statoVerifica: 'atto-corrispondente',
+    lacuna:
+      'la regola dell’abitazione principale è letta sul riordino; il c. 6-bis dell’art. 13 del ' +
+      'D.P.R. 917/1986 e l’art. 8 non sono stati aperti',
     etichetta: 'Nozione di reddito complessivo usata per le soglie',
     norma: 'Art. 8 TUIR; art. 13 c. 6-bis TUIR; art. 1 c. 9 della L. 207/2024',
     dettaglio:
@@ -371,6 +419,10 @@ export const FONTI = {
 
   ragguaglioGiorni: {
     livello: 2,
+    statoVerifica: 'non-verificata',
+    lacuna:
+      'la circolare 326/E del 1997 non è stata letta: la convenzione dei 365 giorni è applicata ' +
+      'sulla base di prassi consolidata, non di una lettura diretta',
     etichetta: 'Come si contano i giorni di lavoro nell’anno',
     norma: 'Circolare Ministero delle Finanze n. 326/E del 23/12/1997',
     dettaglio:

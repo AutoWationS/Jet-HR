@@ -12,6 +12,14 @@ import { FONTI, PARAMETRI_2026 as P, fonteDi } from '../src/parametri.js';
 
 const LIVELLI = { 1: 'NORMA PRIMARIA', 2: 'PRASSI / ATTO LOCALE' };
 
+const STATI = {
+  'atto-letto': 'ATTO LETTO',
+  'atto-corrispondente': 'letto su testo corrispondente',
+  'prassi-letta': 'letto in circolare',
+  'fonte-istituzionale': 'fonte dell\u2019ente',
+  'non-verificata': 'NON VERIFICATA',
+};
+
 const BLOCCHI = {
   inps: 'contributi INPS',
   irpef: 'scaglioni IRPEF',
@@ -36,15 +44,27 @@ console.log(`${Object.keys(FONTI).length} fonti · ${
 let n = 0;
 for (const [chiave, f] of Object.entries(FONTI)) {
   n += 1;
-  console.log(`${String(n).padStart(2)}. ${f.etichetta}  [${LIVELLI[f.livello]}]`);
+  console.log(`${String(n).padStart(2)}. ${f.etichetta}  [${LIVELLI[f.livello]}]  ->  ${
+    STATI[f.statoVerifica]
+  }`);
   console.log(`    chiave    ${chiave}`);
   console.log(`    norma     ${f.norma}`);
   if (f.prassi) console.log(`    prassi    ${f.prassi.replace(/\s+/g, ' ').slice(0, 160)}…`);
   console.log(`    usata da  ${usataDa[chiave]?.join(', ') ?? 'regola trasversale'}`);
   console.log(`    verifica  ${f.verifica.replace(/\s+/g, ' ')}`);
+  if (f.lacuna) console.log(`    MANCA     ${f.lacuna.replace(/\s+/g, ' ')}`);
   console.log(`    [ ] apri  ${f.url ?? '(nessun link)'}`);
   console.log();
 }
+
+const perStato = {};
+for (const f of Object.values(FONTI)) (perStato[f.statoVerifica] ??= []).push(f.etichetta);
+console.log('RIEPILOGO PER STATO DI VERIFICA');
+for (const [stato, elenco] of Object.entries(perStato)) {
+  console.log(`  ${STATI[stato]} (${elenco.length})`);
+  for (const e of elenco) console.log(`      · ${e}`);
+}
+console.log();
 
 console.log('Da riverificare ogni anno, prima di qualunque uso non dimostrativo:');
 for (const [chiave, f] of Object.entries(FONTI)) {

@@ -360,6 +360,14 @@ function avvisi(r) {
  * Fonti e perimetro: generati dai parametri, non scritti a mano
  * ---------------------------------------------------------------- */
 
+const STATO_VERIFICA = {
+  'atto-letto': { testo: 'atto letto', classe: 'ok' },
+  'atto-corrispondente': { testo: 'letto su testo corrispondente', classe: 'quasi' },
+  'prassi-letta': { testo: 'letto in circolare', classe: 'quasi' },
+  'fonte-istituzionale': { testo: 'fonte dell’ente', classe: 'quasi' },
+  'non-verificata': { testo: 'non verificata', classe: 'aperta' },
+};
+
 function mostraFonti() {
   $('#fonti').innerHTML = Object.values(FONTI)
     .map(
@@ -367,11 +375,14 @@ function mostraFonti() {
       <article class="fonte">
         <h3>${f.etichetta}<span class="livello liv-${f.livello}">${
           f.livello === 1 ? 'norma primaria' : 'prassi e atti locali'
+        }</span><span class="stato ${STATO_VERIFICA[f.statoVerifica].classe}">${
+          STATO_VERIFICA[f.statoVerifica].testo
         }</span></h3>
         <p class="norma">${f.norma}</p>
         <p>${f.dettaglio}</p>
         ${f.prassi ? `<p class="prassi">${f.prassi}</p>` : ''}
         <p class="verifica">Verifica: ${f.verifica}</p>
+        ${f.lacuna ? `<p class="lacuna">Cosa manca: ${f.lacuna}</p>` : ''}
         ${f.url ? `<a href="${f.url}" rel="noopener" target="_blank">Fonte →</a>` : ''}
       </article>`,
     )
