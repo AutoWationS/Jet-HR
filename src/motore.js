@@ -376,6 +376,7 @@ export function calcolaNetto(input, parametri = PARAMETRI_DEFAULT) {
   const giorniLavorati = Number(input.giorniLavorati) || parametri.detrazioneLavoroDipendente.giorniAnno;
   const applicaMassimale = input.applicaMassimale ?? true;
   const oneriDeducibili = Math.max(0, Number(input.oneriDeducibili) || 0);
+  const tempoDeterminato = !!input.tempoDeterminato;
 
   // --- Contributi previdenziali -------------------------------------------
   const contributi = calcolaContributi(ral, parametri, { applicaMassimale });
@@ -394,7 +395,12 @@ export function calcolaNetto(input, parametri = PARAMETRI_DEFAULT) {
   const irpefLorda = euro(irpef.totale);
 
   // --- Detrazioni ----------------------------------------------------------
-  const detrazioneLavoro = calcolaDetrazioneLavoro(redditoComplessivo, parametri, giorniLavorati);
+  const detrazioneLavoro = calcolaDetrazioneLavoro(
+    redditoComplessivo,
+    parametri,
+    giorniLavorati,
+    tempoDeterminato,
+  );
   const ulterioreDetrazione = calcolaUlterioreDetrazione(redditoComplessivo, parametri, giorniLavorati);
   const detrazioniFamiliari = calcolaDetrazioniFamiliari(redditoComplessivo, input, parametri);
   const detrazioniTotali = euro(
@@ -443,6 +449,7 @@ export function calcolaNetto(input, parametri = PARAMETRI_DEFAULT) {
       mensilita,
       giorniLavorati,
       applicaMassimale,
+      tempoDeterminato,
       oneriDeducibili,
       coniugeACarico: !!input.coniugeACarico,
       figliACarico: Math.max(0, Math.trunc(Number(input.figliACarico) || 0)),
@@ -522,7 +529,7 @@ function calcolaNettoSemplice(input, parametri) {
   const oneri = Math.max(0, Number(input.oneriDeducibili) || 0);
   const imponibile = Math.max(0, ral - contributi.totale - oneri);
   const irpefLorda = applicaScaglioni(imponibile, parametri.irpef.scaglioni).totale;
-  const detrLavoro = calcolaDetrazioneLavoro(imponibile, parametri, giorni);
+  const detrLavoro = calcolaDetrazioneLavoro(imponibile, parametri, giorni, !!input.tempoDeterminato);
   const familiari = calcolaDetrazioniFamiliari(imponibile, input, parametri);
   const detrTotali =
     detrLavoro.totale + calcolaUlterioreDetrazione(imponibile, parametri, giorni) + familiari.totale;

@@ -788,6 +788,18 @@ footer {
                 </span>
               </div>
               <div class="campo">
+                <label for="contratto">Tipologia di contratto</label>
+                <select id="contratto" name="contratto" aria-describedby="aiuto-contratto">
+                  <option value="indeterminato" selected>Tempo indeterminato</option>
+                  <option value="determinato">Tempo determinato</option>
+                </select>
+                <span class="aiuto" id="aiuto-contratto">
+                  Cambia solo il minimo garantito della detrazione dell’art. 13 — 690 € contro
+                  1.380 € — che vive dentro la prima fascia. Con un anno intero non sposta nulla:
+                  si vede solo su un rapporto parziale con reddito fino a 15.000 €.
+                </span>
+              </div>
+              <div class="campo">
                 <span class="occhiello">Massimale contributivo</span>
                 <label class="interruttore">
                   <input type="checkbox" id="massimale" checked>
@@ -1789,6 +1801,25 @@ const PARAMETRI_2026 = {
         'comune di provenienza.',
     },
     {
+      voce: 'Apprendistato: aliquota contributiva ridotta a carico dell’apprendista',
+      norma: 'Art. 1 c. 773 della L. 296/2006 (norma indicata, non letta)',
+      motivo:
+        'È l’unico dei tre tipi di contratto che cambia il netto in modo grosso, perché ' +
+        'l’apprendista versa un’aliquota ridotta rispetto al 9,19% ordinario. Il prototipo non ' +
+        'lo rappresenta e non ne scrive la misura: sarebbe l’unico numero del modello preso a ' +
+        'memoria anziché da una fonte letta. Il contratto a termine, invece, cambia solo il ' +
+        'minimo garantito della detrazione dell’art. 13, ed è implementato.',
+    },
+    {
+      voce: 'Contributo addizionale NASpI sui contratti a termine',
+      norma: 'Art. 2 c. 28 della L. 92/2012',
+      motivo:
+        'Sul tempo determinato grava un contributo addizionale, aumentato a ogni rinnovo. È ' +
+        'però interamente a carico del datore di lavoro: non tocca il netto del dipendente, ' +
+        'esattamente come gli sgravi per le assunzioni agevolate. È la stessa distinzione fra ' +
+        'costo azienda e busta paga che separa i due mondi.',
+    },
+    {
       voce: 'Addizionali per cassa',
       norma: 'Art. 50 D.Lgs. 446/1997; art. 1 c. 5 D.Lgs. 360/1998',
       motivo:
@@ -2226,6 +2257,7 @@ function calcolaNetto(input, parametri = PARAMETRI_DEFAULT) {
   const giorniLavorati = Number(input.giorniLavorati) || parametri.detrazioneLavoroDipendente.giorniAnno;
   const applicaMassimale = input.applicaMassimale ?? true;
   const oneriDeducibili = Math.max(0, Number(input.oneriDeducibili) || 0);
+  const tempoDeterminato = !!input.tempoDeterminato;
 
   // --- Contributi previdenziali -------------------------------------------
   const contributi = calcolaContributi(ral, parametri, { applicaMassimale });
@@ -2244,7 +2276,12 @@ function calcolaNetto(input, parametri = PARAMETRI_DEFAULT) {
   const irpefLorda = euro(irpef.totale);
 
   // --- Detrazioni ----------------------------------------------------------
-  const detrazioneLavoro = calcolaDetrazioneLavoro(redditoComplessivo, parametri, giorniLavorati);
+  const detrazioneLavoro = calcolaDetrazioneLavoro(
+    redditoComplessivo,
+    parametri,
+    giorniLavorati,
+    tempoDeterminato,
+  );
   const ulterioreDetrazione = calcolaUlterioreDetrazione(redditoComplessivo, parametri, giorniLavorati);
   const detrazioniFamiliari = calcolaDetrazioniFamiliari(redditoComplessivo, input, parametri);
   const detrazioniTotali = euro(
@@ -2293,6 +2330,7 @@ function calcolaNetto(input, parametri = PARAMETRI_DEFAULT) {
       mensilita,
       giorniLavorati,
       applicaMassimale,
+      tempoDeterminato,
       oneriDeducibili,
       coniugeACarico: !!input.coniugeACarico,
       figliACarico: Math.max(0, Math.trunc(Number(input.figliACarico) || 0)),
@@ -2372,7 +2410,7 @@ function calcolaNettoSemplice(input, parametri) {
   const oneri = Math.max(0, Number(input.oneriDeducibili) || 0);
   const imponibile = Math.max(0, ral - contributi.totale - oneri);
   const irpefLorda = applicaScaglioni(imponibile, parametri.irpef.scaglioni).totale;
-  const detrLavoro = calcolaDetrazioneLavoro(imponibile, parametri, giorni);
+  const detrLavoro = calcolaDetrazioneLavoro(imponibile, parametri, giorni, !!input.tempoDeterminato);
   const familiari = calcolaDetrazioniFamiliari(imponibile, input, parametri);
   const detrTotali =
     detrLavoro.totale + calcolaUlterioreDetrazione(imponibile, parametri, giorni) + familiari.totale;
@@ -2813,6 +2851,7 @@ function mostraRisultato(r) {
   disegnaGrafico($('#grafico'), r.input.ral, {
     giorniLavorati: r.input.giorniLavorati,
     applicaMassimale: r.input.applicaMassimale,
+    tempoDeterminato: r.input.tempoDeterminato,
     oneriDeducibili: r.input.oneriDeducibili,
     coniugeACarico: r.input.coniugeACarico,
     figliACarico: r.input.figliACarico,
@@ -2834,6 +2873,7 @@ function avvisi(r) {
     mensilita: r.input.mensilita,
     giorniLavorati: r.input.giorniLavorati,
     applicaMassimale: r.input.applicaMassimale,
+    tempoDeterminato: r.input.tempoDeterminato,
     oneriDeducibili: r.input.oneriDeducibili,
     coniugeACarico: r.input.coniugeACarico,
     figliACarico: r.input.figliACarico,
@@ -2946,6 +2986,7 @@ function leggiModulo() {
     mensilita: Number($('#mensilita').value),
     giorniLavorati: Number($('#giorni').value),
     applicaMassimale: $('#massimale').checked,
+    tempoDeterminato: $('#contratto').value === 'determinato',
     coniugeACarico: $('#coniuge').checked,
     figliACarico: Number($('#figli').value),
     quotaFigli: Number($('#quota-figli').value),

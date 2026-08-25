@@ -627,3 +627,25 @@ test('gli oneri deducibili abbassano la base, non l imposta', () => {
   vicino(con.netto.annuo, senza.netto.annuo - 3000 + risparmio, 0.02);
   assert.ok(con.netto.annuo < senza.netto.annuo);
 });
+
+test('tempo determinato: il minimo dell art. 13 vale il doppio, ma solo dove morde', () => {
+  // Art. 13 c. 1 lett. a): i minimi di 690 e 1.380 stanno DENTRO la lettera,
+  // quindi valgono per i soli redditi fino a 15.000. E sono minimi: mordono solo
+  // quando la detrazione rapportata scende sotto di loro, cioe' su un rapporto
+  // parziale. Su un anno intero il tipo di contratto non sposta un euro, ed e'
+  // una risposta piu' utile di un campo in piu'.
+  const netto = (o) => calcolaNetto({ ral: 13000, ...o }, P).netto.annuo;
+
+  assert.equal(netto({}), netto({ tempoDeterminato: true }), 'anno intero: nessuna differenza');
+
+  const ind = calcolaNetto({ ral: 13000, giorniLavorati: 100 }, P);
+  const det = calcolaNetto({ ral: 13000, giorniLavorati: 100, tempoDeterminato: true }, P);
+  assert.equal(ind.irpef.detrazioneLavoro, P.detrazioneLavoroDipendente.minimoTempoIndeterminato);
+  assert.equal(det.irpef.detrazioneLavoro, P.detrazioneLavoroDipendente.minimoTempoDeterminato);
+  assert.ok(det.netto.annuo > ind.netto.annuo, 'a termine e anno parziale: netto piu alto');
+
+  // Sopra i 15.000 la lettera a) non si applica piu' e i minimi spariscono,
+  // qualunque sia il contratto: e' l'errore che il modello aveva davvero fatto.
+  const sopra = (o) => calcolaNetto({ ral: 25000, giorniLavorati: 100, ...o }, P).irpef.detrazioneLavoro;
+  assert.equal(sopra({}), sopra({ tempoDeterminato: true }));
+});

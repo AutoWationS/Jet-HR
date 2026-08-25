@@ -883,6 +883,25 @@ export const PARAMETRI_2026 = {
         'comune di provenienza.',
     },
     {
+      voce: 'Apprendistato: aliquota contributiva ridotta a carico dell’apprendista',
+      norma: 'Art. 1 c. 773 della L. 296/2006 (norma indicata, non letta)',
+      motivo:
+        'È l’unico dei tre tipi di contratto che cambia il netto in modo grosso, perché ' +
+        'l’apprendista versa un’aliquota ridotta rispetto al 9,19% ordinario. Il prototipo non ' +
+        'lo rappresenta e non ne scrive la misura: sarebbe l’unico numero del modello preso a ' +
+        'memoria anziché da una fonte letta. Il contratto a termine, invece, cambia solo il ' +
+        'minimo garantito della detrazione dell’art. 13, ed è implementato.',
+    },
+    {
+      voce: 'Contributo addizionale NASpI sui contratti a termine',
+      norma: 'Art. 2 c. 28 della L. 92/2012',
+      motivo:
+        'Sul tempo determinato grava un contributo addizionale, aumentato a ogni rinnovo. È ' +
+        'però interamente a carico del datore di lavoro: non tocca il netto del dipendente, ' +
+        'esattamente come gli sgravi per le assunzioni agevolate. È la stessa distinzione fra ' +
+        'costo azienda e busta paga che separa i due mondi.',
+    },
+    {
       voce: 'Addizionali per cassa',
       norma: 'Art. 50 D.Lgs. 446/1997; art. 1 c. 5 D.Lgs. 360/1998',
       motivo:

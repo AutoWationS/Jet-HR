@@ -1248,6 +1248,43 @@ ricercatori, frontalieri); contratti a termine; trattenute a carico del lavorato
 CCNL oltre l'IVS; addizionali di comuni diversi da Milano; più rapporti nello stesso anno e
 conguaglio del sostituto; lavoro straordinario e indennità.
 
+### 5.5-bis Il tipo di contratto: tre risposte diverse
+
+Domanda naturale — indeterminato, determinato, apprendistato cambiano il netto? — con tre
+risposte distinte, che vale la pena tenere separate perché illustrano tre categorie di effetto.
+
+**Tempo determinato: sì, ma quasi mai.** L'art. 13 c. 1 lett. a) fissa un minimo garantito di
+**690 €** per il tempo indeterminato e **1.380 €** per il determinato. Sono minimi, e stanno
+*dentro* la lettera a): valgono per i soli redditi fino a 15.000 e mordono solo quando la
+detrazione rapportata al periodo scende sotto di loro.
+
+| Reddito | Giorni | Indeterminato | Determinato |
+|---:|---:|---:|---:|
+| 13.000 | 365 | 1.955,00 | 1.955,00 |
+| 13.000 | 180 | 964,11 | **1.380,00** |
+| 13.000 | 100 | 690,00 | **1.380,00** |
+| 25.000 | 100 | 723,89 | 723,89 |
+
+Su un anno intero il contratto **non sposta un euro**. Si vede solo su un rapporto parziale con
+reddito basso — cioè esattamente la situazione di chi ha un contratto a termine breve, il che
+spiega perché la norma esista. È implementato ed esposto nel modulo.
+
+**Apprendistato: sì, molto — e non è implementato.** L'apprendista versa un'aliquota
+contributiva ridotta rispetto al 9,19% ordinario, quindi il netto cambia in modo grosso.
+La misura non è scritta nel modello: sarebbe l'unico numero preso a memoria anziché da una fonte
+letta, e il registro non lo consente. È fuori perimetro con l'indicazione della norma da aprire.
+
+**Contributo addizionale NASpI: no.** Sul tempo determinato grava un contributo addizionale
+(art. 2 c. 28 L. 92/2012), aumentato a ogni rinnovo, ma è **interamente a carico del datore**.
+Non tocca la busta paga.
+
+Quest'ultimo punto vale oltre il caso: è la stessa ragione per cui gli **sgravi per le
+assunzioni agevolate** — under 35, donne, decreto Coesione — non cambiano il netto del
+lavoratore. Un calcolatore esterno consultato durante le verifiche li mostra correttamente in
+una sezione a parte, intitolata *«contribuzione a carico del datore/azienda»*. **Costo azienda e
+netto in busta sono due grandezze diverse**, e confonderle è l'errore concettuale più comune di
+chi guarda una busta paga per la prima volta.
+
 ### 5.6 Il perimetro dichiarato dal committente, e il nostro
 La traccia fissa tre semplificazioni — impiegato a tempo indeterminato, residenza a Milano,
 nessuna agevolazione particolare — e aggiunge che *ogni altra semplificazione verrà discussa al
@@ -1256,7 +1293,7 @@ completa.
 
 | Semplificazione | Chi la introduce | Incide sul netto? |
 |---|---|---|
-| impiegato a tempo indeterminato | traccia | sì: minimo di 690 € anziché 1.380 € nella prima fascia dell'art. 13 |
+| impiegato a tempo indeterminato | traccia | sì, ma solo su rapporto parziale sotto i 15.000 (§5.5-bis) — **ora è un input** |
 | residenza a Milano | traccia | sì: aliquota 0,8%, soglia 23.000, addizionale lombarda |
 | nessuna agevolazione particolare | traccia | sì: esclude impatriati, ricercatori, frontalieri |
 | ~~nessun familiare a carico~~ | — | **implementata**: art. 12, §2.4-bis |

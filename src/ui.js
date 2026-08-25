@@ -315,6 +315,7 @@ function mostraRisultato(r) {
   disegnaGrafico($('#grafico'), r.input.ral, {
     giorniLavorati: r.input.giorniLavorati,
     applicaMassimale: r.input.applicaMassimale,
+    tempoDeterminato: r.input.tempoDeterminato,
     oneriDeducibili: r.input.oneriDeducibili,
     coniugeACarico: r.input.coniugeACarico,
     figliACarico: r.input.figliACarico,
@@ -336,6 +337,7 @@ function avvisi(r) {
     mensilita: r.input.mensilita,
     giorniLavorati: r.input.giorniLavorati,
     applicaMassimale: r.input.applicaMassimale,
+    tempoDeterminato: r.input.tempoDeterminato,
     oneriDeducibili: r.input.oneriDeducibili,
     coniugeACarico: r.input.coniugeACarico,
     figliACarico: r.input.figliACarico,
@@ -448,6 +450,7 @@ function leggiModulo() {
     mensilita: Number($('#mensilita').value),
     giorniLavorati: Number($('#giorni').value),
     applicaMassimale: $('#massimale').checked,
+    tempoDeterminato: $('#contratto').value === 'determinato',
     coniugeACarico: $('#coniuge').checked,
     figliACarico: Number($('#figli').value),
     quotaFigli: Number($('#quota-figli').value),
