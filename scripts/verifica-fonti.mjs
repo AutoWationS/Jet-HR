@@ -66,6 +66,45 @@ for (const [stato, elenco] of Object.entries(perStato)) {
 }
 console.log();
 
+/* ------------------------------------------------------------------ *
+ * La lista della spesa: cosa resta da aprire, raggruppato per documento
+ * ------------------------------------------------------------------ */
+
+const CANALI = {
+  normattiva: 'Normattiva — https://www.normattiva.it/ricerca/semplice',
+  burl: 'Bollettino Ufficiale Regione Lombardia, o banca dati normativa regionale',
+  comune: 'comune.milano.it — pagina addizionale comunale IRPEF, sezione Riferimenti normativi',
+  def: 'def.finanze.it — Documentazione Economica e Finanziaria, ricerca libera',
+  inps: 'inps.it — tabelle delle aliquote contributive',
+};
+
+const daAprire = new Map();
+for (const f of Object.values(FONTI)) {
+  if (f.statoVerifica === 'atto-letto' && !f.lacuna) continue;
+  if (!f.dove) continue;
+  // Raggruppa per ATTO, non per articolo: aprire il TUIR una volta sola chiude
+  // sei fonti diverse.
+  const [atto, articolo] = f.dove.split(' \u2014 ');
+  const voce = daAprire.get(atto) ?? { canale: f.canale, parti: new Set(), chiude: [] };
+  if (articolo) voce.parti.add(articolo);
+  voce.chiude.push(f.etichetta);
+  daAprire.set(atto, voce);
+}
+
+console.log('DA APRIRE — un documento per riga, in ordine di quante fonti chiude\n');
+const ordinati = [...daAprire.entries()].sort((a, b) => b[1].chiude.length - a[1].chiude.length);
+ordinati.forEach(([documento, voce], i) => {
+  console.log(`${i + 1}. ${documento}`);
+  if (voce.parti.size) console.log(`   leggi   ${[...voce.parti].join(' · ')}`);
+  console.log(`   dove    ${CANALI[voce.canale]}`);
+  console.log(
+    `   chiude  ${voce.chiude.length} ${voce.chiude.length === 1 ? 'fonte' : 'fonti'}: ${voce.chiude.join(
+      ' · ',
+    )}`,
+  );
+  console.log();
+});
+
 console.log('Da riverificare ogni anno, prima di qualunque uso non dimostrativo:');
 for (const [chiave, f] of Object.entries(FONTI)) {
   if (/da riverificare|ATTENZIONE|cambiano ogni anno/i.test(f.verifica)) {

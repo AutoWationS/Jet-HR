@@ -92,6 +92,16 @@ test('solo un atto davvero letto puo dirsi VERIFICATO', () => {
   }
 });
 
+test('ogni fonte incompleta dice anche dove trovare cio che le manca', () => {
+  // Una lacuna senza indirizzo e' una lamentela. Con l'indirizzo e' un compito.
+  const CANALI = ['normattiva', 'burl', 'comune', 'def', 'inps'];
+  for (const [chiave, fonte] of Object.entries(FONTI)) {
+    if (fonte.statoVerifica === 'atto-letto' && !fonte.lacuna) continue;
+    assert.ok(fonte.dove && fonte.dove.length > 20, `fonte ${chiave}: manca il documento da aprire`);
+    assert.ok(CANALI.includes(fonte.canale), `fonte ${chiave}: canale mancante o non valido`);
+  }
+});
+
 test('ogni fonte non pienamente verificata dichiara la propria lacuna', () => {
   for (const [chiave, fonte] of Object.entries(FONTI)) {
     if (fonte.statoVerifica === 'atto-letto' && !fonte.lacuna) continue;
