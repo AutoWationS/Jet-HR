@@ -498,7 +498,37 @@ indennità di trasferta e auto in uso promiscuo hanno ora norma e importi accant
 fringe benefit, per inciso, è un altro effetto soglia della stessa famiglia di quello
 dell'addizionale comunale: superata, concorre l'intero valore e non l'eccedenza.
 
-### 3.7 Nota sull'ambiente di sviluppo
+### 3.7 Addizionale comunale di Milano
+
+Il parametro che il registro dichiarava come il più debole del modello è stato chiuso sulla
+**pagina istituzionale del Comune di Milano**, che riporta:
+
+- aliquota **unica dello 0,80%**, approvata con **Deliberazione del Consiglio Comunale n. 36 del
+  21 ottobre 2013**;
+- **esenzione per i redditi imponibili fino a 23.000 € inclusi**;
+- codice ente **F205**.
+
+E soprattutto una frase che vale più dei numeri:
+
+> *«L'esenzione non equivale a franchigia e dunque non si applica nei casi in cui il reddito
+> complessivo sia superiore a € 23.000,00.»*
+
+È esattamente la modellazione implementata: superata la soglia, l'addizionale si paga
+sull'intero imponibile e non sulla sola eccedenza. Il salto di 183,96 € descritto in §4 non è
+un artefatto del modello — è come il Comune stesso descrive la propria regola.
+
+La stessa pagina ha permesso di rendere concreta la semplificazione di §5.2: l'acconto è del 30%
+e viene trattenuto dal sostituto d'imposta in un massimo di 9 rate da marzo, il saldo è
+determinato in sede di conguaglio e trattenuto in un massimo di 11 rate dal mese successivo, e
+in caso di cessazione del rapporto in corso d'anno la trattenuta avviene in unica soluzione.
+
+Due cautele restano, dichiarate nel registro. La pagina non è datata e cita la delibera solo per
+l'aliquota, non per la soglia: il valore va riconfermato sulla delibera di bilancio dell'anno.
+E la pagina stessa oscilla fra *«reddito imponibile»* nell'enunciato dell'esenzione e *«reddito
+complessivo»* nella FAQ corrispondente — nel modello le due grandezze coincidono per la
+semplificazione di §5.1, ma su un contribuente con altri redditi non coinciderebbero.
+
+### 3.8 Nota sull'ambiente di sviluppo
 
 Le verifiche automatiche contro calcolatori online non sono eseguibili dalla suite: l'ambiente
 di sviluppo non ha accesso di rete verso quei siti, e lo stesso vale per Normattiva,

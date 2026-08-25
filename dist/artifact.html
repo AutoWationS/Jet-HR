@@ -1088,18 +1088,30 @@ const FONTI = {
     etichetta: 'Addizionale comunale IRPEF — Milano',
     norma:
       'Art. 1 del D.Lgs. 360/1998: c. 3 per l’aliquota, c. 3-bis per la soglia di esenzione, ' +
-      'c. 4 per la base imponibile e la condizione di debenza; aliquota e soglia deliberate ' +
-      'dal Consiglio comunale',
+      'c. 4 per la base imponibile e la condizione di debenza; per Milano, Deliberazione del ' +
+      'Consiglio Comunale n. 36 del 21/10/2013 (aliquota unica 0,80%). Codice ente F205',
     dettaglio:
-      'Aliquota unica 0,80% con soglia di esenzione a 23.000 € di imponibile. È una soglia, ' +
-      'non una franchigia: superata, l’addizionale è dovuta sull’intero imponibile e non sulla ' +
-      'sola eccedenza — da qui il salto di circa 184 € descritto in metodologia §4.',
-    url: 'https://www1.finanze.gov.it/finanze2/dipartimentopolitichefiscali/fiscalitalocale/addcomirpef/sceltaregione.htm',
+      'Aliquota unica 0,80% con soglia di esenzione a 23.000 € di imponibile IRPEF. È una ' +
+      'soglia, non una franchigia, e il Comune lo dichiara testualmente: “l’esenzione non ' +
+      'equivale a franchigia e dunque non si applica nei casi in cui il reddito complessivo ' +
+      'sia superiore a 23.000 euro”. Superata la soglia l’addizionale è quindi dovuta ' +
+      'sull’intero imponibile e non sulla sola eccedenza — da qui il salto di circa 184 € ' +
+      'descritto in metodologia §4.',
+    prassi:
+      'Comune di Milano, pagina istituzionale sull’addizionale comunale IRPEF, che riporta ' +
+      'aliquota, esenzione, gli estremi della delibera e le modalità di trattenuta in busta ' +
+      'paga: acconto del 30% in un massimo di 9 rate da marzo, saldo determinato dal sostituto ' +
+      'in sede di conguaglio e trattenuto in un massimo di 11 rate.',
+    url: 'https://www.comune.milano.it/servizi/addizionale-comunale-irpef',
     verifica:
-      'ATTENZIONE: è il parametro più debole del modello. Aliquota e soglia sono deliberate ' +
-      'ogni anno dal Comune, la delibera vigente non è stata letta, e circolano indicazioni ' +
-      'discordanti sulla soglia. Da riverificare sul record del Comune di Milano nel portale ' +
-      'del Federalismo Fiscale prima di qualunque uso non dimostrativo',
+      'VERIFICATO sulla pagina istituzionale del Comune di Milano: aliquota 0,80%, esenzione ' +
+      'fino a 23.000 € inclusi, delibera di Consiglio Comunale n. 36 del 21/10/2013, e la ' +
+      'natura di soglia e non di franchigia dichiarata a parole. Resta una cautela: la pagina ' +
+      'non è datata e cita la delibera solo per l’aliquota, non per la soglia; il valore va ' +
+      'riconfermato sulla delibera di bilancio dell’anno prima di qualunque uso non ' +
+      'dimostrativo. Nota terminologica: la pagina usa “reddito imponibile” nell’enunciato ' +
+      'dell’esenzione e “reddito complessivo” nella relativa FAQ; nel modello le due grandezze ' +
+      'coincidono per semplificazione dichiarata',
   },
 
   addizionaliNoTaxArea: {
@@ -1316,8 +1328,12 @@ const PARAMETRI_2026 = {
       voce: 'Addizionali per cassa',
       norma: 'Art. 50 D.Lgs. 446/1997; art. 1 D.Lgs. 360/1998',
       motivo:
-        'In busta paga si versano come saldo dell’anno precedente più acconto ' +
-        'dell’anno corrente; il modello le calcola per competenza sull’anno in corso.',
+        'In busta paga non si versano per competenza. Per la comunale di Milano: acconto del ' +
+        '30% trattenuto dal sostituto d’imposta in un massimo di 9 rate a partire da marzo, ' +
+        'saldo determinato in sede di conguaglio e trattenuto in un massimo di 11 rate dal mese ' +
+        'successivo; in caso di cessazione del rapporto in corso d’anno, trattenuta in unica ' +
+        'soluzione. Il modello calcola per competenza sull’anno in corso: su una retribuzione ' +
+        'stabile la differenza si annulla, nell’anno di assunzione o di forte aumento no.',
     },
   ],
 };
