@@ -522,11 +522,20 @@ e viene trattenuto dal sostituto d'imposta in un massimo di 9 rate da marzo, il 
 determinato in sede di conguaglio e trattenuto in un massimo di 11 rate dal mese successivo, e
 in caso di cessazione del rapporto in corso d'anno la trattenuta avviene in unica soluzione.
 
-Due cautele restano, dichiarate nel registro. La pagina non è datata e cita la delibera solo per
-l'aliquota, non per la soglia: il valore va riconfermato sulla delibera di bilancio dell'anno.
-E la pagina stessa oscilla fra *«reddito imponibile»* nell'enunciato dell'esenzione e *«reddito
-complessivo»* nella FAQ corrispondente — nel modello le due grandezze coincidono per la
-semplificazione di §5.1, ma su un contribuente con altri redditi non coinciderebbero.
+L'elenco dei riferimenti normativi del Comune ha poi chiuso anche il punto rimasto aperto: la
+soglia di 23.000 € è fissata dalla **Deliberazione C.C. n. 46 del 28 settembre 2020**, che la
+eleva *«a decorrere dall'anno 2020»* modificando l'art. 6 c. 2 del Regolamento comunale
+(approvato a sua volta con Deliberazione C.C. n. 41 del 1° agosto 2011).
+
+Questo cambia la natura del rischio. Entrambi gli atti — il n. 36/2013 per l'aliquota e il
+n. 46/2020 per la soglia — sono tuttora citati dal Comune fra i riferimenti vigenti: i due
+valori non dipendono da una delibera annuale, sono stabili dal 2020 e dal 2013. Il parametro
+resta il più esposto del modello perché **può** cambiare con una delibera comunale, ma non è più
+un valore raccolto da fonti discordanti.
+
+Resta una sola nota, terminologica: la fonte oscilla fra *«reddito imponibile»* nell'enunciato
+dell'esenzione e *«reddito complessivo»* nella FAQ corrispondente. Nel modello le due grandezze
+coincidono per la semplificazione di §5.1, ma su un contribuente con altri redditi no.
 
 ### 3.8 Nota sull'ambiente di sviluppo
 
