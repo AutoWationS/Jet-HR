@@ -106,6 +106,7 @@ test('i numeri scritti nelle fonti coincidono con i parametri usati dal motore',
     50, 51, 55, 75, 117, 153, 199, 207, 234, 314, 326, 335, 360, 384, 438, 446, 917, 1969,
     1986, 1992, 1995, 1997, 1998, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 200000,
     730, // nome di un modello dichiarativo, non un parametro
+    2004, // anno della rinumerazione del TUIR
   ]);
 
   for (const [chiave, fonte] of Object.entries(FONTI)) {
@@ -126,7 +127,9 @@ test('i numeri scritti nelle fonti coincidono con i parametri usati dal motore',
       .replace(/\b(quattro|quarta)\b/gi, ' ');
     // "1.955", "56.224", "0,80", "7,1", "8.173,91"
     const numeri = prosa.match(/\d[\d.]*(?:,\d+)?/g) ?? [];
-    for (const grezzo of numeri) {
+    for (const crudo of numeri) {
+      // "2004." a fine frase: il punto finale non fa parte del numero
+      const grezzo = crudo.replace(/\.$/, '');
       const n = Number(grezzo.replace(/\./g, '').replace(',', '.'));
       if (!Number.isFinite(n) || IGNORA.has(n)) continue;
       // 8.173,91 e' una soglia derivata (1.955 - 75) / 23%: la ricalcoliamo
