@@ -19,6 +19,7 @@ import {
   calcolaSommaEsente,
   applicaScaglioni,
   curvaNetto,
+  tronca,
 } from '../src/motore.js';
 import { PARAMETRI_2026 as P } from '../src/parametri.js';
 
@@ -42,15 +43,17 @@ test('RAL 35.000 — caso di riferimento, ogni passaggio verificato a mano', () 
   // IRPEF lorda: 28.000 x 23% + 3.783,50 x 33% = 6.440 + 1.248,555
   vicino(r.irpef.lorda, 7688.56);
 
-  // Detrazione art. 13: 1.910 x (50.000 - 31.783,50) / 22.000 = 1.581,52
-  vicino(r.irpef.detrazioneLavoro, 1581.52);
+  // Detrazione art. 13 lett. c): il rapporto (50.000 - 31.783,50) / 22.000 vale
+  // 0,82802272… e la norma lo vuole assunto nelle prime quattro cifre decimali
+  // (art. 13 c. 6 TUIR), quindi 0,8280. Detrazione = 1.910 x 0,8280 = 1.581,48.
+  vicino(r.irpef.detrazioneLavoro, 1581.48);
   // Maggiorazione c. 1.1: reddito in (25.000; 35.000] -> 65
   vicino(r.irpef.maggiorazione65, 65);
   // Ulteriore detrazione cuneo: reddito <= 32.000 -> 1.000 pieni
   vicino(r.irpef.ulterioreDetrazione, 1000);
 
-  // IRPEF netta: 7.688,56 - 2.646,52
-  vicino(r.irpef.netta, 5042.04);
+  // IRPEF netta: 7.688,56 - 2.646,48
+  vicino(r.irpef.netta, 5042.08);
 
   // Addizionale regionale Lombardia per scaglioni:
   // 15.000x1,23% + 13.000x1,58% + 3.783,50x1,72% = 184,50 + 205,40 + 65,08
@@ -61,13 +64,13 @@ test('RAL 35.000 — caso di riferimento, ogni passaggio verificato a mano', () 
   // Nessun bonus: reddito oltre 20.000
   vicino(r.bonus.totale, 0);
 
-  vicino(r.netto.annuo, 26032.22);
+  vicino(r.netto.annuo, 26032.18);
   vicino(r.netto.mensile, 2002.48);
 
   // La stessa RAL su 12 mensilita' da' una rata piu' alta, non un netto diverso
   const r12 = calcolaNetto({ ral: 35000, mensilita: 12 });
   vicino(r12.netto.annuo, r.netto.annuo);
-  vicino(r12.netto.mensile, 26032.22 / 12);
+  vicino(r12.netto.mensile, 26032.18 / 12);
 });
 
 test('RAL 15.000 — cumulo di somma esente e trattamento integrativo', () => {
@@ -97,7 +100,8 @@ test('RAL 25.000 — ulteriore detrazione piena, addizionale comunale ancora ese
   const r = calcolaNetto({ ral: 25000, mensilita: 13 });
 
   vicino(r.imponibileFiscale, 22702.5);
-  // 1.910 + 1.190 x (28.000 - 22.702,50) / 13.000
+  // 1.910 + 1.190 x tronca((28.000 - 22.702,50) / 13.000, 4) = 1.910 + 1.190 x 0,4075.
+  // Qui il rapporto e' gia' esatto alla quarta cifra, quindi il troncamento non morde.
   vicino(r.irpef.detrazioneLavoro, 2394.93);
   vicino(r.irpef.ulterioreDetrazione, 1000);
   vicino(r.bonus.sommaEsente, 0); // reddito complessivo sopra 20.000
@@ -124,6 +128,26 @@ test('RAL 60.000 — terza aliquota, +1% INPS, nessuna detrazione da lavoro', ()
 /* ========================================================================== *
  * 2. BLOCCHI ISOLATI
  * ========================================================================== */
+
+test('il rapporto dell art. 13 e assunto nelle prime quattro cifre decimali', () => {
+  // Art. 13 c. 6 TUIR (c. 8 nel testo unico riordinato): "Se il risultato dei
+  // rapporti indicati ai commi 1, 3, 4 e 5 e' maggiore di zero, lo stesso si
+  // assume nelle prime quattro cifre decimali".
+  assert.equal(tronca(0.82802272727, 4), 0.828);
+  assert.equal(tronca(0.91057727, 4), 0.9105); // si tronca, non si arrotonda
+  assert.equal(tronca(0.4075, 4), 0.4075);
+
+  // Sul caso di riferimento la regola vale 4 centesimi di detrazione: poco, ma
+  // e' la differenza fra il numero del cedolino e un numero verosimile.
+  const conRegola = calcolaDetrazioneLavoro(31783.5, P, 365).base;
+  const senzaRegola = (1910 * (50000 - 31783.5)) / 22000;
+  vicino(conRegola, 1581.48);
+  assert.ok(senzaRegola - conRegola > 0.03 && senzaRegola - conRegola < 0.05);
+
+  // La regola NON si applica al decalage del cuneo: il comma la limita ai
+  // rapporti dell'art. 13, e l'ulteriore detrazione sta in un altro comma.
+  vicino(calcolaUlterioreDetrazione(36000, P, 365), 500);
+});
 
 test('applicaScaglioni e progressivo e conserva il totale', () => {
   const { totale, dettaglio } = applicaScaglioni(31783.5, P.irpef.scaglioni);
@@ -153,10 +177,11 @@ test('contributi: massimale e aliquota aggiuntiva', () => {
 
 test('detrazione art. 13: continuita sui confini di fascia', () => {
   const d = (r) => calcolaDetrazioneLavoro(r, P, 365).base;
+  const q = (x) => tronca(x, P.detrazioneLavoroDipendente.cifreDecimaliRapporto);
   vicino(d(15000), 1955);
-  vicino(d(15000.01), 1910 + (1190 * (28000 - 15000.01)) / 13000, 0.02); // ~3.100 -> salto
+  vicino(d(15000.01), 1910 + 1190 * q((28000 - 15000.01) / 13000), 0.02); // ~3.100 -> salto
   vicino(d(28000), 1910);
-  vicino(d(28000.01), (1910 * (50000 - 28000.01)) / 22000, 0.02);
+  vicino(d(28000.01), 1910 * q((50000 - 28000.01) / 22000), 0.02);
   assert.equal(d(50000), 0);
   assert.equal(d(60000), 0);
 
@@ -179,7 +204,11 @@ test('detrazione art. 13: rapporto ai giorni, e il minimo vale solo nella prima 
   // riporta infatti nella sola prima riga della tabella.
   // Regressione: prima il minimo si applicava a tutte le fasce e questo caso
   // restituiva 690 invece di 325,29.
-  vicino(calcolaDetrazioneLavoro(36324, P, 100).base, (1910 * (50000 - 36324)) / 22000 * (100 / 365), 0.02);
+  vicino(
+    calcolaDetrazioneLavoro(36324, P, 100).base,
+    ((1910 * tronca((50000 - 36324) / 22000, 4)) * 100) / 365,
+    0.02,
+  );
 
   // Dentro la prima fascia il pavimento interviene davvero
   vicino(calcolaDetrazioneLavoro(10000, P, 30).base, 690);
@@ -300,7 +329,7 @@ test('i salti alle soglie valgono esattamente quanto vale l agevolazione persa',
     else sotto = meta;
   }
   vicino(salto(sopra), -104.53, 0.5);
-  vicino(salto(ralPer(15000)), -129.97, 0.5); // fine trattamento integrativo
+  vicino(salto(ralPer(15000)), -130.09, 0.5); // fine trattamento integrativo
   vicino(salto(ralPer(23000)), -183.96, 0.5); // addizionale comunale Milano
   vicino(salto(ralPer(35000)), -64.98, 0.5); // fine maggiorazione 65 euro
 

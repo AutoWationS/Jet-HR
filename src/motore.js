@@ -21,6 +21,20 @@ import { PARAMETRI_DEFAULT } from './parametri.js';
  * Utility
  * -------------------------------------------------------------------------- */
 
+/**
+ * Tronca (non arrotonda) alle prime `cifre` cifre decimali.
+ * Serve per i rapporti dell'art. 13 TUIR, che la norma vuole "assunti nelle
+ * prime quattro cifre decimali".
+ */
+export function tronca(x, cifre) {
+  const fattore = 10 ** cifre;
+  // Attenzione al binario: 0,4075 x 10.000 vale 4074,999999999999 in virgola
+  // mobile, e un troncamento ingenuo restituirebbe 0,4074. Si ricompone il
+  // valore a precisione piena prima di troncare.
+  const scalato = Number((x * fattore).toPrecision(12));
+  return Math.trunc(scalato) / fattore;
+}
+
 /** Arrotondamento monetario a 2 decimali, stabile sui .005. */
 export function euro(x) {
   return Math.round((x + Number.EPSILON) * 100) / 100;
@@ -96,7 +110,16 @@ export function calcolaDetrazioneLavoro(redditoComplessivo, parametri, giorni, t
   const R = Math.max(0, redditoComplessivo);
 
   const fascia = p.fasce.find((f) => R <= f.fino);
-  let teorica = fascia.base + (fascia.quotaVariabile * (fascia.riferimento - R)) / fascia.ampiezza;
+
+  // Il rapporto interno alla formula va assunto NELLE PRIME QUATTRO CIFRE
+  // DECIMALI (art. 13 c. 6 TUIR; c. 8 nel testo unico riordinato). Non e' un
+  // dettaglio estetico: e' una regola di legge, e senza di essa la detrazione
+  // esce di qualche centesimo piu' alta di quella che un cedolino calcola.
+  const rapportoGrezzo =
+    fascia.quotaVariabile === 0 ? 0 : (fascia.riferimento - R) / fascia.ampiezza;
+  const rapporto = rapportoGrezzo > 0 ? tronca(rapportoGrezzo, p.cifreDecimaliRapporto) : 0;
+
+  let teorica = fascia.base + fascia.quotaVariabile * rapporto;
   teorica = Math.max(0, teorica);
 
   // La detrazione base e' rapportata ai giorni di lavoro nell'anno...

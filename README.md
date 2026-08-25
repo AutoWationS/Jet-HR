@@ -102,7 +102,13 @@ Nessun test interno poteva trovarlo: il modello non conosceva la regola.
 prassi, non norma primaria — è stata letta integralmente: ha confermato tre scelte e corretto
 quattro dettagli sul rapporto al periodo di lavoro. Gli esempi 1 e 2 sono due casi di test.
 
-**5. Audit delle fonti.** Ogni fonte del registro dichiara il proprio **livello** nella gerarchia
+**5. Lettura del testo normativo.** Gli artt. 11 e 13 sono stati letti sul testo unico
+pubblicato in Gazzetta Ufficiale. Hanno confermato le aliquote, la formula della capienza e la
+maggiorazione di 65 € — il valore più esposto del progetto — e hanno rivelato una regola che
+mancava: il rapporto interno alla formula della detrazione va assunto **nelle prime quattro
+cifre decimali** (art. 13 c. 6 TUIR). Implementata: sul caso di riferimento vale 4 centesimi.
+
+**6. Audit delle fonti.** Ogni fonte del registro dichiara il proprio **livello** nella gerarchia
 (1 = norma primaria, 2 = prassi e atti locali) e un test impedisce che una fonte di livello 1
 punti a una scheda divulgativa invece che a una banca dati normativa. Un secondo test confronta
 i numeri scritti in prosa nelle fonti con i parametri effettivi: se un valore cambia e la
@@ -131,8 +137,8 @@ descrizione no, la suite cade.
 |---:|---:|---:|---:|---:|---:|---:|---:|
 | 15.000 | 1.378,50 | 13.621,50 | 1.177,95 | 167,54 | 1.921,94 | **14.197,95** | 1.092,15 |
 | 25.000 | 2.297,50 | 22.702,50 | 1.826,65 | 306,20 | — | **20.569,65** | 1.582,28 |
-| 35.000 | 3.216,50 | 31.783,50 | 5.042,04 | 709,25 | — | **26.032,22** | 2.002,48 |
-| 45.000 | 4.135,50 | 40.864,50 | 9.892,16 | 938,09 | — | **30.034,25** | 2.310,33 |
+| 35.000 | 3.216,50 | 31.783,50 | 5.042,08 | 709,25 | — | **26.032,18** | 2.002,48 |
+| 45.000 | 4.135,50 | 40.864,50 | 9.892,26 | 938,09 | — | **30.034,15** | 2.310,32 |
 | 60.000 | 5.551,76 | 54.448,24 | 15.612,74 | 1.280,84 | — | **37.554,66** | 2.888,82 |
 | 120.000 | 11.665,76 | 108.334,24 | 38.783,72 | 2.644,16 | — | **66.906,36** | 5.146,64 |
 
@@ -148,7 +154,7 @@ del netto proprio per rendere visibili questi punti.
 |---|---:|---|---:|
 | reddito 8.500 € | 9.360,20 € | la somma esente scende dal 7,1% al 5,3% dell'intero reddito | −152,96 € |
 | reddito 8.500 € | 9.360,24 € | si esce dalla no tax area: scattano le addizionali | −104,53 € |
-| reddito 15.000 € | 16.518,00 € | decade il trattamento integrativo | −129,97 € |
+| reddito 15.000 € | 16.518,00 € | decade il trattamento integrativo | −130,09 € |
 | imponibile 23.000 € | 25.327,61 € | l'esenzione comunale di Milano cade sull'**intero** imponibile | −183,96 € |
 | reddito 35.000 € | 38.542,01 € | decade la maggiorazione di 65 € | −64,98 € |
 

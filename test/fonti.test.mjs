@@ -46,6 +46,7 @@ test('nessuna fonte orfana: ognuna e citata da un parametro o dichiarata trasver
   // nel suo insieme (regole di ordine, nozioni, deducibilita').
   const TRASVERSALI = [
     'imposta',
+    'arrotondamentoRapporti',
     'baseContributiva',
     'nonConcorrenzaContributi',
     'addizionaliNoTaxArea',
@@ -116,8 +117,10 @@ test('i numeri scritti nelle fonti coincidono con i parametri usati dal motore',
       .replace(/\d{1,2}\/\d{1,2}\/\d{2,4}/g, ' ')
       .replace(/\d+\/\d+/g, ' ')
       .replace(/\b(?:n|art|artt|c|cc|lett|par|§)\.?\s*\d+[\w-]*(?:\s*-\s*\d+)?/gi, ' ')
-      // "commi 726-729", "comma 727"
-      .replace(/\bcomm[ai]\s+\d+(?:\s*-\s*\d+)?/gi, ' ');
+      // "commi 726-729", "comma 727", "commi 1, 3 e 5"
+      .replace(/\bcomm[ai]\s+\d+(?:\s*(?:-|,|\se\s)\s*\d+)*/gi, ' ')
+      // "quarta cifra", "quattro cifre decimali": numeri scritti in lettere, ok
+      .replace(/\b(quattro|quarta)\b/gi, ' ');
     // "1.955", "56.224", "0,80", "7,1", "8.173,91"
     const numeri = prosa.match(/\d[\d.]*(?:,\d+)?/g) ?? [];
     for (const grezzo of numeri) {
