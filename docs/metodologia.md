@@ -537,7 +537,43 @@ Resta una sola nota, terminologica: la fonte oscilla fra *«reddito imponibile»
 dell'esenzione e *«reddito complessivo»* nella FAQ corrispondente. Nel modello le due grandezze
 coincidono per la semplificazione di §5.1, ma su un contribuente con altri redditi no.
 
-### 3.8 Nota sull'ambiente di sviluppo
+### 3.8 La regola della no tax area sulle addizionali
+
+Il testo vigente dell'art. 1 c. 4 del D.Lgs. 360/1998 chiude la regola che il modello
+implementava senza riscontro:
+
+> *«L'addizionale è determinata applicando al reddito complessivo determinato ai fini
+> dell'imposta sul reddito delle persone fisiche, al netto degli oneri deducibili riconosciuti ai
+> fini di tale imposta, l'aliquota stabilita ai sensi dei commi 2 e 3 **ed è dovuta se per lo
+> stesso anno risulta dovuta l'imposta sul reddito delle persone fisiche, al netto delle
+> detrazioni per essa riconosciute e del credito di cui all'articolo 165** del testo unico.»*
+
+Lo stesso comma risolve anche l'oscillazione terminologica notata in §3.7: la base non è
+genericamente il "reddito imponibile", è il **reddito complessivo al netto degli oneri
+deducibili** — che nel caso modellato coincide con l'imponibile fiscale.
+
+Restano confermate dal medesimo articolo tre cose già scritte altrove nel progetto: il tetto di
+legge dello **0,8%** al comma 3, che è esattamente l'aliquota di Milano; la **soglia di
+esenzione** come facoltà regolamentare al comma 3-bis; e al comma 5 il meccanismo per cassa —
+acconto in massimo 9 rate da marzo, saldo in massimo 11 rate dal conguaglio, unica soluzione se
+il rapporto cessa — che è quindi norma e non prassi.
+
+**Una precisazione, e una correzione.** L'efficacia della delibera comunale decorre dalla
+pubblicazione sul sito informatico del MEF (c. 3), e ai fini dell'acconto aliquota e soglia si
+assumono nella misura dell'anno precedente *«salvo che la pubblicazione della delibera sia
+effettuata entro il 31 dicembre precedente l'anno di riferimento»* (c. 4). Il D.Lgs. 23/2011,
+letto per verificare una regola analoga che si riteneva collocata al suo art. 14, non la
+contiene: il suo art. 5 riguarda la graduale cessazione della sospensione del potere dei comuni
+di istituire l'addizionale, materia transitoria del 2011. La disciplina utile è tutta nel
+D.Lgs. 360/1998.
+
+**Cosa resta.** La disposizione parallela per l'addizionale **regionale**, art. 50 c. 2 del
+D.Lgs. 446/1997, non è ancora stata letta in originale. Il modello tratta le due addizionali
+allo stesso modo — che è la prassi corrente e ciò che le istruzioni ai modelli dichiarativi
+confermano — ma è l'ultima regola del motore senza riscontro diretto, ed è dichiarata come tale
+nel registro.
+
+### 3.9 Nota sull'ambiente di sviluppo
 
 Le verifiche automatiche contro calcolatori online non sono eseguibili dalla suite: l'ambiente
 di sviluppo non ha accesso di rete verso quei siti, e lo stesso vale per Normattiva,

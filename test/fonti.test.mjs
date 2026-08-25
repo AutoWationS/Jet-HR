@@ -116,7 +116,10 @@ test('i numeri scritti nelle fonti coincidono con i parametri usati dal motore',
       // c. 1, D.Lgs. 446/1997): non sono parametri di calcolo.
       .replace(/\d{1,2}\/\d{1,2}\/\d{2,4}/g, ' ')
       .replace(/\d+\/\d+/g, ' ')
-      .replace(/\b(?:n|art|artt|c|cc|lett|par|§)\.?\s*\d+[\w-]*(?:\s*-\s*\d+)?/gi, ' ')
+      .replace(
+        /\b(?:n|art|artt|articolo|articoli|c|cc|lett|par|§)\.?\s*\d+[\w-]*(?:\s*-\s*\d+)?/gi,
+        ' ',
+      )
       // "commi 726-729", "comma 727", "commi 1, 3 e 5"
       .replace(/\bcomm[ai]\s+\d+(?:\s*(?:-|,|\se\s)\s*\d+)*/gi, ' ')
       // "quarta cifra", "quattro cifre decimali": numeri scritti in lettere, ok

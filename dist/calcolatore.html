@@ -1130,10 +1130,13 @@ const FONTI = {
     etichetta: 'Addizionali non dovute in assenza di IRPEF',
     norma: 'Art. 50 c. 2 D.Lgs. 446/1997 (regionale); art. 1 c. 4 D.Lgs. 360/1998 (comunale)',
     dettaglio:
-      'Le addizionali sono dovute solo se l’IRPEF, al netto delle detrazioni e dei crediti per ' +
-      'redditi prodotti all’estero, risulta dovuta. Chi sta in no tax area non paga né IRPEF né ' +
-      'addizionali. Nel motore questo impone un vincolo di ordine: le addizionali si calcolano ' +
-      'dopo l’IRPEF netta e la ricevono come argomento.',
+      'Per la comunale il testo è letterale: l’addizionale “è dovuta se per lo stesso anno ' +
+      'risulta dovuta l’imposta sul reddito delle persone fisiche, al netto delle detrazioni ' +
+      'per essa riconosciute e del credito di cui all’articolo 165 del TUIR”. Chi sta in no tax ' +
+      'area non paga né IRPEF né addizionali. Lo stesso comma fissa anche la base: il reddito ' +
+      'complessivo determinato ai fini IRPEF, al netto degli oneri deducibili. Nel motore la ' +
+      'regola impone un vincolo di ordine: le addizionali si calcolano dopo l’IRPEF netta e la ' +
+      'ricevono come argomento.',
     prassi:
       'Istruzioni al quadro RV dei modelli Redditi PF e 730, che ripetono la condizione in una ' +
       'sola frase per entrambe le addizionali. La disciplina delle addizionali non sta nel ' +
@@ -1141,8 +1144,13 @@ const FONTI = {
       'istituiscono.',
     url: 'https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:1997-12-15;446',
     verifica:
-      'anomalia emersa dal confronto con un calcolatore esterno (metodologia §3.4); la prova è ' +
-      'il testo dei due commi, non il confronto. Norma strutturale, nessuna riverifica annuale',
+      'VERIFICATO per l’addizionale COMUNALE sul testo vigente dell’art. 1 c. 4 del ' +
+      'D.Lgs. 360/1998, che riporta la condizione parola per parola. Per l’addizionale ' +
+      'REGIONALE la disposizione parallela dell’art. 50 c. 2 del D.Lgs. 446/1997 non è ancora ' +
+      'stata letta in originale: il modello le tratta allo stesso modo, che è la prassi ' +
+      'corrente, ma è l’ultima regola del motore senza riscontro diretto. L’anomalia era emersa ' +
+      'dal confronto con un calcolatore esterno (metodologia §3.4): il confronto ha segnalato, ' +
+      'la prova è il testo. Norma strutturale, nessuna riverifica annuale',
   },
 
   redditoComplessivo: {
@@ -1337,13 +1345,14 @@ const PARAMETRI_2026 = {
     },
     {
       voce: 'Addizionali per cassa',
-      norma: 'Art. 50 D.Lgs. 446/1997; art. 1 D.Lgs. 360/1998',
+      norma: 'Art. 50 D.Lgs. 446/1997; art. 1 c. 5 D.Lgs. 360/1998',
       motivo:
-        'In busta paga non si versano per competenza. Per la comunale di Milano: acconto del ' +
-        '30% trattenuto dal sostituto d’imposta in un massimo di 9 rate a partire da marzo, ' +
-        'saldo determinato in sede di conguaglio e trattenuto in un massimo di 11 rate dal mese ' +
-        'successivo; in caso di cessazione del rapporto in corso d’anno, trattenuta in unica ' +
-        'soluzione. Il modello calcola per competenza sull’anno in corso: su una retribuzione ' +
+        'In busta paga non si versano per competenza, e non è una prassi ma la norma: l’art. 1 ' +
+        'c. 5 del D.Lgs. 360/1998 dispone che l’acconto sia determinato dal sostituto d’imposta ' +
+        'e trattenuto in un massimo di 9 rate mensili a partire da marzo, e il saldo determinato ' +
+        'all’atto del conguaglio e trattenuto in un massimo di 11 rate dal periodo di paga ' +
+        'successivo; in caso di cessazione del rapporto l’addizionale residua è prelevata in ' +
+        'unica soluzione. Il modello calcola per competenza sull’anno in corso: su una retribuzione ' +
         'stabile la differenza si annulla, nell’anno di assunzione o di forte aumento no.',
     },
   ],
