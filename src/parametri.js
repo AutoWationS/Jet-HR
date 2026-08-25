@@ -373,12 +373,9 @@ export const FONTI = {
 
   addizionaleComunale: {
     livello: 2,
-    statoVerifica: 'fonte-istituzionale',
-    dove: 'Deliberazioni C.C. Milano n. 36 del 21/10/2013 (aliquota) e n. 46 del 28/09/2020 (soglia) — PDF già elencati fra i riferimenti normativi della pagina del Comune',
+    statoVerifica: 'atto-letto',
+    dove: 'Deliberazioni C.C. Milano n. 36 del 21/10/2013 e n. 46 del 28/09/2020, lette in originale',
     canale: 'comune',
-    lacuna:
-      'aliquota, soglia ed estremi delle delibere letti sulla pagina del Comune; le delibere ' +
-      'n. 36/2013 e n. 46/2020 non sono state aperte',
     etichetta: 'Addizionale comunale IRPEF — Milano',
     norma:
       'Art. 1 del D.Lgs. 360/1998: c. 3 per l’aliquota, c. 3-bis per la soglia di esenzione, ' +
@@ -388,12 +385,14 @@ export const FONTI = {
       '23.000 € a decorrere dal 2020 con Deliberazione C.C. n. 46 del 28/09/2020, che ha ' +
       'modificato l’art. 6 c. 2 del Regolamento. Codice ente F205',
     dettaglio:
-      'Aliquota unica 0,80% con soglia di esenzione a 23.000 € di imponibile IRPEF. È una ' +
-      'soglia, non una franchigia, e il Comune lo dichiara testualmente: “l’esenzione non ' +
-      'equivale a franchigia e dunque non si applica nei casi in cui il reddito complessivo ' +
-      'sia superiore a 23.000 euro”. Superata la soglia l’addizionale è quindi dovuta ' +
-      'sull’intero imponibile e non sulla sola eccedenza — da qui il salto di circa 184 € ' +
-      'descritto in metodologia §4.',
+      'Aliquota unica 0,80% con soglia di esenzione a 23.000 € di imponibile IRPEF. ' +
+      'Nessuno dei due valori è di sempre: fino al 2012 Milano applicava aliquote ' +
+      'differenziate per scaglioni, e la delibera del 2013 le sostituisce con un valore ' +
+      'unico, fissando una soglia più bassa che la delibera del 2020 porta a 23.000. È ' +
+      'una soglia, non una franchigia, e lo dicono le delibere stesse: superata, ' +
+      '“l’addizionale comunale IRPEF si applica al reddito complessivo … senza soglia ' +
+      'di esenzione”, quindi sull’intero imponibile e non sulla sola eccedenza — da qui ' +
+      'il salto di circa 184 € descritto in metodologia §4.',
     prassi:
       'Comune di Milano, pagina istituzionale sull’addizionale comunale IRPEF, che riporta ' +
       'aliquota, esenzione, gli estremi della delibera e le modalità di trattenuta in busta ' +
@@ -401,14 +400,22 @@ export const FONTI = {
       'in sede di conguaglio e trattenuto in un massimo di 11 rate.',
     url: 'https://www.comune.milano.it/servizi/addizionale-comunale-irpef',
     verifica:
-      'Letto sulla pagina istituzionale del Comune di Milano e sull’elenco dei suoi ' +
-      'riferimenti normativi. Entrambi i valori hanno ora la delibera che li fissa: l’aliquota ' +
-      'la n. 36/2013, la soglia la n. 46/2020, che la eleva a 23.000 € “a decorrere dall’anno ' +
-      '2020”. Sono i due atti ancora citati come vigenti dal Comune, quindi i valori non sono ' +
-      'stati modificati da allora e non dipendono da una delibera annuale. Verificata a parole ' +
-      'anche la natura di soglia e non di franchigia. Nota terminologica: la fonte usa ' +
-      '“reddito imponibile” nell’enunciato dell’esenzione e “reddito complessivo” nella FAQ ' +
-      'corrispondente; nel modello le due grandezze coincidono per semplificazione dichiarata',
+      'VERIFICATO sulle due delibere in originale, non più sulla pagina del Comune. La ' +
+      'n. 36/2013 fissa “l’aliquota unica dello 0,80%” sostituendo “i cinque valori ' +
+      'disposti in ordine crescente della colonna ALIQUOTE %” dell’allegato: prima del ' +
+      '2013 l’addizionale comunale di Milano era a scaglioni come quella regionale, e ' +
+      'saperlo cambia il modo di leggere il parametro. La n. 46/2020 sostituisce l’art. ' +
+      '6 c. 2 del Regolamento con “a decorrere dall’anno 2020, l’addizionale ' +
+      'all’imposta sul reddito non è dovuta se il reddito imponibile determinato ai fini ' +
+      'dell’imposta sul reddito delle persone fisiche non supera l’importo di € ' +
+      '23.000,00”. Il “non supera” è un ≤, ed è l’operatore del motore. Entrambe le ' +
+      'delibere chiudono poi la questione della franchigia con parole proprie: “per i ' +
+      'redditi superiori a detto valore l’addizionale comunale IRPEF si applica al ' +
+      'reddito complessivo … senza soglia di esenzione”. Sciolto anche il dubbio ' +
+      'terminologico che restava: l’ESENZIONE si misura sul reddito IMPONIBILE, ' +
+      'l’ALIQUOTA si applica al reddito COMPLESSIVO al netto degli oneri deducibili — ' +
+      'due grandezze che nel modello coincidono, perché non ci sono oneri deducibili, e ' +
+      'che il motore infatti tratta come una sola',
   },
 
   addizionaliNoTaxArea: {

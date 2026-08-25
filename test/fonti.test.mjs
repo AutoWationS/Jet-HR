@@ -157,7 +157,8 @@ test('i numeri scritti nelle fonti coincidono con i parametri usati dal motore',
   const IGNORA = new Set([
     1, 2, 3, 4, 6, 8, 9, 10, 11, 12, 13, 15, 16, 21, 22, 23, 29, 30, 31, 33, 35, 43, 44, 49,
     50, 51, 55, 75, 117, 153, 199, 207, 234, 314, 326, 335, 360, 384, 438, 446, 917, 1969,
-    1986, 1992, 1995, 1997, 1998, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 200000,
+    1986, 1992, 1995, 1997, 1998, 2011, 2012, 2013, 2020, 2021, 2022, 2023, 2024, 2025,
+    2026, 2027, 200000,
     730, // nome di un modello dichiarativo, non un parametro
     2004, // anno della rinumerazione del TUIR
   ]);

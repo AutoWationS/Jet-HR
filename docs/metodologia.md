@@ -463,17 +463,18 @@ livello:
 
 | Stato | Significato | Quante |
 |---|---|:--:|
-| `atto-letto` | il testo applicabile è stato letto | **10**, tutte senza lacune residue |
+| `atto-letto` | il testo applicabile è stato letto | **11**, tutte senza lacune residue |
 | `prassi-letta` | letto dentro una circolare che riporta la norma per esteso | — |
-| `fonte-istituzionale` | letto sul sito dell'ente che emana l'atto, non sull'atto | 2 |
+| `fonte-istituzionale` | letto sul sito dell'ente che emana l'atto, non sull'atto | 1 |
 | `non-verificata` | nessuna lettura diretta | 2 |
 
 Le sei fonti che erano `atto-corrispondente` sono state chiuse aprendo il **testo vigente del
 D.P.R. 917/1986** (§3.10.1): non ce ne sono più in quello stato. Nessuna delle dieci
 `atto-letto` ha lacune residue, e **non resta nessuna fonte `prassi-letta`**: ogni misura fiscale
 del prototipo poggia ormai su una norma primaria letta in originale, non su una circolare che la
-riporta (§3.10.2 e §3.10.3). Le quattro fonti ancora aperte riguardano i contributi, i due atti
-locali e il conteggio dei giorni.
+riporta (§3.10.2 e §3.10.3). Anche le due delibere di Milano sono state lette (§3.7.1). Le tre
+fonti ancora aperte riguardano i contributi, la legge regionale lombarda e il conteggio dei
+giorni.
 
 Ogni fonte che non sia `atto-letto` dichiara inoltre un campo **`lacuna`** che nomina
 esattamente ciò che manca — *«l'art. 51 del D.P.R. 917/1986, applicabile al 2026, non è stato
@@ -572,9 +573,38 @@ valori non dipendono da una delibera annuale, sono stabili dal 2020 e dal 2013. 
 resta il più esposto del modello perché **può** cambiare con una delibera comunale, ma non è più
 un valore raccolto da fonti discordanti.
 
-Resta una sola nota, terminologica: la fonte oscilla fra *«reddito imponibile»* nell'enunciato
-dell'esenzione e *«reddito complessivo»* nella FAQ corrispondente. Nel modello le due grandezze
-coincidono per la semplificazione di §5.1, ma su un contribuente con altri redditi no.
+#### 3.7.1 Le due delibere, lette in originale
+
+Le delibere sono state poi aperte davvero — la n. 36/2013 è una scansione, quindi è stata letta
+pagina per pagina come immagine — e hanno dato tre cose che la pagina del Comune non dava.
+
+**L'aliquota unica ha una storia.** Il dispositivo del 2013 non fissa un valore in astratto: dice
+di *«sostituire i cinque valori disposti in ordine crescente della colonna ALIQUOTE % con
+l'aliquota unica pari allo 0,80%»*. Fino al 2012 l'addizionale comunale di Milano era **a
+scaglioni**, come la regionale lombarda lo è ancora. Lo 0,8% piatto è una scelta del 2013, non
+una caratteristica del tributo: il modello ha una regola per la Lombardia e un'altra per Milano
+perché i due enti hanno deciso diversamente, non perché comunale e regionale funzionino in modo
+diverso.
+
+**La soglia era 21.000.** La n. 36/2013 la fissa *«per i redditi annui imponibili non superiori a
+€ 21.000,00»*; la n. 46/2020 la estende *«dagli attuali € 21.000,00 … alla nuova soglia di €
+23.000,00»*, sostituendo l'art. 6 c. 2 del Regolamento con: *«A decorrere dall'anno 2020,
+l'addizionale all'imposta sul reddito non è dovuta se il reddito imponibile determinato ai fini
+dell'imposta sul reddito delle persone fisiche non supera l'importo di € 23.000,00»*. Quel **«non
+supera»** è un `<=`, ed è l'operatore che il motore usa.
+
+**La franchigia è esclusa dalle delibere stesse.** Prima la conoscevamo dalla FAQ del Comune;
+entrambe le delibere la scrivono nel corpo del provvedimento:
+
+> *«Per i redditi superiori a detto valore l'addizionale comunale IRPEF si applica al reddito
+> complessivo, ai sensi dell'art. 1 del D.Lgs. n. 360/1998, senza soglia di esenzione.»*
+
+E infine sciolgono la nota terminologica rimasta aperta, che non era un'oscillazione della fonte
+ma una distinzione vera: l'**esenzione** si misura sul reddito **imponibile**, l'**aliquota** si
+applica al reddito **complessivo al netto degli oneri deducibili**. Sono due grandezze diverse
+che nel modello coincidono, perché non ci sono oneri deducibili — e il motore infatti le tratta
+come una sola. Su un contribuente con oneri deducibili non coinciderebbero, ed è la
+semplificazione di §5.1 vista dal lato dell'addizionale.
 
 ### 3.8 La regola della no tax area sulle addizionali
 
@@ -597,14 +627,32 @@ esenzione** come facoltà regolamentare al comma 3-bis; e al comma 5 il meccanis
 acconto in massimo 9 rate da marzo, saldo in massimo 11 rate dal conguaglio, unica soluzione se
 il rapporto cessa — che è quindi norma e non prassi.
 
-**Una precisazione, e una correzione.** L'efficacia della delibera comunale decorre dalla
-pubblicazione sul sito informatico del MEF (c. 3), e ai fini dell'acconto aliquota e soglia si
-assumono nella misura dell'anno precedente *«salvo che la pubblicazione della delibera sia
-effettuata entro il 31 dicembre precedente l'anno di riferimento»* (c. 4). Il D.Lgs. 23/2011,
-letto per verificare una regola analoga che si riteneva collocata al suo art. 14, non la
-contiene: il suo art. 5 riguarda la graduale cessazione della sospensione del potere dei comuni
-di istituire l'addizionale, materia transitoria del 2011. La disciplina utile è tutta nel
-D.Lgs. 360/1998.
+**Una precisazione, e una correzione della correzione.** L'efficacia della delibera comunale
+decorre dalla pubblicazione sul sito informatico del MEF (c. 3), e ai fini dell'acconto aliquota
+e soglia si assumono nella misura dell'anno precedente *«salvo che la pubblicazione della
+delibera sia effettuata entro il 31 dicembre precedente l'anno di riferimento»* (c. 4).
+
+Su questo punto ho sbagliato due volte, in direzioni opposte, e vale la pena lasciarlo scritto.
+Prima avevo attribuito al **D.Lgs. 23/2011, art. 14 c. 8** una regola di pubblicazione **entro il
+20 dicembre**: data inventata. Correggendo, ho scritto che quel decreto *non contiene affatto*
+la regola — e anche questo era falso. Il comma esiste, e dice:
+
+> *«A decorrere dall'anno 2011, le delibere di variazione dell'addizionale comunale all'imposta
+> sul reddito delle persone fisiche hanno effetto dal 1° gennaio dell'anno di pubblicazione sul
+> sito informatico di cui all'articolo 1, comma 3, del citato decreto legislativo n. 360 del
+> 1998, a condizione che detta pubblicazione avvenga entro il 31 dicembre dell'anno a cui la
+> delibera afferisce.»*
+
+Il termine è **31 dicembre**, non 20. A far riaprire il decreto è stata la delibera stessa: il
+punto 3) della n. 46/2020 dispone di pubblicare *«con le modalità e i termini di cui all'art. 14,
+comma 8, del D.Lgs. n. 23/2011 e all'art. 15-bis del D.L. n. 34/2019»*. La fonte secondaria ha
+rimandato alla primaria, e la primaria ha smentito entrambe le mie versioni.
+
+La lezione operativa è che una correzione non è automaticamente vera perché corregge un errore:
+anche la seconda affermazione andava verificata sul testo, e non lo era. Le due regole comunque
+convivono — il D.Lgs. 360/1998 disciplina l'efficacia e l'acconto, il D.Lgs. 23/2011 la
+decorrenza dal 1° gennaio dell'anno di pubblicazione — e nessuna delle due tocca il calcolo di
+un anno in cui i valori non cambiano.
 
 **La gemella regionale.** L'art. 50 c. 2 del D.Lgs. 446/1997 dice la stessa cosa con le stesse
 parole:
