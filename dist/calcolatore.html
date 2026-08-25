@@ -984,8 +984,11 @@ const FONTI = {
       'iscrizione prevede un’aliquota a carico del lavoratore inferiore al 10%. Il massimale ' +
       'si applica ai soli iscritti privi di anzianità contributiva al 31/12/1995 e opera anche ' +
       'ai fini dell’aliquota aggiuntiva: l’eccedenza sulla prima fascia si misura quindi sulla ' +
-      'base già limitata al massimale, come fa il motore. L’art. 3-ter esiste solo per effetto ' +
-      'della legge di conversione, quindi va citato insieme a essa.',
+      'base già limitata al massimale, come fa il motore. Durante l’anno il contributo si versa ' +
+      'con il criterio della mensilizzazione, sulla quota che eccede il tetto mensile, ma a fine ' +
+      'anno si conguaglia sul limite ANNUO: il modello calcola direttamente l’esito ' +
+      'conguagliato. L’art. 3-ter esiste solo per effetto della legge di conversione, quindi va ' +
+      'citato insieme a essa.',
     prassi:
       'INPS, circolare n. 6 del 30 gennaio 2026, “Determinazione per l’anno 2026 del limite ' +
       'minimo di retribuzione giornaliera e aggiornamento degli altri valori per il calcolo di ' +
@@ -1372,18 +1375,21 @@ const PARAMETRI_2026 = {
         'di reddito. Richiede un contratto collettivo di secondo livello: fuori dal caso standard.',
     },
     {
-      voce: 'Mensilizzazione dell’aliquota aggiuntiva dell’1%',
-      norma: 'Art. 3-ter D.L. 384/1992; INPS circ. n. 6 del 30/01/2026, che ne detta il criterio',
+      voce: 'Mensilizzazione dell’aliquota aggiuntiva dell’1% (cassa infrannuale)',
+      norma:
+        'Art. 3-ter D.L. 384/1992; INPS circ. n. 6 del 30/01/2026 e circ. n. 156 del ' +
+        '30/12/2025, par. sul contributo aggiuntivo IVS',
       motivo:
-        'La circolare prescrive il criterio della mensilizzazione: l’1% si calcola mese per ' +
-        'mese sulla quota eccedente 4.685,00 € mensili, non a fine anno sulla quota eccedente ' +
-        '56.224,00 € annui. Il modello lavora a saldo d’anno e non conosce la distribuzione ' +
-        'delle retribuzioni nei mesi, quindi applica il criterio annuo. Su dodici mensilità la ' +
-        'differenza è di pochi centesimi; con tredicesima diventa sistematica, perché il doppio ' +
-        'pagamento di dicembre supera da solo il tetto mensile: su una RAL di 56.000 € il ' +
-        'modello calcola zero mentre la mensilizzazione produce circa 39 € di contributo ' +
-        'aggiuntivo. È la simmetria opposta dell’ipotesi che le mensilità non cambino il netto ' +
-        'annuo: qui la distribuzione conta davvero.',
+        'Durante l’anno il contributo si versa con il criterio della mensilizzazione, cioè ' +
+        'sulla quota che eccede il tetto mensile. La circolare sul conguaglio di fine anno ' +
+        'precisa però che “tale criterio può rendere necessario procedere a operazioni di ' +
+        'conguaglio, a credito o a debito del lavoratore”, e che in caso di più rapporti “le ' +
+        'retribuzioni si cumulano ai fini del superamento della prima fascia di retribuzione ' +
+        'pensionabile”, che è il limite ANNUO. L’esito definitivo è quindi l’1% sulla quota ' +
+        'annua eccedente la prima fascia: esattamente ciò che il modello calcola. La ' +
+        'mensilizzazione è una regola di cassa infrannuale — lo stesso schema delle addizionali ' +
+        '— e il modello ne salta i movimenti intermedi arrivando direttamente al conguagliato. ' +
+        'Fuori perimetro è la simulazione del flusso mese per mese, non il risultato.',
     },
     {
       voce: 'Addizionali per cassa',

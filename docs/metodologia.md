@@ -626,31 +626,41 @@ inferiore al 10%, e che *«il massimale opera anche ai fini dell'aliquota aggiun
 cioè che l'eccedenza sulla prima fascia va misurata sulla base già limitata al massimale, che è
 esattamente ciò che il codice fa.
 
-**E contiene una regola che il modello non applica.** La circolare prescrive il criterio della
-**mensilizzazione**: l'1% si calcola mese per mese sulla quota eccedente **4.685,00 € mensili**,
-non a fine anno sulla quota eccedente 56.224,00 € annui.
+**E contiene una regola di cassa che vale la pena spiegare.** La circolare prescrive il criterio
+della **mensilizzazione**: durante l'anno l'1% si versa sulla quota che eccede **4.685,00 €
+mensili**, non a fine anno sulla quota che eccede 56.224,00 € annui.
 
-Il modello lavora a saldo d'anno e non conosce la distribuzione delle retribuzioni nei mesi,
-quindi applica il criterio annuo. Su dodici mensilità i due criteri coincidono a meno di
-centesimi. Con la tredicesima no, e la differenza è sistematica: il doppio pagamento di dicembre
-supera da solo il tetto mensile anche quando il totale annuo sta sotto la prima fascia.
+A prima vista sembrava un errore del modello, che lavora a saldo d'anno. Con la tredicesima la
+differenza è vistosa: il doppio pagamento di dicembre supera da solo il tetto mensile anche
+quando il totale annuo sta sotto la prima fascia, e su una RAL di 56.000 € il criterio mensile
+produce circa 39 € dove il modello calcola zero.
 
-| RAL | Mensilità | Criterio annuo (modello) | Criterio mensilizzato | Differenza |
-|---:|:--:|---:|---:|---:|
-| 52.000 | 13 | 0,00 | 33,15 | +33,15 |
-| 56.000 | 13 | 0,00 | 39,30 | +39,30 |
-| 60.000 | 13 | 37,76 | 45,46 | +7,70 |
-| 60.000 | 12 | 37,76 | 37,80 | +0,04 |
-| 80.000 | 13 | 237,76 | 237,80 | +0,04 |
+La circolare INPS n. 156 del 30 dicembre 2025 sul conguaglio di fine anno chiude la questione:
 
-È la simmetria opposta dell'ipotesi dichiarata in §2.8, secondo cui le mensilità non cambiano il
-netto annuo: per l'IRPEF è vero, per questo contributo no. Sotto la prima fascia il modello
-calcola zero dove la busta paga trattiene qualche decina di euro.
+> *«Ai fini del versamento del contributo in trattazione, deve essere osservato il metodo della
+> mensilizzazione del limite della retribuzione; **tale criterio può rendere necessario procedere
+> a operazioni di conguaglio, a credito o a debito del lavoratore**, degli importi dovuti a tale
+> titolo.»*
 
-La scelta è dichiarata e non corretta: applicarla richiederebbe assumere una distribuzione
-mensile delle retribuzioni, cioè introdurre nel modello proprio l'ipotesi che il calcolo a saldo
-d'anno evita. È però il primo candidato se il prototipo dovesse diventare un simulatore di
-cedolino, ed è documentata con i numeri per non doverla riscoprire.
+E, per il caso di più rapporti nell'anno, precisa che *«le retribuzioni percepite in costanza di
+ciascun rapporto **si cumulano ai fini del superamento della prima fascia di retribuzione
+pensionabile**»* — cioè del limite **annuo**.
+
+La mensilizzazione è dunque un criterio di **versamento**, non di determinazione. Il tetto che
+conta è annuo, e il conguaglio di dicembre restituisce al lavoratore quanto trattenuto in
+eccesso durante l'anno o gli addebita quanto manca. **L'esito definitivo è l'1% sulla quota
+annua eccedente la prima fascia: esattamente ciò che il modello calcola.**
+
+È lo stesso schema delle addizionali di §5.2 — flusso mensile, competenza annuale — e la
+conclusione è la stessa: il modello salta i movimenti intermedi e arriva al conguagliato. Fuori
+perimetro è la simulazione del flusso mese per mese, non il risultato.
+
+Vale la pena registrare come si è arrivati qui, perché è il metodo e non il numero. La circolare
+n. 6 rimandava alla mensilizzazione con una nota, la nota rimandava alla circolare n. 7 del 2010,
+e la conferma sta in un terzo documento, quello sul conguaglio. Implementare il criterio mensile
+leggendo solo la prima delle tre avrebbe reso il modello **sbagliato**, cambiando anche il caso
+di riferimento verificato a mano. Tre documenti per non scrivere una riga di codice è un
+risultato, non uno spreco.
 
 ### 3.11 Nota sull'ambiente di sviluppo
 
