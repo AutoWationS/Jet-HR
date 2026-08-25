@@ -1103,11 +1103,46 @@ TUIR**, che questo modello non rappresenta perché non ci sono oneri detraibili.
 detrazioni da ridurre. Sono quindi dichiarate e non applicate — scelta consapevole, non omissione.
 
 ### 5.5 Cosa manca del tutto
-Detrazioni per carichi di famiglia (art. 12 TUIR) e assegno unico; fringe benefit e welfare
-aziendale; premi di risultato a tassazione sostitutiva del 5%; previdenza complementare e
-trattenute sindacali; regimi agevolati (impatriati, ricercatori, frontalieri); part-time e
-contratti a termine; addizionali di comuni diversi da Milano; conguaglio di fine anno;
-lavoro straordinario e indennità.
+Detrazioni per carichi di famiglia (art. 12 TUIR) e assegno unico; oneri deducibili dell'art. 10
+e detraibili dell'art. 15, previdenza complementare compresa; fringe benefit e welfare
+aziendale; premi di risultato a tassazione sostitutiva; regimi agevolati (impatriati,
+ricercatori, frontalieri); contratti a termine; trattenute a carico del lavoratore previste dal
+CCNL oltre l'IVS; addizionali di comuni diversi da Milano; più rapporti nello stesso anno e
+conguaglio del sostituto; lavoro straordinario e indennità.
+
+### 5.6 Il perimetro dichiarato dal committente, e il nostro
+La traccia fissa tre semplificazioni — impiegato a tempo indeterminato, residenza a Milano,
+nessuna agevolazione particolare — e aggiunge che *ogni altra semplificazione verrà discussa al
+colloquio*. Le nostre non sono quindi abusive, ma vanno sapute elencare. Questa è la mappa
+completa.
+
+| Semplificazione | Chi la introduce | Incide sul netto? |
+|---|---|---|
+| impiegato a tempo indeterminato | traccia | sì: minimo di 690 € anziché 1.380 € nella prima fascia dell'art. 13 |
+| residenza a Milano | traccia | sì: aliquota 0,8%, soglia 23.000, addizionale lombarda |
+| nessuna agevolazione particolare | traccia | sì: esclude impatriati, ricercatori, frontalieri |
+| nessun familiare a carico | **nostra** | **sì, molto**: è l'art. 12, la voce mancante più pesante |
+| nessun onere deducibile o detraibile | **nostra** | **sì**: previdenza complementare, mutuo, spese sanitarie |
+| nessun altro reddito (§5.1) | **nostra** | sì, sulle soglie di cuneo e trattamento integrativo |
+| nessuna trattenuta di CCNL oltre l'IVS | **nostra** | sì, in misura variabile col contratto |
+| un solo rapporto, anno intero | **nostra** | sì, se il rapporto è parziale o plurimo |
+| per competenza, non per cassa | **nostra** | no sull'anno, sì sul singolo cedolino |
+| TFR, fringe benefit, premi di risultato | **nostra** | no sul netto in busta paga |
+
+**E due che non incidono affatto**, il che è una risposta e non un'omissione.
+
+L'**abitazione principale** non cambia nulla, e lo dicono due norme lette: l'art. 13 c. 6-bis
+TUIR per le detrazioni e l'art. 1 c. 9 della L. 207/2024 per il cuneo assumono entrambi il
+reddito complessivo *«al netto del reddito dell'unità immobiliare adibita ad abitazione
+principale e di quello delle relative pertinenze»*. Possedere la casa in cui si vive è
+irrilevante per questo calcolo. Una **seconda** casa, locata o a cedolare secca, no: quella
+entra nel reddito di riferimento e stringe le soglie.
+
+L'**età** non entra da nessuna parte nella catena fiscale. Entra una volta sola, dal lato
+contributivo, e il modello la rappresenta già: il massimale annuo dell'art. 2 c. 18 della
+L. 335/1995 si applica ai soli iscritti privi di anzianità contributiva al 31/12/1995, cioè a
+chi ha iniziato a lavorare dal 1996. Non è una casella «età» ma la casella giusta — l'anzianità
+contributiva, che è il criterio della norma — ed è esposta nel modulo.
 
 ---
 
