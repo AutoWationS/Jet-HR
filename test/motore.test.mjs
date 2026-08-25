@@ -421,8 +421,11 @@ test('la soglia comunale di 23.000 di imponibile produce un salto atteso', () =>
 
 test('coerenza contabile: netto = RAL - trattenute + bonus, per ogni RAL', () => {
   for (const ral of [0, 8000, 15000, 20000, 23000, 28000, 32000, 40000, 50000, 60000, 130000]) {
-    const r = calcolaNetto({ ral });
-    vicino(r.netto.annuo, ral - r.totali.trattenute + r.totali.bonus);
+    const r = calcolaNetto({ ral, oneriDeducibili: ral > 0 ? 500 : 0 });
+    vicino(
+      r.netto.annuo,
+      ral - r.totali.trattenute - r.totali.oneriDeducibili + r.totali.bonus,
+    );
     vicino(r.totali.trattenute, r.contributi.totale + r.irpef.netta + r.addizionali.totale);
     assert.ok(r.irpef.netta >= 0, 'IRPEF netta mai negativa');
     assert.ok(r.netto.annuo <= ral + r.totali.bonus);
@@ -613,8 +616,14 @@ test('gli oneri deducibili abbassano la base, non l imposta', () => {
   assert.ok(con.irpef.detrazioneLavoro > senza.irpef.detrazioneLavoro);
   // e l'ulteriore detrazione del cuneo pure, perche' il reddito scende sotto i 32.000
   assert.ok(con.irpef.ulterioreDetrazione >= senza.irpef.ulterioreDetrazione);
-  // Il netto sale meno di 3.000: gli oneri sono soldi comunque spesi, il
-  // vantaggio e' solo il risparmio d'imposta.
-  const risparmio = con.netto.annuo - senza.netto.annuo;
-  assert.ok(risparmio > 0 && risparmio < 3000, `risparmio fuori scala: ${risparmio}`);
+
+  // Il vantaggio e' il RISPARMIO D'IMPOSTA, non l'importo dedotto.
+  const risparmio = senza.totali.imposte - con.totali.imposte;
+  vicino(risparmio, 1325.93, 0.02);
+
+  // E il netto in busta SCENDE, perche' i 3.000 escono comunque: chi versa a un
+  // fondo pensione ha meno soldi sul conto e piu' soldi nel fondo. Un modello
+  // che mostrasse il netto in salita starebbe regalando la deduzione.
+  vicino(con.netto.annuo, senza.netto.annuo - 3000 + risparmio, 0.02);
+  assert.ok(con.netto.annuo < senza.netto.annuo);
 });

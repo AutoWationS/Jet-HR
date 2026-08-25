@@ -166,6 +166,21 @@ non contiene i tetti, li delega alle norme di settore (per i fondi pensione all'
 D.Lgs. 252/2005), che non sono state lette. Mettere un tetto a memoria sarebbe esattamente il
 genere di numero che questo progetto rifiuta di scrivere.
 
+**Gli oneri escono anche dal netto**, non solo dall'imponibile. Il contributo al fondo pensione
+lo trattiene il datore in busta paga: chi versa 3.000 € ha meno soldi sul conto e più soldi nel
+fondo. Sul caso di riferimento il conto è questo:
+
+| | Senza oneri | Con 3.000 € di oneri |
+|---|---:|---:|
+| Imposte totali | 5.751,33 | 4.425,40 |
+| **Netto in busta** | 26.032,18 | **24.358,10** |
+
+Il vantaggio non è la deduzione ma il **risparmio d'imposta che genera: 1.325,93 €**. Il netto
+scende di 1.674,07, cioè di 3.000 meno il risparmio. Questa è la prima versione del modello ad
+avere avuto la tentazione opposta — sottrarre gli oneri dall'imponibile ma non dal netto, che
+avrebbe mostrato il netto *in salita* di 1.325 € — ed è un errore che la cascata avrebbe
+denunciato da sola: una riga in meno che il totale non fa.
+
 Una nota per contrasto, che chiude un cerchio: la lett. e) dello stesso comma rende deducibili i
 contributi previdenziali obbligatori. Per il dipendente non servono, perché l'art. 51 c. 2
 lett. a) li tiene fuori dal reddito ancora prima — ed è la distinzione fra **non concorrenza** e
@@ -452,10 +467,18 @@ test dedicato che fissa entrambi gli estremi della finestra.
 
 ### 3.4.1 Secondo giro: le detrazioni per carichi di famiglia
 
-Dopo l'implementazione dell'art. 12 il confronto è stato ripetuto su nove casi. Questa volta il
-calcolatore esterno è stato alimentato con l'**imponibile** anziché con la RAL, così da isolare
-la parte fiscale, e i risultati sono stati abbastanza numerosi da permettere una cosa più utile
-del confronto: **ricostruire il loro modello**.
+Dopo l'implementazione dell'art. 12 il confronto è stato ripetuto su nove casi, e i risultati
+sono stati abbastanza numerosi da permettere una cosa più utile del confronto: **ricostruire il
+loro modello**.
+
+Una nota di metodo prima dei numeri. Il form dell'altro calcolatore ha sia un campo *«RAL»* sia
+un campo *«reddito imponibile complessivo»*, e l'istruzione iniziale era di compilare il secondo.
+Una prova con i due campi volutamente discordanti — RAL 35.000 e imponibile 28.783 — ha
+restituito **esattamente** l'output della RAL da sola: quel campo **è inerte**, il calcolo
+dipende solo dalla RAL. Non ha invalidato le prove, perché per costruzione l'imponibile inserito
+era sempre pari a RAL × (1 − 9,19%), ma ha reso impossibile provare lì gli oneri deducibili — e
+vale come promemoria: un campo che accetta un valore e non lo usa è peggio di un campo assente,
+perché chi lo compila crede di aver detto qualcosa.
 
 Cinque regole bastano a riprodurre **tutti** i loro output al centesimo, su tutti i casi:
 

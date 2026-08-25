@@ -2279,7 +2279,12 @@ function calcolaNetto(input, parametri = PARAMETRI_DEFAULT) {
   const totaleTrattenute = euro(contributi.totale + totaleImposte);
   const totaleBonus = euro(sommaEsente.importo + trattamentoIntegrativo);
 
-  const nettoAnnuo = euro(ral - totaleTrattenute + totaleBonus);
+  // Gli oneri deducibili escono dalla busta paga come i contributi: il fondo
+  // pensione lo trattiene il datore. Vanno quindi sottratti anche dal netto, non
+  // solo dall'imponibile — altrimenti la cascata mostrerebbe una sottrazione che
+  // il totale non fa. Il vantaggio non e' l'importo dedotto ma il risparmio
+  // d'imposta che genera.
+  const nettoAnnuo = euro(ral - totaleTrattenute - oneriDeducibili + totaleBonus);
   const nettoMensile = euro(nettoAnnuo / mensilita);
 
   return {
@@ -2326,6 +2331,7 @@ function calcolaNetto(input, parametri = PARAMETRI_DEFAULT) {
       contributi: contributi.totale,
       imposte: totaleImposte,
       trattenute: totaleTrattenute,
+      oneriDeducibili,
       bonus: totaleBonus,
     },
 
@@ -2380,7 +2386,7 @@ function calcolaNettoSemplice(input, parametri) {
     parametri,
     giorni,
   );
-  return ral - contributi.totale - irpefNetta - addizionali.totale + sommaEsente + ti;
+  return ral - contributi.totale - oneri - irpefNetta - addizionali.totale + sommaEsente + ti;
 }
 
 /** Serie (RAL, netto) per il grafico: utile per vedere gli effetti soglia. */
