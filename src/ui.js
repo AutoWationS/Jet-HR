@@ -101,6 +101,7 @@ function mostraRisultato(r) {
   const scaglioni = (dettaglio) =>
     dettaglio.map((d) => ({ voce: etichettaScaglione(d), importo: -d.imposta }));
 
+  const f = r.irpef.familiari;
   const detrazioni = [
     { voce: 'Detrazione lavoro dipendente (art. 13 c. 1)', importo: r.irpef.detrazioneLavoro },
     r.irpef.maggiorazione65
@@ -108,6 +109,18 @@ function mostraRisultato(r) {
       : null,
     r.irpef.ulterioreDetrazione
       ? { voce: 'Ulteriore detrazione taglio cuneo', importo: r.irpef.ulterioreDetrazione }
+      : null,
+    f.coniuge ? { voce: 'Coniuge a carico (art. 12 c. 1 lett. a)', importo: f.coniuge } : null,
+    f.figli
+      ? {
+          voce: `Figli a carico (art. 12 c. 1 lett. c) — ${r.input.figliACarico} × ${pct(
+            r.input.quotaFigli,
+          )}`,
+          importo: f.figli,
+        }
+      : null,
+    f.ascendenti
+      ? { voce: 'Ascendenti conviventi (art. 12 c. 1 lett. d)', importo: f.ascendenti }
       : null,
   ].filter(Boolean);
 
@@ -153,6 +166,21 @@ function mostraRisultato(r) {
       ].filter(Boolean),
     }),
   );
+
+  if (r.input.oneriDeducibili > 0) {
+    pezzi.push(
+      riga({
+        voce: 'Oneri deducibili',
+        nota: 'si sottraggono dal reddito, non dall’imposta: abbassano anche le soglie',
+        norma: 'art. 10 TUIR',
+        importo: -r.input.oneriDeducibili,
+        quota: su(-r.input.oneriDeducibili),
+        classe: 'trattenuta',
+        segno: '−',
+        peso: peso(r.input.oneriDeducibili),
+      }),
+    );
+  }
 
   pezzi.push(
     riga({
@@ -287,6 +315,11 @@ function mostraRisultato(r) {
   disegnaGrafico($('#grafico'), r.input.ral, {
     giorniLavorati: r.input.giorniLavorati,
     applicaMassimale: r.input.applicaMassimale,
+    oneriDeducibili: r.input.oneriDeducibili,
+    coniugeACarico: r.input.coniugeACarico,
+    figliACarico: r.input.figliACarico,
+    quotaFigli: r.input.quotaFigli,
+    ascendentiConviventi: r.input.ascendentiConviventi,
   });
 
   $('#risultato').classList.remove('nascosto');
@@ -303,6 +336,11 @@ function avvisi(r) {
     mensilita: r.input.mensilita,
     giorniLavorati: r.input.giorniLavorati,
     applicaMassimale: r.input.applicaMassimale,
+    oneriDeducibili: r.input.oneriDeducibili,
+    coniugeACarico: r.input.coniugeACarico,
+    figliACarico: r.input.figliACarico,
+    quotaFigli: r.input.quotaFigli,
+    ascendentiConviventi: r.input.ascendentiConviventi,
   };
 
   const piu1000 = calcolaNetto({ ...opz, ral: r.input.ral + 1000 });
@@ -410,6 +448,11 @@ function leggiModulo() {
     mensilita: Number($('#mensilita').value),
     giorniLavorati: Number($('#giorni').value),
     applicaMassimale: $('#massimale').checked,
+    coniugeACarico: $('#coniuge').checked,
+    figliACarico: Number($('#figli').value),
+    quotaFigli: Number($('#quota-figli').value),
+    ascendentiConviventi: Number($('#ascendenti').value),
+    oneriDeducibili: Number($('#oneri').value),
   };
 }
 

@@ -117,6 +117,60 @@ Due dettagli che i calcolatori semplificati saltano e che qui sono implementati:
 Si noti la discontinuità in salita a 15.000: la detrazione passa da 1.955 a ~3.100 €. Non è un
 errore di trascrizione, è la formula.
 
+### 2.4-bis Detrazioni per carichi di famiglia (art. 12 TUIR)
+
+Tre detrazioni indipendenti, tutte decrescenti col reddito, tutte troncate alla quarta cifra
+decimale dal comma 4 — la stessa regola dell'art. 13 c. 6, e il motore riusa la stessa funzione.
+
+| Chi | Importo | Come si azzera |
+|---|---|---|
+| coniuge non separato | 800 € sotto i 15.000, poi 690 € fisso, poi in décalage | a 80.000 € |
+| figli **dai 21 ai 29 anni** (o over 30 con disabilità) | 950 € ciascuno | a 95.000 €, +15.000 per ogni figlio oltre il primo |
+| ascendenti conviventi | 750 € ciascuno | a 80.000 € |
+
+Tre cose meritano attenzione, perché sono quelle che un'implementazione a orecchio sbaglia.
+
+**Sotto i 21 anni non c'è detrazione.** Il D.Lgs. 230/2021 l'ha soppressa e sostituita con
+l'**assegno unico**, che l'INPS eroga direttamente alla famiglia e che non transita dalla busta
+paga. Chi ha figli piccoli non vede nulla in questo calcolo — e non perché il modello lo ignori,
+ma perché la detrazione non esiste più. È dichiarato fuori perimetro con la sua norma.
+
+**Il comma 4 detta esiti secchi ai bordi**, che dalle formule non si ricavano: se il rapporto del
+coniuge vale **uno** la detrazione è l'importo fisso e non il risultato della formula; se vale
+**zero** non spetta; e per figli e ascendenti non spetta quando il rapporto è *«pari a zero,
+minore di zero o uguale a uno»*. Quest'ultimo caso è controintuitivo: a reddito zero il rapporto
+vale uno e la detrazione **non** spetta. Chi non ha reddito non prende la detrazione più alta,
+non ne prende nessuna. Tre test la tengono ferma.
+
+**Non si rapportano al periodo di lavoro.** Il comma 3 le rapporta ai **mesi in cui la condizione
+familiare sussiste**, non ai giorni lavorati: chi lavora cento giorni ha comunque il coniuge a
+carico per dodici mesi. È la differenza col ragguaglio dell'art. 13, e c'è un test che la
+presidia — perché passare `giorniLavorati` anche qui sarebbe l'errore naturale da commettere.
+
+**L'effetto a valle che non si vede.** L'art. 12 è nell'elenco della seconda fascia del
+trattamento integrativo (art. 1 c. 1 D.L. 3/2020, insieme all'art. 13 c. 1). Finché non c'erano
+familiari a carico quella fascia valeva zero per costruzione (§3.10.3); ora si accende davvero.
+Su una RAL di 20.000 con coniuge e due figli al 100%, la somma delle due detrazioni supera
+l'imposta lorda di **909,33 €**, che diventano trattamento integrativo. L'ulteriore detrazione
+del cuneo, invece, **non** è in quell'elenco: a 24.000 € l'IRPEF netta scende a zero grazie a
+lei, ma il trattamento resta zero. Anche questo è un test.
+
+### 2.4-ter Oneri deducibili (art. 10 TUIR)
+
+*«Dal reddito complessivo si deducono … i seguenti oneri sostenuti dal contribuente»*: si
+sottraggono dalla **base**, non dall'imposta. L'effetto meno ovvio è che abbassano anche le
+soglie — cuneo, detrazioni, addizionale comunale — quindi possono far guadagnare due volte.
+
+Il campo del prototipo è **generico e senza massimale**, ed è una scelta dichiarata: l'art. 10
+non contiene i tetti, li delega alle norme di settore (per i fondi pensione all'art. 8 del
+D.Lgs. 252/2005), che non sono state lette. Mettere un tetto a memoria sarebbe esattamente il
+genere di numero che questo progetto rifiuta di scrivere.
+
+Una nota per contrasto, che chiude un cerchio: la lett. e) dello stesso comma rende deducibili i
+contributi previdenziali obbligatori. Per il dipendente non servono, perché l'art. 51 c. 2
+lett. a) li tiene fuori dal reddito ancora prima — ed è la distinzione fra **non concorrenza** e
+**deduzione** che il registro dichiarava da principio, ora leggibile in due articoli affiancati.
+
 ### 2.5 Taglio del cuneo fiscale (L. 207/2024, strutturale con L. 199/2025)
 
 Dal 2025 il taglio del cuneo non è più un esonero contributivo ma **due misure fiscali
@@ -463,22 +517,23 @@ livello:
 
 | Stato | Significato | Quante |
 |---|---|:--:|
-| `atto-letto` | il testo applicabile è stato letto | **14 su 14** |
+| `atto-letto` | il testo applicabile è stato letto | **16 su 16** |
 | `prassi-letta` | letto dentro una circolare che riporta la norma per esteso | — |
 | `fonte-istituzionale` | letto sul sito dell'ente che emana l'atto, non sull'atto | — |
 | `non-verificata` | nessuna lettura diretta | — |
 
 Le sei fonti che erano `atto-corrispondente` sono state chiuse aprendo il **testo vigente del
 D.P.R. 917/1986** (§3.10.1): non ce ne sono più in quello stato. Nessuna delle dieci
-**Tutte e quattordici le fonti hanno ora avuto il proprio atto aperto**: non resta nessuna
+**Tutte e sedici le fonti hanno avuto il proprio atto aperto**: non resta nessuna
 `prassi-letta`, nessuna `fonte-istituzionale`, nessuna `non-verificata`. Nessun parametro poggia
 più su una circolare che riporta la norma, né sulla pagina di un ente al posto dell'atto
 (§3.7.1, §3.10.2, §3.10.3, §3.12).
 
-Due fonti conservano una **lacuna dichiarata**, e nessuna delle due tocca un numero del caso
+Tre fonti conservano una **lacuna dichiarata**, e nessuna delle tre tocca un numero del caso
 modellato: il 9,19% è letto su una circolare del 2011 e non riconfermato su un documento del
-2026, e del conteggio dei giorni è confermata la convenzione dei 365 ma non le due regole
-accessorie. Una lacuna nominata è un compito; il registro non ne ha più di anonime.
+2026; del conteggio dei giorni è confermata la convenzione dei 365 ma non le due regole
+accessorie; e i massimali degli oneri deducibili stanno fuori dal TUIR e non sono stati letti,
+per cui quel campo non ne applica nessuno. Una lacuna nominata è un compito; il registro non ne ha più di anonime.
 
 Ogni fonte che non sia `atto-letto` dichiara inoltre un campo **`lacuna`** che nomina
 esattamente ciò che manca — *«l'art. 51 del D.P.R. 917/1986, applicabile al 2026, non è stato
@@ -1103,8 +1158,8 @@ TUIR**, che questo modello non rappresenta perché non ci sono oneri detraibili.
 detrazioni da ridurre. Sono quindi dichiarate e non applicate — scelta consapevole, non omissione.
 
 ### 5.5 Cosa manca del tutto
-Detrazioni per carichi di famiglia (art. 12 TUIR) e assegno unico; oneri deducibili dell'art. 10
-e detraibili dell'art. 15, previdenza complementare compresa; fringe benefit e welfare
+Assegno unico per i figli sotto i 21 anni; oneri **detraibili** dell'art. 15; massimali per tipo
+di onere deducibile (il campo è generico); fringe benefit e welfare
 aziendale; premi di risultato a tassazione sostitutiva; regimi agevolati (impatriati,
 ricercatori, frontalieri); contratti a termine; trattenute a carico del lavoratore previste dal
 CCNL oltre l'IVS; addizionali di comuni diversi da Milano; più rapporti nello stesso anno e
@@ -1121,8 +1176,9 @@ completa.
 | impiegato a tempo indeterminato | traccia | sì: minimo di 690 € anziché 1.380 € nella prima fascia dell'art. 13 |
 | residenza a Milano | traccia | sì: aliquota 0,8%, soglia 23.000, addizionale lombarda |
 | nessuna agevolazione particolare | traccia | sì: esclude impatriati, ricercatori, frontalieri |
-| nessun familiare a carico | **nostra** | **sì, molto**: è l'art. 12, la voce mancante più pesante |
-| nessun onere deducibile o detraibile | **nostra** | **sì**: previdenza complementare, mutuo, spese sanitarie |
+| ~~nessun familiare a carico~~ | — | **implementata**: art. 12, §2.4-bis |
+| ~~nessun onere deducibile~~ | — | **implementato**: art. 10, §2.4-ter, senza massimali |
+| nessun onere detraibile (art. 15) | **nostra** | **sì**: mutuo, spese sanitarie |
 | nessun altro reddito (§5.1) | **nostra** | sì, sulle soglie di cuneo e trattamento integrativo |
 | nessuna trattenuta di CCNL oltre l'IVS | **nostra** | sì, in misura variabile col contratto |
 | un solo rapporto, anno intero | **nostra** | sì, se il rapporto è parziale o plurimo |

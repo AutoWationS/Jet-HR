@@ -17,6 +17,7 @@ import {
   calcolaDetrazioneLavoro,
   calcolaUlterioreDetrazione,
   calcolaSommaEsente,
+  calcolaDetrazioniFamiliari,
   calcolaTrattamentoIntegrativo,
   applicaScaglioni,
   curvaNetto,
@@ -484,9 +485,11 @@ test('trattamento integrativo: i confini del D.L. 3/2020, letti nell originale',
   // fra la somma delle detrazioni elencate e l'imposta lorda. Quelle voci sono
   // quasi tutte oneri detraibili per spese sostenute fino al 31/12/2021, che il
   // modello non rappresenta. Resta la sola detrazione dell'art. 13 c. 1, che
-  // l'imposta lorda supera sempre: in questo perimetro la seconda fascia vale
-  // zero non per caso ma per costruzione, ed e' un limite dichiarato, non un
-  // bug. Il test tiene ferma la RAGIONE, non solo il risultato.
+  // l'imposta lorda supera sempre: SENZA FAMILIARI A CARICO la seconda fascia
+  // vale zero non per caso ma per costruzione. Con familiari a carico si
+  // accende davvero, perche' l'art. 12 e' nella lista della norma: lo verifica
+  // il test dedicato piu' avanti. Qui si tiene ferma la RAGIONE, non solo il
+  // risultato.
   for (let r = 15100; r <= 28000; r += 100) {
     assert.ok(
       calcolaDetrazioneLavoro(r, P, 365).base < lorda(r),
@@ -506,4 +509,112 @@ test('trattamento integrativo: i confini del D.L. 3/2020, letti nell originale',
   const d = calcolaDetrazioneLavoro(26000, P, 365);
   assert.equal(d.maggiorazione, P.detrazioneLavoroDipendente.maggiorazione.importo);
   assert.notEqual(d.base, d.totale);
+});
+
+test('detrazioni per carichi di famiglia: le tre lettere dell art. 12', () => {
+  const d = (rc, fam) => calcolaDetrazioniFamiliari(rc, fam, P);
+  const F = P.detrazioniFamiliari;
+
+  // c. 1 lett. a) n. 1: 800 - 110 x (reddito / 15.000), sotto i 15.000
+  vicino(d(10000, { coniugeACarico: true }).coniuge, 726.67, 0.01);
+
+  // c. 4, primo periodo: se quel rapporto vale UNO l'importo e' fisso, non la
+  // formula. A 15.000 esatti i due percorsi darebbero comunque 690, ma la norma
+  // detta l'esito e il motore lo segue alla lettera invece di dedurlo.
+  assert.equal(d(15000, { coniugeACarico: true }).coniuge, F.coniuge.importoRapportoUno);
+
+  // c. 4, secondo periodo: rapporto zero -> non compete. Vale a reddito nullo
+  // (lett. a n. 1) e alla soglia degli 80.000 (lett. a n. 3).
+  assert.equal(d(0, { coniugeACarico: true }).coniuge, 0);
+  assert.equal(d(80000, { coniugeACarico: true }).coniuge, 0);
+
+  // c. 1 lett. a) n. 2: importo fisso nella fascia centrale...
+  assert.equal(d(20000, { coniugeACarico: true }).coniuge, F.coniuge.secondaFascia.base);
+  // ...ma la lett. b) lo maggiora a scaglioni stretti, di pochi euro
+  assert.equal(d(30000, { coniugeACarico: true }).coniuge, F.coniuge.secondaFascia.base + 20);
+  assert.equal(d(34800, { coniugeACarico: true }).coniuge, F.coniuge.secondaFascia.base + 30);
+  assert.equal(d(35200, { coniugeACarico: true }).coniuge, F.coniuge.secondaFascia.base + 10);
+  assert.equal(d(35201, { coniugeACarico: true }).coniuge, F.coniuge.secondaFascia.base);
+
+  // c. 1 lett. a) n. 3: decalage lineare fino a 80.000
+  vicino(d(60000, { coniugeACarico: true }).coniuge, 345, 0.01);
+
+  // c. 1 lett. c): il riferimento cresce di 15.000 "per ogni figlio successivo
+  // al primo", e la crescita vale per TUTTI i figli, non solo per quelli in piu'.
+  // Due figli a 30.000: (110.000 - 30.000) / 110.000 = 0,7272 troncato.
+  vicino(d(30000, { figliACarico: 2, quotaFigli: 1 }).figli, 1381.68, 0.01);
+  // Con la quota di legge del 50% l'importo si dimezza.
+  vicino(d(30000, { figliACarico: 2, quotaFigli: 0.5 }).figli, 690.84, 0.01);
+
+  // c. 4, terzo periodo: per figli e ascendenti il rapporto "uguale a uno" non
+  // da' detrazione. Succede a reddito zero, ed e' controintuitivo abbastanza da
+  // meritare un test: chi non ha reddito non prende la detrazione piu' alta,
+  // non ne prende nessuna.
+  assert.equal(d(0, { figliACarico: 2 }).figli, 0);
+  assert.equal(d(0, { ascendentiConviventi: 1 }).ascendenti, 0);
+
+  // c. 1 lett. d): 750 x (80.000 - reddito) / 80.000
+  vicino(d(30000, { ascendentiConviventi: 1 }).ascendenti, 468.75, 0.01);
+  vicino(d(30000, { ascendentiConviventi: 2 }).ascendenti, 937.5, 0.01);
+});
+
+test('le detrazioni dell art. 12 non seguono il periodo di LAVORO', () => {
+  // Differenza sostanziale rispetto all'art. 13, e facile da sbagliare: la
+  // detrazione da lavoro dipendente si rapporta ai giorni lavorati, quella per
+  // carichi di famiglia ai mesi in cui il familiare e' a carico (art. 12 c. 3).
+  // Chi lavora cento giorni ha comunque il coniuge a carico tutto l'anno.
+  const intero = calcolaNetto({ ral: 35000, coniugeACarico: true }, P);
+  const parziale = calcolaNetto({ ral: 35000, giorniLavorati: 100, coniugeACarico: true }, P);
+
+  assert.ok(parziale.irpef.detrazioneLavoro < intero.irpef.detrazioneLavoro, 'art. 13 ragguagliato');
+  assert.equal(
+    parziale.irpef.familiari.coniuge,
+    calcolaDetrazioniFamiliari(parziale.redditoComplessivo, { coniugeACarico: true }, P).coniuge,
+    'art. 12 non ragguagliato ai giorni di lavoro',
+  );
+});
+
+test('con familiari a carico la seconda fascia del trattamento integrativo si accende', () => {
+  // Il complemento del test precedente sul D.L. 3/2020: senza familiari la
+  // somma delle detrazioni elencate sta sempre sotto l'imposta lorda e la
+  // seconda fascia vale zero. Con familiari a carico no, perche' l'art. 12
+  // e' nella lista della norma insieme all'art. 13 c. 1.
+  const famiglia = { coniugeACarico: true, figliACarico: 2, quotaFigli: 1 };
+  const senza = calcolaNetto({ ral: 20000 }, P);
+  const con = calcolaNetto({ ral: 20000, ...famiglia }, P);
+
+  assert.equal(senza.bonus.trattamentoIntegrativo, 0);
+  vicino(con.bonus.trattamentoIntegrativo, 909.33, 0.02);
+
+  // E' esattamente la differenza fra le due detrazioni elencate e l'imposta
+  // lorda: la norma dice "pari alla differenza", non un importo forfettario.
+  vicino(
+    con.bonus.trattamentoIntegrativo,
+    con.irpef.detrazioneLavoro + con.irpef.familiari.totale - con.irpef.lorda,
+    0.02,
+  );
+
+  // L'ulteriore detrazione del cuneo NON e' nella lista della norma: a 24.000
+  // l'IRPEF netta e' zero grazie a quella, ma il trattamento resta zero.
+  const a24 = calcolaNetto({ ral: 24000, ...famiglia }, P);
+  assert.equal(a24.irpef.netta, 0);
+  assert.equal(a24.bonus.trattamentoIntegrativo, 0);
+});
+
+test('gli oneri deducibili abbassano la base, non l imposta', () => {
+  // Art. 10 TUIR. Effetto meno ovvio ma reale: abbassando il reddito
+  // complessivo spostano anche le soglie di cuneo, detrazioni e addizionali.
+  const senza = calcolaNetto({ ral: 35000 }, P);
+  const con = calcolaNetto({ ral: 35000, oneriDeducibili: 3000 }, P);
+
+  vicino(con.imponibileFiscale, senza.imponibileFiscale - 3000, 0.01);
+  assert.ok(con.irpef.lorda < senza.irpef.lorda);
+  // La detrazione da lavoro dipendente CRESCE, perche' e' decrescente col reddito
+  assert.ok(con.irpef.detrazioneLavoro > senza.irpef.detrazioneLavoro);
+  // e l'ulteriore detrazione del cuneo pure, perche' il reddito scende sotto i 32.000
+  assert.ok(con.irpef.ulterioreDetrazione >= senza.irpef.ulterioreDetrazione);
+  // Il netto sale meno di 3.000: gli oneri sono soldi comunque spesi, il
+  // vantaggio e' solo il risparmio d'imposta.
+  const risparmio = con.netto.annuo - senza.netto.annuo;
+  assert.ok(risparmio > 0 && risparmio < 3000, `risparmio fuori scala: ${risparmio}`);
 });

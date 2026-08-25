@@ -203,6 +203,81 @@ export function calcolaUlterioreDetrazione(redditoComplessivo, parametri, giorni
 }
 
 /* -------------------------------------------------------------------------- *
+ * 3-bis. Detrazioni per carichi di famiglia (art. 12 TUIR)
+ * -------------------------------------------------------------------------- */
+
+/**
+ * Art. 12 TUIR. Tre detrazioni indipendenti, tutte decrescenti col reddito e
+ * tutte troncate alla quarta cifra decimale come vuole il comma 4 (stessa
+ * regola dell'art. 13 c. 6: qui si riusa la stessa funzione).
+ *
+ * Attenzione a due cose che distinguono queste detrazioni da quella per lavoro
+ * dipendente:
+ *  - NON si rapportano al periodo di lavoro ma ai mesi in cui la condizione
+ *    familiare sussiste (c. 3). Chi lavora mezzo anno ha comunque il coniuge a
+ *    carico per dodici mesi, quindi qui `giorniLavorati` non entra.
+ *  - il comma 4 detta esiti secchi ai bordi, che non si ricavano dalle formule:
+ *    rapporto del coniuge uguale a uno -> importo fisso; uguale a zero -> nulla;
+ *    per figli e ascendenti "pari a zero, minore di zero o uguale a uno" -> nulla.
+ */
+export function calcolaDetrazioniFamiliari(redditoComplessivo, familiari = {}, parametri = PARAMETRI_DEFAULT) {
+  const p = parametri.detrazioniFamiliari;
+  const R = Math.max(0, Number(redditoComplessivo) || 0);
+  const cifre = p.cifreDecimaliRapporto;
+  const conta = (x) => Math.max(0, Math.trunc(Number(x) || 0));
+
+  // --- Coniuge, c. 1 lett. a) con le maggiorazioni della lett. b) ----------
+  let coniuge = 0;
+  if (familiari.coniugeACarico) {
+    const c = p.coniuge;
+    if (R <= c.primaFascia.fino) {
+      const rapporto = tronca(R / c.primaFascia.riferimento, cifre);
+      if (rapporto === 0) coniuge = 0;
+      else if (rapporto === 1) coniuge = c.importoRapportoUno;
+      else coniuge = c.primaFascia.base - c.primaFascia.sottrai * rapporto;
+    } else if (R <= c.secondaFascia.fino) {
+      coniuge = c.secondaFascia.base;
+    } else if (R <= c.terzaFascia.fino) {
+      const rapporto = tronca((c.terzaFascia.riferimento - R) / c.terzaFascia.ampiezza, cifre);
+      coniuge = rapporto === 0 ? 0 : c.terzaFascia.base * rapporto;
+    }
+    if (coniuge > 0) {
+      const m = c.maggiorazioni.find((x) => R > x.da && R <= x.a);
+      if (m) coniuge += m.importo;
+    }
+  }
+
+  // --- Figli, c. 1 lett. c) ------------------------------------------------
+  // Il riferimento cresce "per ogni figlio successivo al primo", e la crescita
+  // vale per tutti i figli, non solo per quelli in piu'.
+  let figli = 0;
+  const numeroFigli = conta(familiari.figliACarico);
+  const quota = familiari.quotaFigli ?? p.figli.quotaPredefinita;
+  if (numeroFigli > 0) {
+    const f = p.figli;
+    const riferimento = f.riferimento + f.incrementoOltreIlPrimo * (numeroFigli - 1);
+    const rapporto = tronca((riferimento - R) / riferimento, cifre);
+    if (rapporto > 0 && rapporto < 1) figli = f.importo * numeroFigli * rapporto * quota;
+  }
+
+  // --- Ascendenti conviventi, c. 1 lett. d) --------------------------------
+  let ascendenti = 0;
+  const numeroAscendenti = conta(familiari.ascendentiConviventi);
+  if (numeroAscendenti > 0) {
+    const a = p.ascendenti;
+    const rapporto = tronca((a.riferimento - R) / a.riferimento, cifre);
+    if (rapporto > 0 && rapporto < 1) ascendenti = a.importo * numeroAscendenti * rapporto;
+  }
+
+  return {
+    coniuge: euro(coniuge),
+    figli: euro(figli),
+    ascendenti: euro(ascendenti),
+    totale: euro(coniuge + figli + ascendenti),
+  };
+}
+
+/* -------------------------------------------------------------------------- *
  * 4. Trattamento integrativo (art. 1 D.L. 3/2020)
  * -------------------------------------------------------------------------- */
 
@@ -227,9 +302,12 @@ export function calcolaTrattamentoIntegrativo(redditoComplessivo, irpefLorda, de
     // TUIR, art. 15 c. 1 lett. a e b e c. 1-ter per mutui ante 2022, rate di
     // art. 15 c. 1 lett. c e 16-bis per spese ante 2022) e l'IRPEF lorda, nel
     // limite di 1.200 euro. L'ulteriore detrazione del cuneo NON e' in quella
-    // lista. Di quelle voci il modello rappresenta solo l'art. 13 c. 1, quindi
-    // qui il risultato e' sempre zero: e' una conseguenza del perimetro.
-    const incapienza = detrazioni.articolo13Comma1 - irpefLorda;
+    // lista. Di quelle voci il modello rappresenta l'art. 13 c. 1 e l'art. 12:
+    // senza familiari a carico la detrazione da lavoro sta sempre sotto
+    // l'imposta lorda e qui il risultato e' zero, ma con familiari a carico la
+    // somma puo' superarla e la seconda fascia si accende davvero.
+    const incapienza =
+      detrazioni.articolo13Comma1 + (detrazioni.articolo12 ?? 0) - irpefLorda;
     return incapienza > 0 ? euro(Math.min(rapporta(p.importo), incapienza)) : 0;
   }
 
@@ -297,12 +375,15 @@ export function calcolaNetto(input, parametri = PARAMETRI_DEFAULT) {
   const mensilita = Number(input.mensilita) || 13;
   const giorniLavorati = Number(input.giorniLavorati) || parametri.detrazioneLavoroDipendente.giorniAnno;
   const applicaMassimale = input.applicaMassimale ?? true;
+  const oneriDeducibili = Math.max(0, Number(input.oneriDeducibili) || 0);
 
   // --- Contributi previdenziali -------------------------------------------
   const contributi = calcolaContributi(ral, parametri, { applicaMassimale });
 
   // --- Imponibile fiscale --------------------------------------------------
-  const imponibileFiscale = euro(ral - contributi.totale);
+  // Art. 10 TUIR: gli oneri deducibili si sottraggono dal reddito, non
+  // dall'imposta. Abbassano quindi anche le soglie di cuneo e detrazioni.
+  const imponibileFiscale = euro(Math.max(0, ral - contributi.totale - oneriDeducibili));
   // Semplificazione dichiarata: il reddito complessivo coincide con
   // l'imponibile fiscale da lavoro dipendente (nessun altro reddito,
   // nessun onere deducibile, no rendita catastale abitazione principale).
@@ -315,7 +396,10 @@ export function calcolaNetto(input, parametri = PARAMETRI_DEFAULT) {
   // --- Detrazioni ----------------------------------------------------------
   const detrazioneLavoro = calcolaDetrazioneLavoro(redditoComplessivo, parametri, giorniLavorati);
   const ulterioreDetrazione = calcolaUlterioreDetrazione(redditoComplessivo, parametri, giorniLavorati);
-  const detrazioniTotali = euro(detrazioneLavoro.totale + ulterioreDetrazione);
+  const detrazioniFamiliari = calcolaDetrazioniFamiliari(redditoComplessivo, input, parametri);
+  const detrazioniTotali = euro(
+    detrazioneLavoro.totale + ulterioreDetrazione + detrazioniFamiliari.totale,
+  );
 
   // --- IRPEF netta (mai negativa: l'eccedenza di detrazioni si perde) ------
   const irpefNetta = euro(Math.max(0, irpefLorda - detrazioniTotali));
@@ -335,7 +419,7 @@ export function calcolaNetto(input, parametri = PARAMETRI_DEFAULT) {
   const trattamentoIntegrativo = calcolaTrattamentoIntegrativo(
     redditoComplessivo,
     irpefLorda,
-    { articolo13Comma1: detrazioneLavoro.base },
+    { articolo13Comma1: detrazioneLavoro.base, articolo12: detrazioniFamiliari.totale },
     parametri,
     giorniLavorati,
   );
@@ -349,7 +433,17 @@ export function calcolaNetto(input, parametri = PARAMETRI_DEFAULT) {
   const nettoMensile = euro(nettoAnnuo / mensilita);
 
   return {
-    input: { ral, mensilita, giorniLavorati, applicaMassimale },
+    input: {
+      ral,
+      mensilita,
+      giorniLavorati,
+      applicaMassimale,
+      oneriDeducibili,
+      coniugeACarico: !!input.coniugeACarico,
+      figliACarico: Math.max(0, Math.trunc(Number(input.figliACarico) || 0)),
+      ascendentiConviventi: Math.max(0, Math.trunc(Number(input.ascendentiConviventi) || 0)),
+      quotaFigli: input.quotaFigli ?? parametri.detrazioniFamiliari.figli.quotaPredefinita,
+    },
     parametriAnno: parametri.anno,
 
     contributi,
@@ -362,6 +456,7 @@ export function calcolaNetto(input, parametri = PARAMETRI_DEFAULT) {
       detrazioneLavoro: detrazioneLavoro.base,
       maggiorazione65: detrazioneLavoro.maggiorazione,
       ulterioreDetrazione,
+      familiari: detrazioniFamiliari,
       detrazioniTotali,
       detrazioniNonGodute,
       netta: irpefNetta,
@@ -418,17 +513,20 @@ function calcolaNettoSemplice(input, parametri) {
   const contributi = calcolaContributi(ral, parametri, {
     applicaMassimale: input.applicaMassimale ?? true,
   });
-  const imponibile = ral - contributi.totale;
+  const oneri = Math.max(0, Number(input.oneriDeducibili) || 0);
+  const imponibile = Math.max(0, ral - contributi.totale - oneri);
   const irpefLorda = applicaScaglioni(imponibile, parametri.irpef.scaglioni).totale;
   const detrLavoro = calcolaDetrazioneLavoro(imponibile, parametri, giorni);
-  const detrTotali = detrLavoro.totale + calcolaUlterioreDetrazione(imponibile, parametri, giorni);
+  const familiari = calcolaDetrazioniFamiliari(imponibile, input, parametri);
+  const detrTotali =
+    detrLavoro.totale + calcolaUlterioreDetrazione(imponibile, parametri, giorni) + familiari.totale;
   const irpefNetta = Math.max(0, irpefLorda - detrTotali);
   const addizionali = calcolaAddizionali(imponibile, parametri, { irpefNetta });
   const sommaEsente = calcolaSommaEsente(imponibile, imponibile, parametri, giorni).importo;
   const ti = calcolaTrattamentoIntegrativo(
     imponibile,
     irpefLorda,
-    { articolo13Comma1: detrLavoro.base },
+    { articolo13Comma1: detrLavoro.base, articolo12: familiari.totale },
     parametri,
     giorni,
   );

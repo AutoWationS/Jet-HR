@@ -70,6 +70,61 @@
           </div>
 
           <details class="avanzate">
+            <summary>Familiari a carico e oneri</summary>
+            <div class="corpo">
+              <div class="campo">
+                <span class="occhiello">Coniuge</span>
+                <label class="interruttore">
+                  <input type="checkbox" id="coniuge">
+                  Coniuge a carico
+                </label>
+                <span class="aiuto">
+                  Non legalmente separato e con reddito proprio sotto il limite di legge.
+                </span>
+              </div>
+              <div class="campo">
+                <label for="figli">Figli a carico dai 21 ai 29 anni</label>
+                <input type="number" id="figli" name="figli" value="0" min="0" max="10" step="1"
+                       aria-describedby="aiuto-figli">
+                <span class="aiuto" id="aiuto-figli">
+                  Sotto i 21 anni non c’è detrazione: c’è l’assegno unico, che l’INPS paga a
+                  parte e non passa dalla busta paga. Dai 30 anni la detrazione spetta solo con
+                  disabilità accertata.
+                </span>
+              </div>
+              <div class="campo">
+                <label for="quota-figli">Quota della detrazione figli</label>
+                <select id="quota-figli" name="quota-figli" aria-describedby="aiuto-quota">
+                  <option value="0.5" selected>50% — ripartita con l’altro genitore</option>
+                  <option value="1">100% — genitore unico o previo accordo</option>
+                </select>
+                <span class="aiuto" id="aiuto-quota">
+                  Il 50% è il criterio di legge; il 100% spetta al genitore unico o, previo
+                  accordo, a quello con il reddito più alto.
+                </span>
+              </div>
+              <div class="campo">
+                <label for="ascendenti">Ascendenti conviventi a carico</label>
+                <input type="number" id="ascendenti" name="ascendenti" value="0" min="0" max="10"
+                       step="1" aria-describedby="aiuto-ascendenti">
+                <span class="aiuto" id="aiuto-ascendenti">
+                  Genitori o nonni che convivono con il contribuente. Gli altri familiari
+                  conviventi non danno più diritto a detrazione.
+                </span>
+              </div>
+              <div class="campo">
+                <label for="oneri">Oneri deducibili annui</label>
+                <input type="number" id="oneri" name="oneri" value="0" min="0" step="100"
+                       inputmode="numeric" aria-describedby="aiuto-oneri">
+                <span class="aiuto" id="aiuto-oneri">
+                  Si sottraggono dal reddito, non dall’imposta: es. contributi a fondo pensione.
+                  Il campo è generico e non applica i massimali previsti per ciascun tipo di onere.
+                </span>
+              </div>
+            </div>
+          </details>
+
+          <details class="avanzate">
             <summary>Parametri avanzati</summary>
             <div class="corpo">
               <div class="campo">

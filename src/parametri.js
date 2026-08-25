@@ -505,6 +505,74 @@ export const FONTI = {
       'dipendente è dichiarata in metodologia §5.1',
   },
 
+  carichiFamiglia: {
+    livello: 1,
+    statoVerifica: 'atto-letto',
+    dove: 'D.P.R. 917/1986 (TUIR), testo vigente 2026 — art. 12',
+    canale: 'normattiva',
+    etichetta: 'Detrazioni per carichi di famiglia',
+    norma: 'Art. 12 TUIR',
+    dettaglio:
+      'Detrazione per il coniuge non separato, decrescente e con una scaletta di ' +
+      'maggiorazioni; per i figli di età pari o superiore a 21 anni e inferiore a 30 (oltre i ' +
+      '30 solo con disabilità accertata), perché sotto i 21 opera l’assegno unico e non la ' +
+      'detrazione; per ciascun ascendente convivente. Tutte azzerate oltre le rispettive ' +
+      'soglie di reddito, tutte condizionate al fatto che il familiare non superi un proprio ' +
+      'reddito. A differenza della detrazione da lavoro, queste NON si rapportano al periodo ' +
+      'di lavoro ma ai mesi in cui la condizione sussiste: chi lavora mezzo anno ha comunque ' +
+      'il coniuge a carico per dodici mesi.',
+    url:
+      'https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.del.presidente.della.repubblica:1986-12-22;917',
+    verifica:
+      'VERIFICATO sul testo vigente dell’art. 12. Confermate le tre fasce del coniuge alla ' +
+      'lett. a), la scaletta di maggiorazioni della lett. b), i figli alla lett. c) con la ' +
+      'finestra anagrafica “di età pari o superiore a 21 anni ma inferiore a 30 anni” e ' +
+      'l’eccezione per la disabilità, gli ascendenti conviventi alla lett. d), e alla lett. c) ' +
+      'l’aumento del riferimento “per ogni figlio successivo al primo”. Il c. 2 fissa il ' +
+      'limite di reddito del familiare, elevato per i figli fino a ventiquattro anni. Tre ' +
+      'regole del c. 4 sono implementate alla lettera perché cambiano il risultato ai bordi: ' +
+      'se il rapporto del coniuge vale uno la detrazione è quella fissa e non la formula, se ' +
+      'vale zero non spetta, e per figli e ascendenti non spetta quando il rapporto è “pari a ' +
+      'zero, minore di zero o uguale a uno”. Lo stesso comma impone il troncamento alle prime ' +
+      'quattro cifre decimali, come l’art. 13 c. 6: il motore riusa la stessa funzione. Il ' +
+      'c. 2-bis esclude i familiari residenti all’estero per i contribuenti extra UE/SEE, ' +
+      'circostanza fuori perimetro. Il c. 4-bis conferma che anche qui il reddito è assunto ' +
+      'al netto dell’abitazione principale',
+  },
+
+  oneriDeducibili: {
+    livello: 1,
+    statoVerifica: 'atto-letto',
+    dove: 'Art. 8 del D.Lgs. 252/2005, per il tetto della previdenza complementare',
+    canale: 'normattiva',
+    lacuna:
+      'l’art. 10 rinvia per i massimali ad altre norme (l’art. 8 del D.Lgs. 252/2005 per i ' +
+      'fondi pensione), che non sono state lette: il campo del prototipo è generico e non ' +
+      'applica alcun tetto',
+    etichetta: 'Oneri deducibili dal reddito complessivo',
+    norma: 'Art. 10 TUIR',
+    dettaglio:
+      'Gli oneri deducibili si sottraggono dal reddito complessivo, non dall’imposta: ' +
+      'riducono quindi la base su cui si calcolano IRPEF, addizionali e — effetto meno ' +
+      'ovvio — anche le soglie di cuneo e detrazioni. La lett. e-bis) riguarda i fondi ' +
+      'pensione, la lett. e) i contributi previdenziali obbligatori: per il dipendente questi ' +
+      'ultimi non passano di qui, perché l’art. 51 c. 2 lett. a) li tiene fuori dal reddito ' +
+      'ancora prima.',
+    url:
+      'https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.del.presidente.della.repubblica:1986-12-22;917',
+    verifica:
+      'VERIFICATO sul testo vigente dell’art. 10, che apre con “dal reddito complessivo si ' +
+      'deducono … i seguenti oneri sostenuti dal contribuente”: è la meccanica implementata, ' +
+      'sottrazione dalla base e non dall’imposta. La lett. e-bis) rinvia per condizioni e ' +
+      'limiti “all’articolo 8” del D.Lgs. 252/2005, quindi IL TETTO NON STA NEL TUIR e non è ' +
+      'stato letto: il campo del prototipo resta generico e senza massimale, ed è dichiarato. ' +
+      'La lett. e) conferma per contrasto una scelta del modello: i contributi obbligatori ' +
+      'sarebbero deducibili, ma per il dipendente non arrivano mai al reddito complessivo ' +
+      'perché l’art. 51 c. 2 lett. a) li esclude prima. Il c. 3-bis, infine, dà la deduzione ' +
+      'della rendita dell’abitazione principale, che è la ragione per cui possedere la casa ' +
+      'in cui si vive non sposta questo calcolo',
+  },
+
   ragguaglioGiorni: {
     livello: 2,
     statoVerifica: 'atto-letto',
@@ -587,6 +655,43 @@ export const PARAMETRI_2026 = {
     giorniAnno: 365,
   },
 
+  /** 3-bis. Detrazioni per carichi di famiglia (art. 12 TUIR). */
+  detrazioniFamiliari: {
+    fonte: 'carichiFamiglia',
+    /** Art. 12 c. 1 lett. a): tre fasce, e la lett. b) le maggiora a scaglioni. */
+    coniuge: {
+      primaFascia: { fino: 15000, base: 800, sottrai: 110, riferimento: 15000 },
+      secondaFascia: { fino: 40000, base: 690 },
+      terzaFascia: { fino: 80000, base: 690, riferimento: 80000, ampiezza: 40000 },
+      // Art. 12 c. 4: se il rapporto della prima fascia vale uno, l'importo e' fisso.
+      importoRapportoUno: 690,
+      maggiorazioni: [
+        { da: 29000, a: 29200, importo: 10 },
+        { da: 29200, a: 34700, importo: 20 },
+        { da: 34700, a: 35000, importo: 30 },
+        { da: 35000, a: 35100, importo: 20 },
+        { da: 35100, a: 35200, importo: 10 },
+      ],
+    },
+    /** Art. 12 c. 1 lett. c): sotto i 21 anni c'e' l'assegno unico, non la detrazione. */
+    figli: {
+      importo: 950,
+      etaMinima: 21,
+      etaMassima: 30,
+      riferimento: 95000,
+      incrementoOltreIlPrimo: 15000,
+      quotaPredefinita: 0.5,
+    },
+    /** Art. 12 c. 1 lett. d). */
+    ascendenti: { importo: 750, riferimento: 80000 },
+    /** Art. 12 c. 2: il familiare non deve superare un proprio reddito. */
+    limiteRedditoFamiliare: 2840.51,
+    limiteRedditoFigliFinoA24: 4000,
+    etaLimiteRedditoElevato: 24,
+    /** Art. 12 c. 4, identico all'art. 13 c. 6. */
+    cifreDecimaliRapporto: 4,
+  },
+
   /** 4. Taglio del cuneo fiscale: somma esente + ulteriore detrazione. */
   cuneoFiscale: {
     fonte: 'cuneoFiscale',
@@ -660,9 +765,25 @@ export const PARAMETRI_2026 = {
         'imponibile le somme corrisposte a titolo di trattamento di fine rapporto”.',
     },
     {
-      voce: 'Detrazioni per carichi di famiglia',
-      norma: 'Art. 12 TUIR',
-      motivo: 'Il caso modellato è un lavoratore senza familiari a carico.',
+      voce: 'Assegno unico e universale per i figli',
+      norma: 'D.Lgs. 21 dicembre 2021, n. 230',
+      motivo:
+        'Per i figli sotto i 21 anni la detrazione dell’art. 12 è stata soppressa e sostituita ' +
+        'dall’assegno unico, che l’INPS eroga direttamente alla famiglia su domanda e che non ' +
+        'transita dalla busta paga. Il prototipo calcola quindi la detrazione solo dai 21 anni ' +
+        'in su, ed è il motivo per cui il campo dei figli a carico ha quella soglia: chi ha ' +
+        'figli piccoli non vede nulla qui, ma riceve altro altrove. Modellare l’assegno unico ' +
+        'richiederebbe ISEE e composizione del nucleo, che una RAL non descrive.',
+    },
+    {
+      voce: 'Familiari a carico diversi da coniuge, figli e ascendenti conviventi',
+      norma: 'Art. 12 c. 1 lett. d) e c. 2-bis TUIR',
+      motivo:
+        'La lett. d) riconosce la detrazione ai soli ascendenti conviventi: gli altri familiari ' +
+        'dell’art. 433 c.c. che convivono con il contribuente non danno più diritto a nulla. ' +
+        'Il c. 2-bis esclude inoltre i familiari residenti all’estero per i contribuenti che ' +
+        'non siano cittadini italiani, UE o SEE. Il prototipo non chiede la cittadinanza e ' +
+        'assume che la condizione sia soddisfatta.',
     },
     {
       voce: 'Fringe benefit e welfare aziendale',

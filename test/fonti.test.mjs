@@ -20,6 +20,7 @@ const BLOCCHI = [
   'trattamentoIntegrativo',
   'addizionaleRegionale',
   'addizionaleComunale',
+  'detrazioniFamiliari',
 ];
 
 test('ogni blocco di parametri dichiara una fonte esistente', () => {
@@ -53,6 +54,7 @@ test('nessuna fonte orfana: ognuna e citata da un parametro o dichiarata trasver
     'addizionaliNoTaxArea',
     'redditoComplessivo',
     'ragguaglioGiorni',
+    'oneriDeducibili',
   ];
   const citate = new Set([...BLOCCHI.map((n) => P[n].fonte), ...TRASVERSALI]);
 
@@ -150,6 +152,7 @@ test('i numeri scritti nelle fonti coincidono con i parametri usati dal motore',
     detrazione: P.detrazioneLavoroDipendente,
     cuneo: P.cuneoFiscale,
     ti: P.trattamentoIntegrativo,
+    famiglia: P.detrazioniFamiliari,
     reg: P.addizionaleRegionale,
     com: P.addizionaleComunale,
   });

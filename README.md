@@ -107,9 +107,9 @@ prassi, fonte dell'ente, non verificata — e, se incompleta, un campo `lacuna` 
 manca più il documento da aprire per chiuderla. Un test impedisce alla prosa di dirsi
 «VERIFICATO» quando lo stato non lo consente: è la correzione di un difetto reale, sei fonti si
 erano autopromosse citando il testo unico riordinato al posto di quello vigente. Oggi **tutte e
-quattordici le fonti hanno avuto il proprio atto aperto**: nessuna poggia su una circolare al
-posto della norma, né sulla pagina di un ente al posto dell'atto. Due conservano una lacuna
-dichiarata e circoscritta, e nessuna delle due tocca un numero del caso modellato;
+sedici le fonti hanno avuto il proprio atto aperto**: nessuna poggia su una circolare al
+posto della norma, né sulla pagina di un ente al posto dell'atto. Tre conservano una lacuna
+dichiarata e circoscritta, e nessuna delle tre tocca un numero del caso modellato;
 `node scripts/verifica-fonti.mjs` stampa cosa resta e dove trovarlo. Un secondo test legge il
 sorgente del registro e cade se una fonte dichiara due volte la stessa chiave: anche quello è la
 correzione di un difetto reale, sei note di verifica aggiornate che l'object literal cancellava

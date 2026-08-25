@@ -729,6 +729,61 @@ footer {
           </div>
 
           <details class="avanzate">
+            <summary>Familiari a carico e oneri</summary>
+            <div class="corpo">
+              <div class="campo">
+                <span class="occhiello">Coniuge</span>
+                <label class="interruttore">
+                  <input type="checkbox" id="coniuge">
+                  Coniuge a carico
+                </label>
+                <span class="aiuto">
+                  Non legalmente separato e con reddito proprio sotto il limite di legge.
+                </span>
+              </div>
+              <div class="campo">
+                <label for="figli">Figli a carico dai 21 ai 29 anni</label>
+                <input type="number" id="figli" name="figli" value="0" min="0" max="10" step="1"
+                       aria-describedby="aiuto-figli">
+                <span class="aiuto" id="aiuto-figli">
+                  Sotto i 21 anni non c’è detrazione: c’è l’assegno unico, che l’INPS paga a
+                  parte e non passa dalla busta paga. Dai 30 anni la detrazione spetta solo con
+                  disabilità accertata.
+                </span>
+              </div>
+              <div class="campo">
+                <label for="quota-figli">Quota della detrazione figli</label>
+                <select id="quota-figli" name="quota-figli" aria-describedby="aiuto-quota">
+                  <option value="0.5" selected>50% — ripartita con l’altro genitore</option>
+                  <option value="1">100% — genitore unico o previo accordo</option>
+                </select>
+                <span class="aiuto" id="aiuto-quota">
+                  Il 50% è il criterio di legge; il 100% spetta al genitore unico o, previo
+                  accordo, a quello con il reddito più alto.
+                </span>
+              </div>
+              <div class="campo">
+                <label for="ascendenti">Ascendenti conviventi a carico</label>
+                <input type="number" id="ascendenti" name="ascendenti" value="0" min="0" max="10"
+                       step="1" aria-describedby="aiuto-ascendenti">
+                <span class="aiuto" id="aiuto-ascendenti">
+                  Genitori o nonni che convivono con il contribuente. Gli altri familiari
+                  conviventi non danno più diritto a detrazione.
+                </span>
+              </div>
+              <div class="campo">
+                <label for="oneri">Oneri deducibili annui</label>
+                <input type="number" id="oneri" name="oneri" value="0" min="0" step="100"
+                       inputmode="numeric" aria-describedby="aiuto-oneri">
+                <span class="aiuto" id="aiuto-oneri">
+                  Si sottraggono dal reddito, non dall’imposta: es. contributi a fondo pensione.
+                  Il campo è generico e non applica i massimali previsti per ciascun tipo di onere.
+                </span>
+              </div>
+            </div>
+          </details>
+
+          <details class="avanzate">
             <summary>Parametri avanzati</summary>
             <div class="corpo">
               <div class="campo">
@@ -1364,6 +1419,74 @@ const FONTI = {
       'dipendente è dichiarata in metodologia §5.1',
   },
 
+  carichiFamiglia: {
+    livello: 1,
+    statoVerifica: 'atto-letto',
+    dove: 'D.P.R. 917/1986 (TUIR), testo vigente 2026 — art. 12',
+    canale: 'normattiva',
+    etichetta: 'Detrazioni per carichi di famiglia',
+    norma: 'Art. 12 TUIR',
+    dettaglio:
+      'Detrazione per il coniuge non separato, decrescente e con una scaletta di ' +
+      'maggiorazioni; per i figli di età pari o superiore a 21 anni e inferiore a 30 (oltre i ' +
+      '30 solo con disabilità accertata), perché sotto i 21 opera l’assegno unico e non la ' +
+      'detrazione; per ciascun ascendente convivente. Tutte azzerate oltre le rispettive ' +
+      'soglie di reddito, tutte condizionate al fatto che il familiare non superi un proprio ' +
+      'reddito. A differenza della detrazione da lavoro, queste NON si rapportano al periodo ' +
+      'di lavoro ma ai mesi in cui la condizione sussiste: chi lavora mezzo anno ha comunque ' +
+      'il coniuge a carico per dodici mesi.',
+    url:
+      'https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.del.presidente.della.repubblica:1986-12-22;917',
+    verifica:
+      'VERIFICATO sul testo vigente dell’art. 12. Confermate le tre fasce del coniuge alla ' +
+      'lett. a), la scaletta di maggiorazioni della lett. b), i figli alla lett. c) con la ' +
+      'finestra anagrafica “di età pari o superiore a 21 anni ma inferiore a 30 anni” e ' +
+      'l’eccezione per la disabilità, gli ascendenti conviventi alla lett. d), e alla lett. c) ' +
+      'l’aumento del riferimento “per ogni figlio successivo al primo”. Il c. 2 fissa il ' +
+      'limite di reddito del familiare, elevato per i figli fino a ventiquattro anni. Tre ' +
+      'regole del c. 4 sono implementate alla lettera perché cambiano il risultato ai bordi: ' +
+      'se il rapporto del coniuge vale uno la detrazione è quella fissa e non la formula, se ' +
+      'vale zero non spetta, e per figli e ascendenti non spetta quando il rapporto è “pari a ' +
+      'zero, minore di zero o uguale a uno”. Lo stesso comma impone il troncamento alle prime ' +
+      'quattro cifre decimali, come l’art. 13 c. 6: il motore riusa la stessa funzione. Il ' +
+      'c. 2-bis esclude i familiari residenti all’estero per i contribuenti extra UE/SEE, ' +
+      'circostanza fuori perimetro. Il c. 4-bis conferma che anche qui il reddito è assunto ' +
+      'al netto dell’abitazione principale',
+  },
+
+  oneriDeducibili: {
+    livello: 1,
+    statoVerifica: 'atto-letto',
+    dove: 'Art. 8 del D.Lgs. 252/2005, per il tetto della previdenza complementare',
+    canale: 'normattiva',
+    lacuna:
+      'l’art. 10 rinvia per i massimali ad altre norme (l’art. 8 del D.Lgs. 252/2005 per i ' +
+      'fondi pensione), che non sono state lette: il campo del prototipo è generico e non ' +
+      'applica alcun tetto',
+    etichetta: 'Oneri deducibili dal reddito complessivo',
+    norma: 'Art. 10 TUIR',
+    dettaglio:
+      'Gli oneri deducibili si sottraggono dal reddito complessivo, non dall’imposta: ' +
+      'riducono quindi la base su cui si calcolano IRPEF, addizionali e — effetto meno ' +
+      'ovvio — anche le soglie di cuneo e detrazioni. La lett. e-bis) riguarda i fondi ' +
+      'pensione, la lett. e) i contributi previdenziali obbligatori: per il dipendente questi ' +
+      'ultimi non passano di qui, perché l’art. 51 c. 2 lett. a) li tiene fuori dal reddito ' +
+      'ancora prima.',
+    url:
+      'https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.del.presidente.della.repubblica:1986-12-22;917',
+    verifica:
+      'VERIFICATO sul testo vigente dell’art. 10, che apre con “dal reddito complessivo si ' +
+      'deducono … i seguenti oneri sostenuti dal contribuente”: è la meccanica implementata, ' +
+      'sottrazione dalla base e non dall’imposta. La lett. e-bis) rinvia per condizioni e ' +
+      'limiti “all’articolo 8” del D.Lgs. 252/2005, quindi IL TETTO NON STA NEL TUIR e non è ' +
+      'stato letto: il campo del prototipo resta generico e senza massimale, ed è dichiarato. ' +
+      'La lett. e) conferma per contrasto una scelta del modello: i contributi obbligatori ' +
+      'sarebbero deducibili, ma per il dipendente non arrivano mai al reddito complessivo ' +
+      'perché l’art. 51 c. 2 lett. a) li esclude prima. Il c. 3-bis, infine, dà la deduzione ' +
+      'della rendita dell’abitazione principale, che è la ragione per cui possedere la casa ' +
+      'in cui si vive non sposta questo calcolo',
+  },
+
   ragguaglioGiorni: {
     livello: 2,
     statoVerifica: 'atto-letto',
@@ -1446,6 +1569,43 @@ const PARAMETRI_2026 = {
     giorniAnno: 365,
   },
 
+  /** 3-bis. Detrazioni per carichi di famiglia (art. 12 TUIR). */
+  detrazioniFamiliari: {
+    fonte: 'carichiFamiglia',
+    /** Art. 12 c. 1 lett. a): tre fasce, e la lett. b) le maggiora a scaglioni. */
+    coniuge: {
+      primaFascia: { fino: 15000, base: 800, sottrai: 110, riferimento: 15000 },
+      secondaFascia: { fino: 40000, base: 690 },
+      terzaFascia: { fino: 80000, base: 690, riferimento: 80000, ampiezza: 40000 },
+      // Art. 12 c. 4: se il rapporto della prima fascia vale uno, l'importo e' fisso.
+      importoRapportoUno: 690,
+      maggiorazioni: [
+        { da: 29000, a: 29200, importo: 10 },
+        { da: 29200, a: 34700, importo: 20 },
+        { da: 34700, a: 35000, importo: 30 },
+        { da: 35000, a: 35100, importo: 20 },
+        { da: 35100, a: 35200, importo: 10 },
+      ],
+    },
+    /** Art. 12 c. 1 lett. c): sotto i 21 anni c'e' l'assegno unico, non la detrazione. */
+    figli: {
+      importo: 950,
+      etaMinima: 21,
+      etaMassima: 30,
+      riferimento: 95000,
+      incrementoOltreIlPrimo: 15000,
+      quotaPredefinita: 0.5,
+    },
+    /** Art. 12 c. 1 lett. d). */
+    ascendenti: { importo: 750, riferimento: 80000 },
+    /** Art. 12 c. 2: il familiare non deve superare un proprio reddito. */
+    limiteRedditoFamiliare: 2840.51,
+    limiteRedditoFigliFinoA24: 4000,
+    etaLimiteRedditoElevato: 24,
+    /** Art. 12 c. 4, identico all'art. 13 c. 6. */
+    cifreDecimaliRapporto: 4,
+  },
+
   /** 4. Taglio del cuneo fiscale: somma esente + ulteriore detrazione. */
   cuneoFiscale: {
     fonte: 'cuneoFiscale',
@@ -1519,9 +1679,25 @@ const PARAMETRI_2026 = {
         'imponibile le somme corrisposte a titolo di trattamento di fine rapporto”.',
     },
     {
-      voce: 'Detrazioni per carichi di famiglia',
-      norma: 'Art. 12 TUIR',
-      motivo: 'Il caso modellato è un lavoratore senza familiari a carico.',
+      voce: 'Assegno unico e universale per i figli',
+      norma: 'D.Lgs. 21 dicembre 2021, n. 230',
+      motivo:
+        'Per i figli sotto i 21 anni la detrazione dell’art. 12 è stata soppressa e sostituita ' +
+        'dall’assegno unico, che l’INPS eroga direttamente alla famiglia su domanda e che non ' +
+        'transita dalla busta paga. Il prototipo calcola quindi la detrazione solo dai 21 anni ' +
+        'in su, ed è il motivo per cui il campo dei figli a carico ha quella soglia: chi ha ' +
+        'figli piccoli non vede nulla qui, ma riceve altro altrove. Modellare l’assegno unico ' +
+        'richiederebbe ISEE e composizione del nucleo, che una RAL non descrive.',
+    },
+    {
+      voce: 'Familiari a carico diversi da coniuge, figli e ascendenti conviventi',
+      norma: 'Art. 12 c. 1 lett. d) e c. 2-bis TUIR',
+      motivo:
+        'La lett. d) riconosce la detrazione ai soli ascendenti conviventi: gli altri familiari ' +
+        'dell’art. 433 c.c. che convivono con il contribuente non danno più diritto a nulla. ' +
+        'Il c. 2-bis esclude inoltre i familiari residenti all’estero per i contribuenti che ' +
+        'non siano cittadini italiani, UE o SEE. Il prototipo non chiede la cittadinanza e ' +
+        'assume che la condizione sia soddisfatta.',
     },
     {
       voce: 'Fringe benefit e welfare aziendale',
@@ -1885,6 +2061,81 @@ function calcolaUlterioreDetrazione(redditoComplessivo, parametri, giorni) {
 }
 
 /* -------------------------------------------------------------------------- *
+ * 3-bis. Detrazioni per carichi di famiglia (art. 12 TUIR)
+ * -------------------------------------------------------------------------- */
+
+/**
+ * Art. 12 TUIR. Tre detrazioni indipendenti, tutte decrescenti col reddito e
+ * tutte troncate alla quarta cifra decimale come vuole il comma 4 (stessa
+ * regola dell'art. 13 c. 6: qui si riusa la stessa funzione).
+ *
+ * Attenzione a due cose che distinguono queste detrazioni da quella per lavoro
+ * dipendente:
+ *  - NON si rapportano al periodo di lavoro ma ai mesi in cui la condizione
+ *    familiare sussiste (c. 3). Chi lavora mezzo anno ha comunque il coniuge a
+ *    carico per dodici mesi, quindi qui `giorniLavorati` non entra.
+ *  - il comma 4 detta esiti secchi ai bordi, che non si ricavano dalle formule:
+ *    rapporto del coniuge uguale a uno -> importo fisso; uguale a zero -> nulla;
+ *    per figli e ascendenti "pari a zero, minore di zero o uguale a uno" -> nulla.
+ */
+function calcolaDetrazioniFamiliari(redditoComplessivo, familiari = {}, parametri = PARAMETRI_DEFAULT) {
+  const p = parametri.detrazioniFamiliari;
+  const R = Math.max(0, Number(redditoComplessivo) || 0);
+  const cifre = p.cifreDecimaliRapporto;
+  const conta = (x) => Math.max(0, Math.trunc(Number(x) || 0));
+
+  // --- Coniuge, c. 1 lett. a) con le maggiorazioni della lett. b) ----------
+  let coniuge = 0;
+  if (familiari.coniugeACarico) {
+    const c = p.coniuge;
+    if (R <= c.primaFascia.fino) {
+      const rapporto = tronca(R / c.primaFascia.riferimento, cifre);
+      if (rapporto === 0) coniuge = 0;
+      else if (rapporto === 1) coniuge = c.importoRapportoUno;
+      else coniuge = c.primaFascia.base - c.primaFascia.sottrai * rapporto;
+    } else if (R <= c.secondaFascia.fino) {
+      coniuge = c.secondaFascia.base;
+    } else if (R <= c.terzaFascia.fino) {
+      const rapporto = tronca((c.terzaFascia.riferimento - R) / c.terzaFascia.ampiezza, cifre);
+      coniuge = rapporto === 0 ? 0 : c.terzaFascia.base * rapporto;
+    }
+    if (coniuge > 0) {
+      const m = c.maggiorazioni.find((x) => R > x.da && R <= x.a);
+      if (m) coniuge += m.importo;
+    }
+  }
+
+  // --- Figli, c. 1 lett. c) ------------------------------------------------
+  // Il riferimento cresce "per ogni figlio successivo al primo", e la crescita
+  // vale per tutti i figli, non solo per quelli in piu'.
+  let figli = 0;
+  const numeroFigli = conta(familiari.figliACarico);
+  const quota = familiari.quotaFigli ?? p.figli.quotaPredefinita;
+  if (numeroFigli > 0) {
+    const f = p.figli;
+    const riferimento = f.riferimento + f.incrementoOltreIlPrimo * (numeroFigli - 1);
+    const rapporto = tronca((riferimento - R) / riferimento, cifre);
+    if (rapporto > 0 && rapporto < 1) figli = f.importo * numeroFigli * rapporto * quota;
+  }
+
+  // --- Ascendenti conviventi, c. 1 lett. d) --------------------------------
+  let ascendenti = 0;
+  const numeroAscendenti = conta(familiari.ascendentiConviventi);
+  if (numeroAscendenti > 0) {
+    const a = p.ascendenti;
+    const rapporto = tronca((a.riferimento - R) / a.riferimento, cifre);
+    if (rapporto > 0 && rapporto < 1) ascendenti = a.importo * numeroAscendenti * rapporto;
+  }
+
+  return {
+    coniuge: euro(coniuge),
+    figli: euro(figli),
+    ascendenti: euro(ascendenti),
+    totale: euro(coniuge + figli + ascendenti),
+  };
+}
+
+/* -------------------------------------------------------------------------- *
  * 4. Trattamento integrativo (art. 1 D.L. 3/2020)
  * -------------------------------------------------------------------------- */
 
@@ -1909,9 +2160,12 @@ function calcolaTrattamentoIntegrativo(redditoComplessivo, irpefLorda, detrazion
     // TUIR, art. 15 c. 1 lett. a e b e c. 1-ter per mutui ante 2022, rate di
     // art. 15 c. 1 lett. c e 16-bis per spese ante 2022) e l'IRPEF lorda, nel
     // limite di 1.200 euro. L'ulteriore detrazione del cuneo NON e' in quella
-    // lista. Di quelle voci il modello rappresenta solo l'art. 13 c. 1, quindi
-    // qui il risultato e' sempre zero: e' una conseguenza del perimetro.
-    const incapienza = detrazioni.articolo13Comma1 - irpefLorda;
+    // lista. Di quelle voci il modello rappresenta l'art. 13 c. 1 e l'art. 12:
+    // senza familiari a carico la detrazione da lavoro sta sempre sotto
+    // l'imposta lorda e qui il risultato e' zero, ma con familiari a carico la
+    // somma puo' superarla e la seconda fascia si accende davvero.
+    const incapienza =
+      detrazioni.articolo13Comma1 + (detrazioni.articolo12 ?? 0) - irpefLorda;
     return incapienza > 0 ? euro(Math.min(rapporta(p.importo), incapienza)) : 0;
   }
 
@@ -1979,12 +2233,15 @@ function calcolaNetto(input, parametri = PARAMETRI_DEFAULT) {
   const mensilita = Number(input.mensilita) || 13;
   const giorniLavorati = Number(input.giorniLavorati) || parametri.detrazioneLavoroDipendente.giorniAnno;
   const applicaMassimale = input.applicaMassimale ?? true;
+  const oneriDeducibili = Math.max(0, Number(input.oneriDeducibili) || 0);
 
   // --- Contributi previdenziali -------------------------------------------
   const contributi = calcolaContributi(ral, parametri, { applicaMassimale });
 
   // --- Imponibile fiscale --------------------------------------------------
-  const imponibileFiscale = euro(ral - contributi.totale);
+  // Art. 10 TUIR: gli oneri deducibili si sottraggono dal reddito, non
+  // dall'imposta. Abbassano quindi anche le soglie di cuneo e detrazioni.
+  const imponibileFiscale = euro(Math.max(0, ral - contributi.totale - oneriDeducibili));
   // Semplificazione dichiarata: il reddito complessivo coincide con
   // l'imponibile fiscale da lavoro dipendente (nessun altro reddito,
   // nessun onere deducibile, no rendita catastale abitazione principale).
@@ -1997,7 +2254,10 @@ function calcolaNetto(input, parametri = PARAMETRI_DEFAULT) {
   // --- Detrazioni ----------------------------------------------------------
   const detrazioneLavoro = calcolaDetrazioneLavoro(redditoComplessivo, parametri, giorniLavorati);
   const ulterioreDetrazione = calcolaUlterioreDetrazione(redditoComplessivo, parametri, giorniLavorati);
-  const detrazioniTotali = euro(detrazioneLavoro.totale + ulterioreDetrazione);
+  const detrazioniFamiliari = calcolaDetrazioniFamiliari(redditoComplessivo, input, parametri);
+  const detrazioniTotali = euro(
+    detrazioneLavoro.totale + ulterioreDetrazione + detrazioniFamiliari.totale,
+  );
 
   // --- IRPEF netta (mai negativa: l'eccedenza di detrazioni si perde) ------
   const irpefNetta = euro(Math.max(0, irpefLorda - detrazioniTotali));
@@ -2017,7 +2277,7 @@ function calcolaNetto(input, parametri = PARAMETRI_DEFAULT) {
   const trattamentoIntegrativo = calcolaTrattamentoIntegrativo(
     redditoComplessivo,
     irpefLorda,
-    { articolo13Comma1: detrazioneLavoro.base },
+    { articolo13Comma1: detrazioneLavoro.base, articolo12: detrazioniFamiliari.totale },
     parametri,
     giorniLavorati,
   );
@@ -2031,7 +2291,17 @@ function calcolaNetto(input, parametri = PARAMETRI_DEFAULT) {
   const nettoMensile = euro(nettoAnnuo / mensilita);
 
   return {
-    input: { ral, mensilita, giorniLavorati, applicaMassimale },
+    input: {
+      ral,
+      mensilita,
+      giorniLavorati,
+      applicaMassimale,
+      oneriDeducibili,
+      coniugeACarico: !!input.coniugeACarico,
+      figliACarico: Math.max(0, Math.trunc(Number(input.figliACarico) || 0)),
+      ascendentiConviventi: Math.max(0, Math.trunc(Number(input.ascendentiConviventi) || 0)),
+      quotaFigli: input.quotaFigli ?? parametri.detrazioniFamiliari.figli.quotaPredefinita,
+    },
     parametriAnno: parametri.anno,
 
     contributi,
@@ -2044,6 +2314,7 @@ function calcolaNetto(input, parametri = PARAMETRI_DEFAULT) {
       detrazioneLavoro: detrazioneLavoro.base,
       maggiorazione65: detrazioneLavoro.maggiorazione,
       ulterioreDetrazione,
+      familiari: detrazioniFamiliari,
       detrazioniTotali,
       detrazioniNonGodute,
       netta: irpefNetta,
@@ -2100,17 +2371,20 @@ function calcolaNettoSemplice(input, parametri) {
   const contributi = calcolaContributi(ral, parametri, {
     applicaMassimale: input.applicaMassimale ?? true,
   });
-  const imponibile = ral - contributi.totale;
+  const oneri = Math.max(0, Number(input.oneriDeducibili) || 0);
+  const imponibile = Math.max(0, ral - contributi.totale - oneri);
   const irpefLorda = applicaScaglioni(imponibile, parametri.irpef.scaglioni).totale;
   const detrLavoro = calcolaDetrazioneLavoro(imponibile, parametri, giorni);
-  const detrTotali = detrLavoro.totale + calcolaUlterioreDetrazione(imponibile, parametri, giorni);
+  const familiari = calcolaDetrazioniFamiliari(imponibile, input, parametri);
+  const detrTotali =
+    detrLavoro.totale + calcolaUlterioreDetrazione(imponibile, parametri, giorni) + familiari.totale;
   const irpefNetta = Math.max(0, irpefLorda - detrTotali);
   const addizionali = calcolaAddizionali(imponibile, parametri, { irpefNetta });
   const sommaEsente = calcolaSommaEsente(imponibile, imponibile, parametri, giorni).importo;
   const ti = calcolaTrattamentoIntegrativo(
     imponibile,
     irpefLorda,
-    { articolo13Comma1: detrLavoro.base },
+    { articolo13Comma1: detrLavoro.base, articolo12: familiari.totale },
     parametri,
     giorni,
   );
@@ -2327,6 +2601,7 @@ function mostraRisultato(r) {
   const scaglioni = (dettaglio) =>
     dettaglio.map((d) => ({ voce: etichettaScaglione(d), importo: -d.imposta }));
 
+  const f = r.irpef.familiari;
   const detrazioni = [
     { voce: 'Detrazione lavoro dipendente (art. 13 c. 1)', importo: r.irpef.detrazioneLavoro },
     r.irpef.maggiorazione65
@@ -2334,6 +2609,18 @@ function mostraRisultato(r) {
       : null,
     r.irpef.ulterioreDetrazione
       ? { voce: 'Ulteriore detrazione taglio cuneo', importo: r.irpef.ulterioreDetrazione }
+      : null,
+    f.coniuge ? { voce: 'Coniuge a carico (art. 12 c. 1 lett. a)', importo: f.coniuge } : null,
+    f.figli
+      ? {
+          voce: `Figli a carico (art. 12 c. 1 lett. c) — ${r.input.figliACarico} × ${pct(
+            r.input.quotaFigli,
+          )}`,
+          importo: f.figli,
+        }
+      : null,
+    f.ascendenti
+      ? { voce: 'Ascendenti conviventi (art. 12 c. 1 lett. d)', importo: f.ascendenti }
       : null,
   ].filter(Boolean);
 
@@ -2379,6 +2666,21 @@ function mostraRisultato(r) {
       ].filter(Boolean),
     }),
   );
+
+  if (r.input.oneriDeducibili > 0) {
+    pezzi.push(
+      riga({
+        voce: 'Oneri deducibili',
+        nota: 'si sottraggono dal reddito, non dall’imposta: abbassano anche le soglie',
+        norma: 'art. 10 TUIR',
+        importo: -r.input.oneriDeducibili,
+        quota: su(-r.input.oneriDeducibili),
+        classe: 'trattenuta',
+        segno: '−',
+        peso: peso(r.input.oneriDeducibili),
+      }),
+    );
+  }
 
   pezzi.push(
     riga({
@@ -2513,6 +2815,11 @@ function mostraRisultato(r) {
   disegnaGrafico($('#grafico'), r.input.ral, {
     giorniLavorati: r.input.giorniLavorati,
     applicaMassimale: r.input.applicaMassimale,
+    oneriDeducibili: r.input.oneriDeducibili,
+    coniugeACarico: r.input.coniugeACarico,
+    figliACarico: r.input.figliACarico,
+    quotaFigli: r.input.quotaFigli,
+    ascendentiConviventi: r.input.ascendentiConviventi,
   });
 
   $('#risultato').classList.remove('nascosto');
@@ -2529,6 +2836,11 @@ function avvisi(r) {
     mensilita: r.input.mensilita,
     giorniLavorati: r.input.giorniLavorati,
     applicaMassimale: r.input.applicaMassimale,
+    oneriDeducibili: r.input.oneriDeducibili,
+    coniugeACarico: r.input.coniugeACarico,
+    figliACarico: r.input.figliACarico,
+    quotaFigli: r.input.quotaFigli,
+    ascendentiConviventi: r.input.ascendentiConviventi,
   };
 
   const piu1000 = calcolaNetto({ ...opz, ral: r.input.ral + 1000 });
@@ -2636,6 +2948,11 @@ function leggiModulo() {
     mensilita: Number($('#mensilita').value),
     giorniLavorati: Number($('#giorni').value),
     applicaMassimale: $('#massimale').checked,
+    coniugeACarico: $('#coniuge').checked,
+    figliACarico: Number($('#figli').value),
+    quotaFigli: Number($('#quota-figli').value),
+    ascendentiConviventi: Number($('#ascendenti').value),
+    oneriDeducibili: Number($('#oneri').value),
   };
 }
 
