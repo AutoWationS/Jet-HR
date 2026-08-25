@@ -450,6 +450,66 @@ test dedicato che fissa entrambi gli estremi della finestra.
 > abrogato dal D.L. 3/2020 e sostituito dal trattamento integrativo. Una versione precedente di
 > questo documento e del codice citava erroneamente il c. 1-bis.
 
+### 3.4.1 Secondo giro: le detrazioni per carichi di famiglia
+
+Dopo l'implementazione dell'art. 12 il confronto è stato ripetuto su nove casi. Questa volta il
+calcolatore esterno è stato alimentato con l'**imponibile** anziché con la RAL, così da isolare
+la parte fiscale, e i risultati sono stati abbastanza numerosi da permettere una cosa più utile
+del confronto: **ricostruire il loro modello**.
+
+Cinque regole bastano a riprodurre **tutti** i loro output al centesimo, su tutti i casi:
+
+1. imponibile = RAL × (1 − 9,19%), **senza l'aliquota aggiuntiva dell'1%**;
+2. *«IRPEF lorda»* = IRPEF + addizionali (etichetta, non modello — già noto);
+3. addizionale comunale **sempre dovuta**, senza soglia di esenzione e senza no tax area;
+4. detrazione dell'art. 13 = base + **2 × 65 €** nella fascia della maggiorazione;
+5. somma esente del cuneo calcolata **sulla RAL** anziché sull'imponibile.
+
+Una ricostruzione che regge su nove casi non è un'ipotesi: è una diagnosi. E permette di dire
+quali divergenze sono nostre e quali loro, senza discutere di opinioni.
+
+**L'art. 12 coincide su tutti e quattro i casi**, che è la verifica che serviva:
+
+| Caso | Voce | Modello | Esterno |
+|---|---|---:|---:|
+| coniuge a 31.783,50 | art. 12 c. 1 lett. a) + b) | **710,00** | 710 |
+| 1 figlio al 100% | lett. c) | **632,13** | 632 |
+| 1 figlio al 50% | lett. c), quota dimezzata | **316,07** | 316 |
+| 1 ascendente convivente | lett. d) | **452,03** | 452 |
+| coniuge a 54.486 (loro imponibile) | lett. a) n. 3, décalage | **440,08** | 440 |
+
+Compresa la **maggiorazione di 20 €** della lett. b), che vale solo fra 29.200 e 34.700 di
+reddito e che è la prima cosa che salta in un'implementazione frettolosa. Il codice nuovo,
+scritto leggendo l'articolo, produce gli stessi numeri di un calcolatore editoriale in
+produzione da anni. Le uniche differenze residue sui casi con familiari sono i 65 € già
+diagnosticati al paragrafo precedente, identici e costanti.
+
+**Il caso che li rompe.** RAL 20.000 con coniuge e due figli a carico:
+
+| Voce | Modello | Esterno | Perché |
+|---|---:|---:|---|
+| IRPEF netta | 0 | 0 | d'accordo |
+| Addizionali | **0** | 379,76 | art. 50 c. 2 D.Lgs. 446/1997: senza IRPEF non sono dovute. E la comunale non lo sarebbe comunque, sotto i 23.000 |
+| Somma esente | **871,78** | 960,00 | 4,8% dell'imponibile, non della RAL |
+| Trattamento integrativo | **909,33** | 0 | seconda fascia del D.L. 3/2020, che si accende solo con l'art. 12 |
+| **Netto annuo** | **19.943,11** | **14.565** | |
+
+Il divario è di **5.378 €**, e ogni euro è tracciabile a una regola letta su una fonte primaria.
+C'è però una cosa peggiore delle tre divergenze, ed è interna al loro calcolo: dichiarano
+*«IRPEF netta annua 0 €»* e poi **sottraggono dal netto l'imposta lorda**, addizionali comprese.
+Anche accettando i loro stessi numeri il risultato avrebbe dovuto essere 19.122 €, non 14.565.
+
+Non è un difetto da poco per chi lo usa: nella fascia di reddito in cui un lavoratore con
+familiari a carico non paga IRPEF — quella dove sapere il netto conta di più — quel calcolatore
+sbaglia di oltre cinquemila euro l'anno.
+
+**Cosa ci insegna sul nostro modello.** Tre delle cinque regole ricostruite corrispondono ad
+altrettante scelte che avevamo preso *contro* la prassi corrente, ciascuna motivata su una norma
+letta: l'1% aggiuntivo (INPS circ. 6/2026), la no tax area sulle addizionali (§3.8) e la somma
+esente sull'imponibile (§3.4). Erano le tre decisioni più esposte del progetto. Vederle
+confermate una per una da un confronto che riproduce esattamente il comportamento altrui vale
+più di un test che passa.
+
 ### 3.5 Audit delle fonti
 
 Le fonti sono state sottoposte a una revisione indipendente, parametro per parametro, con un
