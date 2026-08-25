@@ -429,6 +429,13 @@ rende l'IRPEF non negativa), l'art. 12 della L. 153/1969 come riscritto dall'art
 D.Lgs. 314/1997 (perché l'aliquota contributiva si applica al lordo), e la circolare 326/E del
 23/12/1997 (l'anno si assume sempre di 365 giorni, anche bisestile).
 
+Un ultimo controllo, fatto sul PDF della circolare con una ricerca testuale, ha aggiunto un
+rilievo che l'audit non aveva colto: **la maggiorazione di 65 € del comma 1.1 non compare nella
+circolare 4/E/2025**, né come importo né come fascia. Il campo `verifica` di quel blocco
+dichiarava una collazione "riga per riga" che copre il comma 1 ma non il comma 1.1. Corretto e
+declassato a verifica parziale — con una nota che è proprio il valore su cui il modello diverge
+da un calcolatore esterno in §3.4, quindi il più esposto del prototipo.
+
 Non tutti i rilievi sono stati accolti. L'audit segnalava come errata la citazione della
 circolare 22/E del 19/11/2024 per la nozione di reddito di riferimento: è invece corretta, e la
 prova sta nella 4/E/2025 stessa, che a pagina 6 vi rinvia testualmente. Un audit va verificato
