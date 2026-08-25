@@ -463,18 +463,18 @@ livello:
 
 | Stato | Significato | Quante |
 |---|---|:--:|
-| `atto-letto` | il testo applicabile è stato letto | **11**, tutte senza lacune residue |
+| `atto-letto` | il testo applicabile è stato letto | **13** su 14 |
 | `prassi-letta` | letto dentro una circolare che riporta la norma per esteso | — |
-| `fonte-istituzionale` | letto sul sito dell'ente che emana l'atto, non sull'atto | 1 |
-| `non-verificata` | nessuna lettura diretta | 2 |
+| `fonte-istituzionale` | letto sul sito dell'ente che emana l'atto, non sull'atto | — |
+| `non-verificata` | nessuna lettura diretta | 1 |
 
 Le sei fonti che erano `atto-corrispondente` sono state chiuse aprendo il **testo vigente del
 D.P.R. 917/1986** (§3.10.1): non ce ne sono più in quello stato. Nessuna delle dieci
-`atto-letto` ha lacune residue, e **non resta nessuna fonte `prassi-letta`**: ogni misura fiscale
-del prototipo poggia ormai su una norma primaria letta in originale, non su una circolare che la
-riporta (§3.10.2 e §3.10.3). Anche le due delibere di Milano sono state lette (§3.7.1). Le tre
-fonti ancora aperte riguardano i contributi, la legge regionale lombarda e il conteggio dei
-giorni.
+`atto-letto` ha lacune residue tranne due, entrambe dichiarate e circoscritte (§3.12), e **non
+resta nessuna fonte `prassi-letta` né `fonte-istituzionale`**: ogni parametro del prototipo
+poggia ormai su un atto letto, non su una circolare che lo riporta né sulla pagina di un ente
+(§3.7.1, §3.10.2, §3.10.3, §3.12). L'unica fonte ancora `non-verificata` è la convenzione sul
+conteggio dei giorni, che sul caso modellato vale 365/365.
 
 Ogni fonte che non sia `atto-letto` dichiara inoltre un campo **`lacuna`** che nomina
 esattamente ciò che manca — *«l'art. 51 del D.P.R. 917/1986, applicabile al 2026, non è stato
@@ -892,11 +892,101 @@ rate invece di dieci. Le due misure sono figlie di stagioni diverse e il legisla
 uniformato il numero: è il genere di dettaglio che un prototipo può ignorare e un software di
 paghe no.
 
+### 3.12 Gli ultimi tre: contributi, Lombardia, giorni
+
+Le tre fonti rimaste erano le uniche non fiscali. Due si sono chiuse, la terza si è chiusa **in
+negativo** — cioè togliendo una citazione invece di confermarla.
+
+#### La base contributiva, e perché il 9,19% si applica al lordo
+
+L'art. 12 della L. 153/1969, nel testo che l'art. 6 del D.Lgs. 314/1997 ha sostituito per
+intero, è costruito per rinvio: il c. 1 prende la nozione fiscale di reddito di lavoro
+dipendente, il c. 2 rinvia all'articolo sulla determinazione, e il c. 3 introduce l'unica
+differenza che conta:
+
+> *«Le somme e i valori di cui al comma 1 dell'articolo 48 … si intendono al lordo di qualsiasi
+> contributo e trattenuta.»*
+
+È la norma cercata, ed è esplicita al punto da non lasciare margine. Le due basi — fiscale e
+previdenziale — partono dalla stessa definizione e divergono **solo** per quel comma: l'art. 51
+c. 2 lett. a) TUIR toglie i contributi dall'imponibile fiscale, l'art. 12 c. 3 impedisce di
+toglierli da quello previdenziale.
+
+Due cose in più, arrivate senza cercarle. Il c. 4 lett. a) esclude dalla base contributiva *«le
+somme corrisposte a titolo di trattamento di fine rapporto»*, e il c. 5 dichiara l'elenco
+**tassativo**: il TFR è quindi fuori da entrambe le basi, il che rafforza la voce fuori perimetro
+che lo riguarda. E l'articolo rinvia agli **artt. 46 e 48** del TUIR, cioè alla numerazione
+anteriore al riordino del 2004: sono gli attuali artt. 49 e 51, esattamente i due letti sul testo
+vigente per la parte fiscale. Il cerchio si chiude su sé stesso.
+
+#### La Lombardia, e la parola che la legge non dice
+
+L'art. 72 della l.r. 10/2003 conferma le quattro aliquote, i quattro scaglioni, la base
+(*«il reddito complessivo … al netto degli oneri deducibili di cui all'articolo 10»* del TUIR) e
+la nota d'aggiornamento che attribuisce l'ultima sostituzione alla l.r. 5/2022 — cioè la modifica
+che il registro citava.
+
+Su un punto però **la legge non dice la parola**. La tabella è intestata *«Scaglioni di
+reddito»*, che nel linguaggio dell'IRPEF significa applicazione per scaglioni successivi, ma
+l'aggettivo *«progressive»* sta sulla pagina della Regione, non nell'articolo. Invece di
+dichiararlo verificato sulla base di un'inferenza terminologica, la conferma è stata cercata dove
+era già disponibile: **nei numeri**.
+
+| Lettura | Addizionale regionale su imponibile 40.864,50 |
+|---|---:|
+| per scaglioni (implementata) | **611,17 €** |
+| aliquota unica 1,72% | 702,87 € |
+
+Sul caso di RAL 45.000 il netto del modello coincide **al centesimo** con quello del calcolatore
+esterno di §3.4. Con la lettura piatta il confronto sarebbe fallito di 91,70 €. La progressività
+non è quindi un'assunzione: è ciò che rende vero un riscontro esterno già eseguito.
+
+#### Il 9,19%, e un limite che resta
+
+La circolare INPS n. 40 del 22/02/2011 è il documento che *spiega* il numero, dove le circolari
+annuali lo danno per scontato. La tabella del settore privato non agricolo riporta «Totale
+33,00% — a carico del lavoratore 9,19%», e il testo dice perché quel valore non si muove:
+
+> *«Risulta esaurito l'adeguamento dell'aliquota contributiva a carico del lavoratore in quanto —
+> per effetto dell'incremento di 0,50 punti percentuali operato, da ultimo, alla data del
+> 1.1.2002 — la stessa aliquota ha già raggiunto la misura piena (8,89% + 0,30 = totale 9,19%).»*
+
+La progressione annuale di 0,20 punti prevista dall'art. 3 c. 23 della L. 335/1995 riguardava il
+**datore di lavoro**; la quota del dipendente è ferma dal 2002. Questo spiega anche perché
+cercarne la «legge istitutiva» era un vicolo cieco: è un'aliquota di computo del Fondo,
+risultato di una stratificazione, non di una norma unica.
+
+**Il limite va detto**: è un documento del 2011. Prova che l'aliquota era assestata allora, non
+che sia identica oggi. La lacuna resta quindi aperta, ma è di un tipo diverso da prima — non più
+«nessuna fonte», ma «nessuna conferma sull'anno in corso».
+
+#### I giorni: una citazione ritirata
+
+Il registro indicava la circolare del Ministero delle Finanze n. 326/E del 23/12/1997, par. 3.
+Cercando la stringa «365» in quel testo su def.finanze.it **non compare nulla**. La citazione è
+stata quindi **ritirata**, non sostituita in silenzio: le fonti secondarie indicano la circolare
+Agenzia delle Entrate n. 15/E del 16/03/2007, ma quella non è stata letta, e mettere una
+citazione nuova al posto di una sbagliata senza aprirla sarebbe ripetere l'errore in una forma
+più elegante.
+
+È il terzo errore di citazione del progetto — dopo l'art. 13 c. 1-bis (§3.5) e l'art. 14 c. 8 del
+D.Lgs. 23/2011 (§3.7) — e come i primi due non tocca un numero: la convenzione dei 365 giorni è
+quella applicata da tutti i software di paghe, e sul caso modellato, che è un anno intero, il
+ragguaglio vale 365/365. Serve a chi simula un rapporto parziale, ed è lì che la lacuna va tenuta
+davanti agli occhi.
+
+Tre errori di citazione su tre correzioni riuscite dice una cosa sola: **la parte fragile di un
+lavoro del genere non sono i calcoli, sono i riferimenti.** I calcoli li verifica un test; i
+riferimenti li verifica solo chi apre il documento.
+
 ### 3.11 Nota sull'ambiente di sviluppo
 
-Le verifiche automatiche contro calcolatori online non sono eseguibili dalla suite: l'ambiente
-di sviluppo non ha accesso di rete verso quei siti, e lo stesso vale per Normattiva,
-def.finanze.it e agenziaentrate.gov.it. I permalink di livello 1 nel registro non sono quindi
+Le verifiche automatiche contro calcolatori online non sono eseguibili dalla suite. La
+distinzione esatta è che dall'ambiente di sviluppo la **ricerca** web funziona, mentre il
+**prelievo diretto** di una pagina è bloccato dal proxy verso Normattiva, def.finanze.it,
+normelombardia, inps.it e i siti dei calcolatori: si può quindi sapere che un documento esiste e
+dove sta, non leggerlo. Ogni atto citato come letto è stato aperto da chi scrive e riportato qui,
+oppure caricato come PDF. I permalink di livello 1 nel registro non sono quindi
 stati aperti da qui: il campo `verifica` di ciascuna fonte dice esattamente cosa è stato
 controllato e cosa no. Il confronto di §3.4 è stato eseguito
 manualmente. Le verifiche riproducibili con un comando restano quelle di §3.1 (ricalcolo

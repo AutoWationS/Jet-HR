@@ -106,10 +106,10 @@ quattro dettagli sul rapporto al periodo di lavoro. Gli esempi 1 e 2 sono due ca
 prassi, fonte dell'ente, non verificata — e, se incompleta, un campo `lacuna` che nomina ciò che
 manca più il documento da aprire per chiuderla. Un test impedisce alla prosa di dirsi
 «VERIFICATO» quando lo stato non lo consente: è la correzione di un difetto reale, sei fonti si
-erano autopromosse citando il testo unico riordinato al posto di quello vigente. Oggi **undici
-fonti su quattordici sono chiuse sull'atto applicabile**, undici con le due delibere di Milano,
-nessuna con lacune residue, e nessuna misura fiscale poggia più su una circolare al posto della
-norma;
+erano autopromosse citando il testo unico riordinato al posto di quello vigente. Oggi **tredici
+fonti su quattordici sono chiuse sull'atto applicabile**, e nessuna poggia più su una circolare
+al posto della norma o sulla pagina di un ente al posto dell'atto; le due lacune rimaste sono
+dichiarate e circoscritte, e una di esse è una citazione **ritirata** invece che sostituita;
 `node scripts/verifica-fonti.mjs` stampa cosa resta e dove trovarlo. Un secondo test legge il
 sorgente del registro e cade se una fonte dichiara due volte la stessa chiave: anche quello è la
 correzione di un difetto reale, sei note di verifica aggiornate che l'object literal cancellava

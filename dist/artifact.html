@@ -998,38 +998,52 @@ const FONTI = {
 
   baseContributiva: {
     livello: 1,
-    statoVerifica: 'non-verificata',
-    dove: 'L. 153/1969 art. 12, come riscritto dall’art. 6 del D.Lgs. 314/1997',
+    statoVerifica: 'atto-letto',
+    dove: 'L. 153/1969 art. 12, testo sostituito dall’art. 6 del D.Lgs. 314/1997, letto in originale',
     canale: 'normattiva',
-    lacuna:
-      'nessuna lettura diretta: la norma è citata, non verificata. Non incide su alcun valore ' +
-      'calcolato dal modello',
     etichetta: 'Base imponibile previdenziale',
     norma: 'Art. 12 L. 153/1969, come riscritto dall’art. 6 del D.Lgs. 314/1997',
     dettaglio:
-      'Armonizza la base imponibile previdenziale con quella fiscale: è la norma per cui ' +
-      'l’aliquota contributiva si applica alla retribuzione lorda. L’art. 51 c. 2 lett. a) ' +
-      'TUIR spiega perché i contributi escono dall’imponibile fiscale; questa spiega perché ' +
-      'il 9,19% si applica al lordo.',
+      'Armonizza la base imponibile previdenziale con quella fiscale: il c. 1 rinvia per ' +
+      'la nozione di reddito di lavoro dipendente allo stesso articolo del TUIR usato dal ' +
+      'fisco, il c. 2 rinvia all’articolo sulla determinazione, e il c. 3 introduce la ' +
+      'differenza che conta — le somme si intendono AL LORDO di qualsiasi contributo e ' +
+      'trattenuta. È la norma per cui l’aliquota contributiva si applica alla ' +
+      'retribuzione lorda: l’art. 51 c. 2 lett. a) TUIR spiega perché i contributi escono ' +
+      'dall’imponibile fiscale, questa spiega perché non escono da quello previdenziale. ' +
+      'Il c. 4 elenca le esclusioni, prima fra tutte il TFR, e il c. 5 precisa che ' +
+      'l’elencazione è tassativa.',
     url: 'https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:1969-04-30;153',
     verifica:
-      'norma strutturale; nel caso standard modellato imponibile fiscale e previdenziale ' +
-      'coincidono come base di partenza',
+      'VERIFICATO sul testo dell’articolo, che l’art. 6 del D.Lgs. 314/1997 ha sostituito ' +
+      'per intero. Il c. 3 dispone che le somme e i valori “si intendono al lordo di ' +
+      'qualsiasi contributo e trattenuta”: è la base del 9,19% applicato alla RAL, e la ' +
+      'formulazione è esplicita al punto da non lasciare margine. Il c. 4 lett. a) esclude ' +
+      'dalla base “le somme corrisposte a titolo di trattamento di fine rapporto”, quindi ' +
+      'il TFR è fuori sia dall’imponibile fiscale sia da quello previdenziale, e il c. 5 ' +
+      'chiude l’elenco dichiarandolo tassativo. Una curiosità che vale come controprova: ' +
+      'l’articolo rinvia agli artt. 46 e 48 del TUIR, cioè alla numerazione anteriore al ' +
+      'riordino del 2004; sono gli attuali artt. 49 e 51, gli stessi due letti sul testo ' +
+      'vigente per la parte fiscale. Le due basi partono dalla stessa definizione e ' +
+      'divergono solo per il c. 3',
   },
 
   contributi: {
     livello: 2,
     statoVerifica: 'atto-letto',
-    dove: 'Tabelle INPS delle aliquote contributive per il FPLD, settore privato non agricolo (per l’aliquota IVS del 9,19%)',
+    dove: 'Tabelle INPS delle aliquote contributive per l’anno in corso (per riconfermare il 9,19% sul 2026)',
     canale: 'inps',
     lacuna:
-      'l’aliquota IVS del 9,19% non è coperta da questa circolare né da alcuna fonte letta',
+      'la misura del 9,19% è letta su una circolare del 2011, che la dà per assestata ' +
+      'dal 2002; per l’anno 2026 non è stata riconfermata su un documento dell’anno',
     etichetta: 'Aliquote e limiti contributivi a carico del dipendente',
     norma:
-      'Aliquota IVS 9,19% (quota lavoratore, FPLD settore privato non agricolo: aliquota di ' +
-      'computo del Fondo, non fissata da una singola legge); aliquota aggiuntiva 1% ex ' +
-      'art. 3-ter del D.L. 19 settembre 1992, n. 384, conv. con mod. dalla L. 14 novembre ' +
-      '1992, n. 438; massimale annuo ex art. 2 c. 18 della L. 335/1995',
+      'Aliquota IVS 9,19% (quota lavoratore, FPLD settore privato non agricolo: aliquota ' +
+      'di computo del Fondo, non fissata da una singola legge; il percorso di ' +
+      'adeguamento discende dall’art. 3 c. 23 della L. 335/1995 e dall’art. 1 c. 769 ' +
+      'della L. 296/2006); aliquota aggiuntiva 1% ex art. 3-ter del D.L. 19 settembre ' +
+      '1992, n. 384, conv. con mod. dalla L. 14 novembre 1992, n. 438; massimale annuo ' +
+      'ex art. 2 c. 18 della L. 335/1995',
     dettaglio:
       'L’aliquota aggiuntiva dell’1% colpisce la sola quota eccedente la prima fascia di ' +
       'retribuzione pensionabile, non l’intera retribuzione, ed è dovuta perché il regime di ' +
@@ -1042,23 +1056,27 @@ const FONTI = {
       'conguagliato. L’art. 3-ter esiste solo per effetto della legge di conversione, quindi va ' +
       'citato insieme a essa.',
     prassi:
-      'INPS, circolare n. 6 del 30 gennaio 2026, “Determinazione per l’anno 2026 del limite ' +
-      'minimo di retribuzione giornaliera e aggiornamento degli altri valori per il calcolo di ' +
-      'tutte le contribuzioni dovute in materia di previdenza e assistenza sociale per la ' +
-      'generalità dei lavoratori dipendenti”. È la circolare annuale in cui vivono la prima ' +
-      'fascia di retribuzione pensionabile e il massimale contributivo, entrambi rivalutati ' +
-      'ogni anno.',
+      'INPS, circolare n. 6 del 30 gennaio 2026, per la prima fascia di retribuzione ' +
+      'pensionabile e il massimale contributivo, entrambi rivalutati ogni anno. INPS, ' +
+      'circolare n. 40 del 22 febbraio 2011, per la misura e la composizione ' +
+      'dell’aliquota a carico del lavoratore.',
     url: 'https://www.inps.it/it/it/inps-comunica/atti/circolari-messaggi-e-normativa.html',
     verifica:
-      'VERIFICATO sul testo della circolare INPS n. 6 del 30/01/2026, letta nella parte ' +
-      'rilevante: prima fascia di ' +
-      'retribuzione pensionabile annua 56.224,00 € e massimale annuo 122.295,00 € (122.295,40 ' +
-      'prima dell’arrotondamento). Confermati anche la condizione dell’aliquota inferiore al ' +
-      '10% e il fatto che il massimale operi anche ai fini dell’1%, che è ciò che il motore ' +
-      'implementa. Resta scoperta la sola aliquota IVS del 9,19%: è un’aliquota di computo del ' +
-      'Fondo, non fissata da una singola norma né contenuta in questa circolare, e va cercata ' +
-      'nelle circolari INPS sulle aliquote contributive di settore. I due importi sono ' +
-      'rivalutati ogni anno: da riverificare a ogni circolare annuale',
+      'VERIFICATO su due circolari INPS. La n. 6 del 30/01/2026, per prima fascia di ' +
+      'retribuzione pensionabile annua 56.224,00 € e massimale annuo 122.295,00 € ' +
+      '(122.295,40 prima dell’arrotondamento), oltre alla condizione dell’aliquota ' +
+      'inferiore al 10% e al fatto che il massimale operi anche ai fini dell’1%, che è ' +
+      'ciò che il motore implementa. La n. 40 del 22/02/2011 per l’aliquota IVS: la ' +
+      'tabella del settore privato non agricolo riporta “Totale 33,00% — a carico del ' +
+      'lavoratore 9,19%”, e il testo spiega perché quel numero non si muove — ' +
+      '“risulta esaurito l’adeguamento dell’aliquota contributiva a carico del ' +
+      'lavoratore in quanto, per effetto dell’incremento di 0,50 punti percentuali ' +
+      'operato, da ultimo, alla data del 1.1.2002, la stessa aliquota ha già raggiunto ' +
+      'la misura piena (8,89% + 0,30 = totale 9,19%)”. La progressione annuale ' +
+      'riguardava il datore di lavoro, non il dipendente. IL LIMITE VA DETTO: è un ' +
+      'documento del 2011, e prova che l’aliquota era assestata allora, non che sia ' +
+      'identica oggi. La prima fascia e il massimale sono invece da riverificare a ogni ' +
+      'circolare annuale, perché rivalutati',
   },
 
   nonConcorrenzaContributi: {
@@ -1184,11 +1202,9 @@ const FONTI = {
 
   addizionaleRegionale: {
     livello: 2,
-    statoVerifica: 'fonte-istituzionale',
-    dove: 'l.r. Lombardia 14 luglio 2003, n. 10, art. 72, come modificato dalla l.r. 31 marzo 2022, n. 5',
+    statoVerifica: 'atto-letto',
+    dove: 'l.r. Lombardia 14 luglio 2003, n. 10, art. 72, testo consolidato, letto in originale',
     canale: 'burl',
-    lacuna:
-      'aliquote e scaglioni letti sulla pagina della Regione, non sull’art. 72 della l.r. 10/2003',
     etichetta: 'Addizionale regionale IRPEF — Lombardia',
     norma:
       'Art. 50 del D.Lgs. 446/1997 per l’istituzione e la disciplina; per la Lombardia, ' +
@@ -1208,18 +1224,21 @@ const FONTI = {
       'delle addizionali e sul regime transitorio.',
     url: 'https://www.regione.lombardia.it/wps/portal/istituzionale/HP/servizi-e-informazioni/cittadini/Tributi/addizionale-regionale-irpef',
     verifica:
-      'Letto sulla pagina istituzionale di Regione Lombardia: le quattro aliquote e i ' +
-      'quattro scaglioni coincidono con quelli implementati, la base è il reddito complessivo ' +
-      'al netto degli oneri deducibili, e le aliquote sono dichiarate PROGRESSIVE — cioè ' +
-      'applicate per scaglioni successivi e non in misura unica sull’intero reddito, che era ' +
-      'un’assunzione del modello non ancora confermata. La pagina indica anche la norma esatta ' +
-      '(art. 72 l.r. 10/2003, modificato dalla l.r. 5/2022) e riporta fra gli allegati la ' +
-      'convenzione con l’Agenzia delle Entrate per il triennio 2026-2028, che ne conferma ' +
-      'l’attualità. Verificato inoltre sul testo dell’art. 50 del D.Lgs. 446/1997 il quadro in ' +
-      'cui la legge regionale opera: base imponibile, obbligo di pubblicazione del provvedimento ' +
-      'entro il 31 dicembre dell’anno precedente e invio dei dati al sito informatico del MEF ' +
-      'entro il 31 gennaio, con inapplicabilità di sanzioni e interessi in caso di mancato ' +
-      'inserimento. Il testo della legge regionale non è stato letto in originale',
+      'VERIFICATO sull’art. 72 della legge regionale, testo consolidato. Le quattro ' +
+      'aliquote e i quattro scaglioni coincidono con quelli implementati; la nota ' +
+      'all’articolo conferma che l’ultima sostituzione è dell’art. 1 c. 1 lett. a) della ' +
+      'l.r. 5/2022, cioè la modifica citata dal registro. La base è dichiarata dal comma ' +
+      '1: “il reddito complessivo determinato ai fini dell’imposta sul reddito delle ' +
+      'persone fisiche, al netto degli oneri deducibili di cui all’articolo 10” del ' +
+      'TUIR — la stessa dell’art. 50 D.Lgs. 446/1997, e nel modello coincide con ' +
+      'l’imponibile. SU UN PUNTO LA LEGGE NON DICE LA PAROLA: la tabella è intestata ' +
+      '“Scaglioni di reddito”, che nel linguaggio dell’IRPEF significa applicazione per ' +
+      'scaglioni successivi, ma l’aggettivo “progressive” sta sulla pagina della Regione, ' +
+      'non nell’articolo. La conferma decisiva è numerica: sul caso di RAL 45.000 la ' +
+      'lettura per scaglioni dà 611,17 € di addizionale contro i 702,87 € di ' +
+      'un’aliquota unica, e il netto del modello coincide al centesimo con quello del ' +
+      'calcolatore esterno di metodologia §3.4. Se la lettura fosse quella piatta, il ' +
+      'confronto sarebbe fallito di 91,70 €',
   },
 
   addizionaleComunale: {
@@ -1340,13 +1359,17 @@ const FONTI = {
   ragguaglioGiorni: {
     livello: 2,
     statoVerifica: 'non-verificata',
-    dove: 'Circolare Ministero delle Finanze n. 326/E del 23/12/1997, par. 3 — richiamata anche dalla circolare INPS n. 7 del 15/01/2010',
+    dove: 'Circolare Agenzia delle Entrate n. 15/E del 16/03/2007, sui giorni che danno diritto alla detrazione',
     canale: 'def',
     lacuna:
-      'la circolare 326/E del 1997 non è stata letta: la convenzione dei 365 giorni è applicata ' +
-      'sulla base di prassi consolidata, non di una lettura diretta',
+      'la citazione precedente alla circolare 326/E del 1997 è stata RITIRATA: la ricerca ' +
+      'della stringa “365” nel testo su def.finanze.it non dà alcun risultato. Il ' +
+      'riferimento corrente alla circolare 15/E del 2007 viene da fonti secondarie e non ' +
+      'è stato letto in originale',
     etichetta: 'Come si contano i giorni di lavoro nell’anno',
-    norma: 'Circolare Ministero delle Finanze n. 326/E del 23/12/1997',
+    norma:
+      'Convenzione di prassi sul ragguaglio al periodo di lavoro; riferimento indicato ' +
+      'dalle fonti secondarie: circolare Agenzia delle Entrate n. 15/E del 16/03/2007',
     dettaglio:
       'L’anno va sempre assunto di 365 giorni, anche se bisestile. I giorni da considerare sono ' +
       'quelli che hanno dato diritto a retribuzione assoggettata a ritenuta, comprese festività ' +
@@ -1354,8 +1377,14 @@ const FONTI = {
       'periodi contemporanei si contano una volta sola.',
     url: 'https://def.finanze.it/DocTribFrontend/RicercaLibera.jsp',
     verifica:
-      'convenzione applicata dal motore al ragguaglio di detrazioni, ulteriore detrazione e ' +
-      'trattamento integrativo; il testo della circolare non è stato aperto in originale',
+      'NON VERIFICATA, e con una citazione in meno rispetto a prima. Il registro indicava ' +
+      'la circolare 326/E del 23/12/1997 par. 3; cercando “365” in quel testo su ' +
+      'def.finanze.it non compare nulla, quindi la citazione è stata ritirata invece di ' +
+      'essere lasciata a fare da garanzia. È il terzo errore di citazione del progetto, ' +
+      'dopo l’art. 13 c. 1-bis e l’art. 14 c. 8 del D.Lgs. 23/2011, e come i primi due ' +
+      'non tocca un numero: la convenzione dei 365 giorni resta quella applicata da ' +
+      'tutti i software di paghe, e sul caso modellato — anno intero — il ragguaglio ' +
+      'vale 365/365. Serve a chi simula un rapporto parziale',
   },
 };
 
@@ -1470,11 +1499,13 @@ const PARAMETRI_2026 = {
     },
     {
       voce: 'TFR',
-      norma: 'Art. 2120 c.c.',
+      norma: 'Art. 2120 c.c.; art. 12 c. 4 lett. a) della L. 153/1969',
       motivo:
         'Accantonato e non erogato: circa il 7,41% della retribuzione utile (1/13,5) ' +
         'al netto del contributo dello 0,50% al Fondo di garanzia. Non transita nella ' +
-        'retribuzione corrente, quindi non entra nel netto in busta paga.',
+        'retribuzione corrente, quindi non entra nel netto in busta paga. È fuori anche ' +
+        'dalla base contributiva, che lo esclude espressamente: “sono esclusi dalla base ' +
+        'imponibile le somme corrisposte a titolo di trattamento di fine rapporto”.',
     },
     {
       voce: 'Detrazioni per carichi di famiglia',
