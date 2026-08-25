@@ -479,6 +479,25 @@ verifica. E «si assume» lascia un margine: il motore tronca, che è la prassi 
 paghe, ma leggerlo come arrotondamento cambierebbe l'esito di pochi centesimi. La scelta è
 dichiarata nel registro delle fonti.
 
+**Una terza conferma, la più importante per il confronto esterno.** L'art. 53 del testo
+riordinato — nota di corrispondenza all'art. 51 del D.P.R. 917/1986 — dispone al comma 2
+lettera a):
+
+> *«Non concorrono a formare il reddito: a) i contributi previdenziali e assistenziali versati
+> dal datore di lavoro o dal lavoratore in ottemperanza a disposizioni di legge»*
+
+Chiude la catena di §3.4. La somma esente del cuneo si applica al *reddito di lavoro
+dipendente*; quel reddito è definito dall'art. 49 e **determinato** dall'art. 51, che esclude i
+contributi obbligatori. Quindi la base è l'imponibile, non la RAL — e non è più un ragionamento
+sistematico, è il testo. Il testo conferma anche il termine esatto: *non concorrenza*, non
+*deduzione*.
+
+Lo stesso articolo ha permesso di dichiarare meglio il perimetro escluso: fringe benefit (soglia
+di 258,23 € elevata a 1.000 €, o 2.000 € con figli, per il triennio 2025-2027), buoni pasto,
+indennità di trasferta e auto in uso promiscuo hanno ora norma e importi accanto. La soglia dei
+fringe benefit, per inciso, è un altro effetto soglia della stessa famiglia di quello
+dell'addizionale comunale: superata, concorre l'intero valore e non l'eccedenza.
+
 ### 3.7 Nota sull'ambiente di sviluppo
 
 Le verifiche automatiche contro calcolatori online non sono eseguibili dalla suite: l'ambiente

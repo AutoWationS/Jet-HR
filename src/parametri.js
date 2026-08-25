@@ -169,8 +169,13 @@ export const FONTI = {
     url:
       'https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.del.presidente.della.repubblica:1986-12-22;917',
     verifica:
-      'usata per dirimere una divergenza con un calcolatore esterno (metodologia §3.4): il ' +
-      'confronto ha segnalato l’anomalia, la prova è il testo dell’art. 51',
+      'VERIFICATO sul testo normativo (S.O. n. 26/L alla G.U. n. 152 del 3/7/2026, art. 53, ' +
+      'con nota di corrispondenza all’art. 51 del D.P.R. 917/1986): “Non concorrono a formare ' +
+      'il reddito: a) i contributi previdenziali e assistenziali versati dal datore di lavoro o ' +
+      'dal lavoratore in ottemperanza a disposizioni di legge”. Il testo conferma anche il ' +
+      'termine esatto — non concorrenza, non deduzione — e chiude la catena con cui il modello ' +
+      'sostiene che la somma esente del cuneo si calcola sull’imponibile e non sulla RAL ' +
+      '(metodologia §3.4)',
   },
 
   cuneoFiscale: {
@@ -442,9 +447,33 @@ export const PARAMETRI_2026 = {
       motivo: 'Il caso modellato è un lavoratore senza familiari a carico.',
     },
     {
-      voce: 'Fringe benefit, welfare, premi di risultato',
-      norma: 'Art. 51 TUIR; L. 207/2024 per i premi di produttività',
-      motivo: 'Voci variabili e contrattuali, fuori dal caso standard del prototipo.',
+      voce: 'Fringe benefit e welfare aziendale',
+      norma:
+        'Art. 51 c. 2 e c. 3 TUIR (art. 53 nel testo riordinato); soglia elevata per il ' +
+        'triennio 2025-2027 dall’art. 1 c. 390 della L. 207/2024',
+      motivo:
+        'Beni e servizi ceduti al dipendente non concorrono al reddito entro 258,23 € l’anno, ' +
+        'soglia elevata a 1.000 € (2.000 € con figli a carico) per il 2025, 2026 e 2027. ' +
+        'Superata la soglia concorre l’intero valore, non l’eccedenza: è un altro effetto ' +
+        'soglia, della stessa famiglia di quello dell’addizionale comunale. Fuori perimetro ' +
+        'perché dipende da scelte aziendali che la RAL non descrive.',
+    },
+    {
+      voce: 'Buoni pasto, trasferte, auto aziendale',
+      norma: 'Art. 51 c. 2 lett. b), c. 4 lett. a) e c. 5 TUIR (art. 53 nel testo riordinato)',
+      motivo:
+        'Ticket esenti fino a 4 € al giorno in forma cartacea e 10 € in forma elettronica; ' +
+        'indennità di trasferta esenti fino a 46,48 € al giorno in Italia e 77,47 € all’estero; ' +
+        'auto in uso promiscuo tassata al 50% della percorrenza convenzionale, ridotta al 10% ' +
+        'per le elettriche e al 20% per le ibride plug-in. Sono voci del cedolino, non della ' +
+        'RAL: il prototipo parte dalla retribuzione annua e non le vede.',
+    },
+    {
+      voce: 'Premi di risultato a tassazione sostitutiva',
+      norma: 'Art. 1 cc. 182-189 L. 208/2015 e successive rimodulazioni',
+      motivo:
+        'Imposta sostitutiva agevolata in luogo dell’IRPEF ordinaria, entro limiti di importo e ' +
+        'di reddito. Richiede un contratto collettivo di secondo livello: fuori dal caso standard.',
     },
     {
       voce: 'Addizionali per cassa',
