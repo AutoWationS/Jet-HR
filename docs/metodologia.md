@@ -616,7 +616,43 @@ Fra gli allegati la pagina riporta la convenzione con l'Agenzia delle Entrate pe
 **2026-2028**, che conferma l'attualità della pagina. Il testo della legge regionale non è stato
 letto in originale: è la cautela che resta.
 
-### 3.10 Nota sull'ambiente di sviluppo
+### 3.10 Contributi: due valori confermati e una regola che il modello non applica
+
+La circolare INPS n. 6 del 30 gennaio 2026 conferma al centesimo i due valori annuali:
+**prima fascia di retribuzione pensionabile 56.224,00 €** e **massimale annuo 122.295,00 €**
+(122.295,40 prima dell'arrotondamento). Conferma anche due scelte del motore: che l'aliquota
+aggiuntiva è dovuta perché il regime di iscrizione prevede un'aliquota a carico del lavoratore
+inferiore al 10%, e che *«il massimale opera anche ai fini dell'aliquota aggiuntiva dell'1%»* —
+cioè che l'eccedenza sulla prima fascia va misurata sulla base già limitata al massimale, che è
+esattamente ciò che il codice fa.
+
+**E contiene una regola che il modello non applica.** La circolare prescrive il criterio della
+**mensilizzazione**: l'1% si calcola mese per mese sulla quota eccedente **4.685,00 € mensili**,
+non a fine anno sulla quota eccedente 56.224,00 € annui.
+
+Il modello lavora a saldo d'anno e non conosce la distribuzione delle retribuzioni nei mesi,
+quindi applica il criterio annuo. Su dodici mensilità i due criteri coincidono a meno di
+centesimi. Con la tredicesima no, e la differenza è sistematica: il doppio pagamento di dicembre
+supera da solo il tetto mensile anche quando il totale annuo sta sotto la prima fascia.
+
+| RAL | Mensilità | Criterio annuo (modello) | Criterio mensilizzato | Differenza |
+|---:|:--:|---:|---:|---:|
+| 52.000 | 13 | 0,00 | 33,15 | +33,15 |
+| 56.000 | 13 | 0,00 | 39,30 | +39,30 |
+| 60.000 | 13 | 37,76 | 45,46 | +7,70 |
+| 60.000 | 12 | 37,76 | 37,80 | +0,04 |
+| 80.000 | 13 | 237,76 | 237,80 | +0,04 |
+
+È la simmetria opposta dell'ipotesi dichiarata in §2.8, secondo cui le mensilità non cambiano il
+netto annuo: per l'IRPEF è vero, per questo contributo no. Sotto la prima fascia il modello
+calcola zero dove la busta paga trattiene qualche decina di euro.
+
+La scelta è dichiarata e non corretta: applicarla richiederebbe assumere una distribuzione
+mensile delle retribuzioni, cioè introdurre nel modello proprio l'ipotesi che il calcolo a saldo
+d'anno evita. È però il primo candidato se il prototipo dovesse diventare un simulatore di
+cedolino, ed è documentata con i numeri per non doverla riscoprire.
+
+### 3.11 Nota sull'ambiente di sviluppo
 
 Le verifiche automatiche contro calcolatori online non sono eseguibili dalla suite: l'ambiente
 di sviluppo non ha accesso di rete verso quei siti, e lo stesso vale per Normattiva,
