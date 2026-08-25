@@ -28,18 +28,17 @@ export const FONTI = {
   irpef: {
     livello: 1,
     statoVerifica: 'atto-letto',
-    dove: 'L. 199/2025, art. 1 c. 3, testo consolidato',
+    dove: 'D.P.R. 917/1986 art. 11 c. 1 e L. 199/2025 art. 1 c. 3, entrambi letti',
     canale: 'normattiva',
-    lacuna: 'il testo vigente riporta la modifica già recepita: il comma della L. 199/2025 che la ' +
-      'opera non è stato letto in originale',
     etichetta: 'Aliquote e scaglioni IRPEF',
     norma:
       'Art. 11 c. 1 lett. b) TUIR (D.P.R. 917/1986), come modificato dall’art. 1 c. 3 ' +
       'della L. 30 dicembre 2025, n. 199 (legge di bilancio 2026)',
     dettaglio:
-      'Il comma 3 sostituisce “35 per cento” con “33 per cento” nella lettera b), con effetto ' +
-      'dal periodo d’imposta 2026. Restano invariati il 23% fino a 28.000 e il 43% oltre ' +
-      '50.000. La stessa manovra introduce un correttivo di segno opposto per i redditi oltre ' +
+      'Il comma sostituisce “35 per cento” con “33 per cento” nella lettera b), lasciando ' +
+      'invariati il 23% fino a 28.000 e il 43% oltre 50.000. È una novella secca: la ' +
+      'decorrenza non sta nel comma ma nell’entrata in vigore della legge di bilancio. La ' +
+      'stessa manovra introduce un correttivo di segno opposto per i redditi oltre ' +
       '200.000 euro, dichiarato in fuoriPerimetro.',
     prassi:
       'Nessuna circolare dell’Agenzia delle Entrate ha ancora commentato le aliquote 2026: il ' +
@@ -48,13 +47,18 @@ export const FONTI = {
       'scaglioni, non l’aliquota vigente.',
     url: 'https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2025-12-30;199',
     verifica:
-      'VERIFICATO sul testo vigente del D.P.R. 917/1986: l’art. 11 c. 1 riporta “a) fino a ' +
-      '28.000 euro, 23 per cento; b) oltre 28.000 euro e fino a 50.000 euro, 33 per cento; ' +
-      'c) oltre 50.000 euro, 43 per cento”. Le tre aliquote e le due soglie implementate ' +
-      'coincidono con il testo applicabile all’anno d’imposta modellato. Lo stesso riscontro ' +
-      'sul testo unico pubblicato in Gazzetta Ufficiale (S.O. n. 26/L alla G.U. n. 152 del ' +
-      '3/7/2026), che porta la nota di corrispondenza con l’art. 11: quel testo si applica ' +
-      'dal 2027, ma sulle aliquote non diverge da quello vigente nel 2026',
+      'VERIFICATO sul testo vigente del D.P.R. 917/1986 e sulla norma che lo modifica. ' +
+      'L’art. 11 c. 1 riporta “a) fino a 28.000 euro, 23 per cento; b) oltre 28.000 euro e ' +
+      'fino a 50.000 euro, 33 per cento; c) oltre 50.000 euro, 43 per cento”. Il comma ' +
+      'della L. 199/2025 è stato letto in originale e dispone testualmente che “le parole: ' +
+      '«35 per cento» sono sostituite dalle seguenti: «33 per cento»”, operando ' +
+      'sull’art. 11 c. 1 lett. b): una novella secca, che non tocca né le soglie né le ' +
+      'altre due aliquote. UN LIMITE VA DICHIARATO: il comma non porta con sé una ' +
+      'decorrenza, quindi l’applicazione al periodo d’imposta 2026 discende ' +
+      'dall’entrata in vigore della legge di bilancio, non da una parola del comma. ' +
+      'Il riscontro sul testo unico pubblicato in Gazzetta Ufficiale (S.O. n. 26/L alla ' +
+      'G.U. n. 152 del 3/7/2026) dà lo stesso risultato: quel testo si applica dal 2027, ' +
+      'ma sulle aliquote non diverge da quello vigente nel 2026',
   },
 
   imposta: {
@@ -238,34 +242,45 @@ export const FONTI = {
 
   cuneoFiscale: {
     livello: 1,
-    statoVerifica: 'prassi-letta',
-    dove: 'L. 207/2024, art. 1 cc. 4-9, testo consolidato',
+    statoVerifica: 'atto-letto',
+    dove: 'L. 207/2024, art. 1 cc. 4-9, letti in originale',
     canale: 'normattiva',
-    lacuna:
-      'il testo dei commi è stato letto nelle note della circolare, che li riporta per esteso, ' +
-      'non sulla L. 207/2024 in originale',
     etichetta: 'Taglio del cuneo fiscale',
     norma: 'L. 30 dicembre 2024, n. 207, art. 1 cc. 4-9',
     dettaglio:
-      'Due misure alternative in base al reddito complessivo: fino a 20.000 una somma esente ' +
-      'da imposta erogata in busta paga (7,1%, 5,3% o 4,8%); da 20.000 a 40.000 una detrazione ' +
-      'd’imposta di 1.000 € in décalage, rapportata al periodo di lavoro. La percentuale della ' +
-      'somma esente è unica per fascia — “la percentuale corrispondente”, al singolare — e si ' +
-      'individua sul reddito rapportato all’intero anno, applicandola poi al reddito ' +
-      'effettivamente percepito. I commi non hanno termine finale: la misura è a regime.',
+      'Due misure alternative in base al reddito complessivo, che si danno il cambio ' +
+      'esattamente a 20.000 senza sovrapporsi né lasciare vuoti: fino a 20.000 compresi ' +
+      'una somma esente da imposta erogata in busta paga (7,1%, 5,3% o 4,8%); oltre ' +
+      '20.000 una detrazione d’imposta di 1.000 € piena fino a 32.000 e poi in décalage ' +
+      'lineare fino ad azzerarsi a 40.000. La percentuale della somma esente è unica per ' +
+      'fascia — “la percentuale corrispondente”, al singolare — e si individua sul ' +
+      'reddito rapportato all’intero anno “ai soli fini dell’individuazione della ' +
+      'percentuale applicabile”, applicandola poi al reddito effettivamente percepito. ' +
+      'Solo la detrazione è “rapportata al periodo di lavoro”: la somma esente non ne ha ' +
+      'bisogno, essendo già una quota di un reddito che il periodo lo riflette. Entrambe ' +
+      'spettano ai titolari di reddito di lavoro dipendente dell’art. 49, con esclusione ' +
+      'dei pensionati: il caso modellato vi rientra. I commi non hanno termine finale: ' +
+      'la misura è a regime.',
     prassi:
       'Circolare 4/E del 16/05/2025, par. 1.2 — gli esempi 1 e 2 mostrano il calcolo del ' +
       'reddito annuale teorico, l’esempio 3 che la percentuale si applica alla sola quota ' +
       'imponibile del reddito soggetto a tassazione in Italia.',
     url: 'https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2024-12-30;207',
     verifica:
-      'testo dei commi 4-9 e i tre esempi della circolare letti integralmente; gli esempi 1 e 2 ' +
-      'sono riprodotti in un test. Il testo unico riordinato assorbe l’ulteriore detrazione ' +
-      'nell’art. 13 c. 10 con la nota di corrispondenza all’art. 1 c. 6 della L. 207/2024, e ' +
-      'conferma testualmente che è “rapportata al periodo di lavoro”. La SOMMA ESENTE invece ' +
-      'non vi è confluita: la ricerca delle percentuali nel testo unico non dà alcun ' +
-      'risultato, quindi resta disciplinata dalla sola L. 207/2024 e la fonte primaria per le ' +
-      'percentuali è quella legge, non il TUIR',
+      'VERIFICATO sui commi in originale, e sono i confini letterali a coincidere uno per ' +
+      'uno con quelli del motore: “non superiore a 20.000” per la somma esente e ' +
+      '“superiore a 20.000” per la detrazione, quindi a 20.000 esatti spetta la prima e ' +
+      'non la seconda; “non superiore a 8.500”, “superiore a 8.500 ma non a 15.000”, ' +
+      '“superiore a 15.000” per le tre percentuali; “superiore a 20.000 ma non a 32.000” ' +
+      'per i 1.000 € pieni; e il décalage scritto come “prodotto tra 1.000 euro e ' +
+      'l’importo corrispondente al rapporto tra 40.000 euro, diminuito del reddito ' +
+      'complessivo, e 8.000 euro”, che è la formula implementata con il denominatore ' +
+      'ricavato dai due estremi anziché scritto a mano. Un test li ripercorre tutti. La ' +
+      'lettura in originale ha aggiunto due cose che la circolare non dava: l’esclusione ' +
+      'dei pensionati (art. 49 c. 2 lett. a) da entrambe le misure, e il fatto che il ' +
+      'comma 5 annualizzi il reddito “ai soli fini dell’individuazione della percentuale ' +
+      'applicabile” — cioè esattamente ciò che il motore fa, e nulla di più. La ' +
+      'circolare 4/E resta il riscontro sugli esempi numerici, riprodotti in due test',
   },
 
   trattamentoIntegrativo: {
@@ -434,17 +449,19 @@ export const FONTI = {
     url:
       'https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.del.presidente.della.repubblica:1986-12-22;917',
     verifica:
-      'VERIFICATO sul testo vigente per entrambe le regole che incidono sul calcolo. L’art. 8 ' +
-      'c. 1 dispone che “il reddito complessivo si determina sommando i redditi di ogni ' +
-      'categoria che concorrono a formarlo e sottraendo le perdite derivanti dall’esercizio ' +
-      'di arti e professioni”: è una definizione per somma di categorie, che non contiene di ' +
-      'per sé le estensioni del reddito di riferimento (cedolare secca, forfetario, mance). ' +
-      'Quelle stanno nelle norme di settore e nell’art. 1 c. 9 della L. 207/2024: è la ragione ' +
-      'per cui il registro tiene distinti i due concetti invece di trattarli come sinonimi. ' +
-      'L’art. 13 c. 6-bis dispone che “ai fini del presente articolo il reddito complessivo è ' +
-      'assunto al netto del reddito dell’unità immobiliare adibita ad abitazione principale”. ' +
-      'Il rinvio alla circolare 22/E è citato testualmente dalla 4/E/2025 a pag. 6; la ' +
-      'semplificazione a imponibile da lavoro dipendente è dichiarata in metodologia §5.1',
+      'VERIFICATO sul testo vigente per entrambe le regole che incidono sul calcolo. ' +
+      'L’art. 8 c. 1 dispone che “il reddito complessivo si determina sommando i redditi ' +
+      'di ogni categoria che concorrono a formarlo e sottraendo le perdite derivanti ' +
+      'dall’esercizio di arti e professioni”: è una definizione per somma di categorie, ' +
+      'che non contiene di per sé le estensioni del reddito di riferimento. Quelle stanno ' +
+      'nell’art. 1 c. 9 della L. 207/2024, ora letto in originale, che per il cuneo fa ' +
+      'rilevare “anche la quota esente del reddito agevolato” di ricercatori e ' +
+      'impatriati e assume il reddito “al netto del reddito dell’unità immobiliare ' +
+      'adibita ad abitazione principale e di quello delle relative pertinenze”. La stessa ' +
+      'regola vale per le detrazioni dell’art. 13, dove sta al c. 6-bis. Le due letture ' +
+      'confermano che reddito complessivo e reddito di riferimento vanno tenuti ' +
+      'distinti, come il registro già faceva: la semplificazione a imponibile da lavoro ' +
+      'dipendente è dichiarata in metodologia §5.1',
   },
 
   ragguaglioGiorni: {
@@ -636,6 +653,19 @@ export const PARAMETRI_2026 = {
         'mensilizzazione è una regola di cassa infrannuale — lo stesso schema delle addizionali ' +
         '— e il modello ne salta i movimenti intermedi arrivando direttamente al conguagliato. ' +
         'Fuori perimetro è la simulazione del flusso mese per mese, non il risultato.',
+    },
+    {
+      voce: 'Recupero del cuneo non spettante in dieci rate',
+      norma: 'L. 207/2024 art. 1 cc. 7 e 8',
+      motivo:
+        'Il sostituto d’imposta riconosce somma esente e ulteriore detrazione “in via ' +
+        'automatica … all’atto dell’erogazione delle retribuzioni” e ne “verifica in sede di ' +
+        'conguaglio la spettanza”. Se al conguaglio non spettano le recupera, e sopra 60 € il ' +
+        'recupero avviene “in dieci rate di pari ammontare”. È di nuovo una regola di cassa ' +
+        'infrannuale con esito annuale: chi ha diritto alla misura per l’intero anno non vede ' +
+        'alcun recupero, ed è il caso modellato. La compensazione del credito da parte del ' +
+        'sostituto (c. 8, art. 17 D.Lgs. 241/1997) sta interamente dal lato azienda e non tocca ' +
+        'la busta paga.',
     },
     {
       voce: 'Addizionali per cassa',

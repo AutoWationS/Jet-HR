@@ -463,15 +463,15 @@ livello:
 
 | Stato | Significato | Quante |
 |---|---|:--:|
-| `atto-letto` | il testo applicabile è stato letto | **8** (7 senza lacune residue) |
-| `prassi-letta` | letto dentro una circolare che riporta la norma per esteso | 2 |
+| `atto-letto` | il testo applicabile è stato letto | **9**, tutte senza lacune residue |
+| `prassi-letta` | letto dentro una circolare che riporta la norma per esteso | 1 |
 | `fonte-istituzionale` | letto sul sito dell'ente che emana l'atto, non sull'atto | 2 |
 | `non-verificata` | nessuna lettura diretta | 2 |
 
 Le sei fonti che erano `atto-corrispondente` sono state chiuse aprendo il **testo vigente del
-D.P.R. 917/1986** (§3.10.1): non ce ne sono più in quello stato. Delle otto `atto-letto`, sette
-non hanno alcuna lacuna residua; la restante è quella sulle aliquote IRPEF, che ha letto il testo
-vigente già modificato ma non il comma della L. 199/2025 che opera la modifica.
+D.P.R. 917/1986** (§3.10.1): non ce ne sono più in quello stato. Nessuna delle nove `atto-letto`
+ha lacune residue — le ultime due sono state chiuse leggendo in originale il comma della
+L. 199/2025 e i commi 4-9 della L. 207/2024 (§3.10.2).
 
 Ogni fonte che non sia `atto-letto` dichiara inoltre un campo **`lacuna`** che nomina
 esattamente ciò che manca — *«l'art. 51 del D.P.R. 917/1986, applicabile al 2026, non è stato
@@ -744,6 +744,53 @@ dichiara due volte la stessa chiave.
 È un difetto piccolo con una morale grande: un aggiornamento può fallire in silenzio anche
 quando il codice gira. Il registro delle fonti serve a impedire che il modello menta; questo
 test serve a impedire che menta il registro.
+
+### 3.10.2 I commi del cuneo, letti in originale
+
+Il cuneo fiscale era l'unica misura grossa che il modello conoscesse **solo attraverso una
+circolare**: i commi 4-9 dell'art. 1 della L. 207/2024 erano stati letti nelle note della 4/E,
+che li riporta per esteso, non sulla legge. È una fonte di secondo grado, e per il pezzo che
+sposta più euro del prototipo era la lacuna più imbarazzante del registro. Ora sono stati letti
+in originale, insieme al comma della L. 199/2025 che porta la seconda aliquota al 33%.
+
+**Il comma sulle aliquote** è una novella secca: *«le parole: "35 per cento" sono sostituite
+dalle seguenti: "33 per cento"»*, sull'art. 11 c. 1 lett. b). Non tocca le soglie né le altre due
+aliquote. Un limite va dichiarato: **il comma non porta con sé una decorrenza**, quindi
+l'applicazione al 2026 discende dall'entrata in vigore della legge di bilancio, non da una parola
+del comma. È scritto così nel registro.
+
+**I commi del cuneo** hanno confermato ogni confine implementato, e la verifica interessante è
+proprio sui confini, perché la norma distingue *«non superiore a X»* da *«superiore a X»* — la
+differenza fra un `<=` e un `<`, che su un estremo esatto vale l'intera misura:
+
+| Testo della norma | Confine | Nel motore |
+|---|---|---|
+| c. 4, *«reddito complessivo non superiore a 20.000 euro»* | somma esente a 20.000 esatti | `RC > limite → 0` |
+| c. 6, *«reddito complessivo superiore a 20.000 euro»* | detrazione **solo oltre** | `R > da` |
+| c. 4 lett. a-c | ≤ 8.500 → 7,1%; > 8.500 e ≤ 15.000 → 5,3%; > 15.000 → 4,8% | `fasce.find(f => teorico <= f.fino)` |
+| c. 6 lett. a, *«superiore a 20.000 euro ma non a 32.000 euro»* | 1.000 € pieni a 32.000 esatti | `R <= pienoFino` |
+| c. 6 lett. b, *«prodotto tra 1.000 euro e … il rapporto tra 40.000 euro, diminuito del reddito complessivo, e 8.000 euro»* | décalage lineare | denominatore ricavato dai due estremi, non scritto a mano |
+
+Le due misure **si danno il cambio esattamente a 20.000**, senza sovrapporsi — il contribuente
+prenderebbe due volte — né lasciare vuoti — non prenderebbe nulla. Un test ripercorre ogni
+estremo, centesimo per centesimo.
+
+La lettura in originale ha aggiunto due cose che la circolare non dava:
+
+- **l'esclusione dei pensionati.** Entrambe le misure spettano ai titolari di reddito di lavoro
+  dipendente dell'art. 49 *«con esclusione di quelli indicati alla lettera a) del comma 2»*, cioè
+  le pensioni. Il caso modellato vi rientra, ma è un confine del perimetro che prima non era
+  scritto — e si aggancia all'art. 49 letto poco prima.
+- **la portata esatta dell'annualizzazione.** Il c. 5 rapporta il reddito all'intero anno *«ai
+  soli fini dell'individuazione della percentuale applicabile»*. Quel *«ai soli fini»* è la
+  ragione per cui il motore annualizza per scegliere la fascia e poi applica la percentuale al
+  reddito effettivo: prima era una lettura della circolare, ora è la lettera della norma.
+
+Il c. 7 ha invece prodotto una nuova voce fuori perimetro: il sostituto riconosce la misura *«in
+via automatica»* e ne verifica la spettanza al conguaglio, recuperando in **dieci rate** quanto
+non spettante sopra i 60 €. È il terzo caso della stessa famiglia — mensilizzazione dell'1%,
+addizionali per cassa, e ora questo: regole di flusso infrannuale con esito annuale identico a
+quello che il modello calcola.
 
 ### 3.11 Nota sull'ambiente di sviluppo
 

@@ -434,3 +434,31 @@ test('RAL nulla o non valida non rompe il calcolo', () => {
     assert.equal(r.irpef.netta, 0);
   }
 });
+
+test('i confini del cuneo sono quelli scritti nella norma, estremi compresi', () => {
+  // L. 207/2024 art. 1 cc. 4-6, letti in originale. Il testo distingue "non
+  // superiore a X" da "superiore a X": e' la differenza fra un <= e un <, e su
+  // un estremo esatto vale l'intera misura. Le due misure si danno il cambio a
+  // 20.000 senza sovrapporsi (il contribuente prenderebbe due volte) ne'
+  // lasciare vuoti (non prenderebbe nulla): questo test tiene fermo il cambio.
+  const se = (r) => calcolaSommaEsente(r, r, P, 365);
+  const ud = (r) => calcolaUlterioreDetrazione(r, P, 365);
+
+  // c. 4 lett. a-c: le tre percentuali, ognuna sul proprio estremo superiore
+  assert.equal(se(8500).percentuale, 0.071, 'a 8.500 esatti: "non superiore a 8.500"');
+  assert.equal(se(8500.01).percentuale, 0.053);
+  assert.equal(se(15000).percentuale, 0.053, 'a 15.000 esatti: "ma non a 15.000"');
+  assert.equal(se(15000.01).percentuale, 0.048);
+
+  // c. 4 vs c. 6: "non superiore a 20.000" contro "superiore a 20.000"
+  assert.ok(se(20000).importo > 0, 'a 20.000 esatti la somma esente spetta');
+  assert.equal(ud(20000), 0, 'a 20.000 esatti la detrazione non spetta');
+  assert.equal(se(20000.01).importo, 0);
+  assert.ok(ud(20000.01) > 0, 'un centesimo sopra, il cambio e\' avvenuto');
+
+  // c. 6 lett. a-b: 1.000 pieni fino a 32.000, poi il decalage sui 8.000 finali
+  assert.equal(ud(32000), 1000, 'a 32.000 esatti: "ma non a 32.000"');
+  assert.equal(ud(36000), 500, 'meta\' esatta del decalage: 1.000 x (40.000-36.000)/8.000');
+  assert.equal(ud(40000), 0, 'a 40.000 il decalage e\' arrivato a zero');
+  assert.equal(ud(40000.01), 0);
+});

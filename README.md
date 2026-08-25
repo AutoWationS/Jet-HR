@@ -106,8 +106,8 @@ quattro dettagli sul rapporto al periodo di lavoro. Gli esempi 1 e 2 sono due ca
 prassi, fonte dell'ente, non verificata — e, se incompleta, un campo `lacuna` che nomina ciò che
 manca più il documento da aprire per chiuderla. Un test impedisce alla prosa di dirsi
 «VERIFICATO» quando lo stato non lo consente: è la correzione di un difetto reale, sei fonti si
-erano autopromosse citando il testo unico riordinato al posto di quello vigente. Oggi **otto
-fonti su quattordici sono chiuse sull'atto applicabile**, sette senza alcuna lacuna residua;
+erano autopromosse citando il testo unico riordinato al posto di quello vigente. Oggi **nove
+fonti su quattordici sono chiuse sull'atto applicabile**, nessuna con lacune residue;
 `node scripts/verifica-fonti.mjs` stampa cosa resta e dove trovarlo. Un secondo test legge il
 sorgente del registro e cade se una fonte dichiara due volte la stessa chiave: anche quello è la
 correzione di un difetto reale, sei note di verifica aggiornate che l'object literal cancellava
@@ -118,6 +118,11 @@ pubblicato in Gazzetta Ufficiale. Hanno confermato le aliquote, la formula della
 maggiorazione di 65 € — il valore più esposto del progetto — e hanno rivelato una regola che
 mancava: il rapporto interno alla formula della detrazione va assunto **nelle prime quattro
 cifre decimali** (art. 13 c. 6 TUIR). Implementata: sul caso di riferimento vale 4 centesimi.
+Poi gli artt. 8, 11, 13, 49 e 51 sono stati riletti sul **testo vigente** applicabile al 2026, e
+i commi 4-9 della L. 207/2024 sul cuneo — la misura che sposta più euro nel prototipo — sono
+stati letti in originale invece che dentro una circolare. Hanno confermato ogni confine ed
+esplicitato due cose che la prassi non diceva: l'esclusione dei pensionati dal cuneo, e che
+l'annualizzazione del reddito vale *«ai soli fini dell'individuazione della percentuale»*.
 
 **7. Audit delle fonti.** Ogni fonte del registro dichiara il proprio **livello** nella gerarchia
 (1 = norma primaria, 2 = prassi e atti locali) e un test impedisce che una fonte di livello 1
