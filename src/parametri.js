@@ -259,7 +259,11 @@ export const FONTI = {
       'un’assunzione del modello non ancora confermata. La pagina indica anche la norma esatta ' +
       '(art. 72 l.r. 10/2003, modificato dalla l.r. 5/2022) e riporta fra gli allegati la ' +
       'convenzione con l’Agenzia delle Entrate per il triennio 2026-2028, che ne conferma ' +
-      'l’attualità. Il testo della legge regionale non è stato letto in originale',
+      'l’attualità. Verificato inoltre sul testo dell’art. 50 del D.Lgs. 446/1997 il quadro in ' +
+      'cui la legge regionale opera: base imponibile, obbligo di pubblicazione del provvedimento ' +
+      'entro il 31 dicembre dell’anno precedente e invio dei dati al sito informatico del MEF ' +
+      'entro il 31 gennaio, con inapplicabilità di sanzioni e interessi in caso di mancato ' +
+      'inserimento. Il testo della legge regionale non è stato letto in originale',
   },
 
   addizionaleComunale: {
@@ -301,10 +305,14 @@ export const FONTI = {
     etichetta: 'Addizionali non dovute in assenza di IRPEF',
     norma: 'Art. 50 c. 2 D.Lgs. 446/1997 (regionale); art. 1 c. 4 D.Lgs. 360/1998 (comunale)',
     dettaglio:
-      'Per la comunale il testo è letterale: l’addizionale “è dovuta se per lo stesso anno ' +
-      'risulta dovuta l’imposta sul reddito delle persone fisiche, al netto delle detrazioni ' +
-      'per essa riconosciute e del credito di cui all’articolo 165 del TUIR”. Chi sta in no tax ' +
-      'area non paga né IRPEF né addizionali. Lo stesso comma fissa anche la base: il reddito ' +
+      'Le due norme dicono la stessa cosa con le stesse parole. Regionale: l’addizionale “è ' +
+      'dovuta se per lo stesso anno l’imposta sul reddito delle persone fisiche, al netto delle ' +
+      'detrazioni per essa riconosciute e dei crediti di cui agli articoli 14 e 15 del citato ' +
+      'testo unico, risulta dovuta”. Comunale: “è dovuta se per lo stesso anno risulta dovuta ' +
+      'l’imposta sul reddito delle persone fisiche, al netto delle detrazioni per essa ' +
+      'riconosciute e del credito di cui all’articolo 165 del TUIR” — il diverso numero di ' +
+      'articolo riflette solo la rinumerazione del TUIR del 2004. Chi sta in no tax area non ' +
+      'paga né IRPEF né addizionali. Entrambi i commi fissano anche la stessa base: il reddito ' +
       'complessivo determinato ai fini IRPEF, al netto degli oneri deducibili. Nel motore la ' +
       'regola impone un vincolo di ordine: le addizionali si calcolano dopo l’IRPEF netta e la ' +
       'ricevono come argomento.',
@@ -315,13 +323,12 @@ export const FONTI = {
       'istituiscono.',
     url: 'https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:1997-12-15;446',
     verifica:
-      'VERIFICATO per l’addizionale COMUNALE sul testo vigente dell’art. 1 c. 4 del ' +
-      'D.Lgs. 360/1998, che riporta la condizione parola per parola. Per l’addizionale ' +
-      'REGIONALE la disposizione parallela dell’art. 50 c. 2 del D.Lgs. 446/1997 non è ancora ' +
-      'stata letta in originale: il modello le tratta allo stesso modo, che è la prassi ' +
-      'corrente, ma è l’ultima regola del motore senza riscontro diretto. L’anomalia era emersa ' +
-      'dal confronto con un calcolatore esterno (metodologia §3.4): il confronto ha segnalato, ' +
-      'la prova è il testo. Norma strutturale, nessuna riverifica annuale',
+      'VERIFICATO per entrambe le addizionali sul testo dei rispettivi commi: art. 50 c. 2 del ' +
+      'D.Lgs. 446/1997 per la regionale, art. 1 c. 4 del D.Lgs. 360/1998 per la comunale. ' +
+      'Il modello le tratta allo stesso modo perché le norme sono formulate allo stesso modo, ' +
+      'non per analogia. L’anomalia era emersa dal confronto con un calcolatore esterno ' +
+      '(metodologia §3.4): il confronto ha segnalato, la prova è il testo. Norma strutturale, ' +
+      'nessuna riverifica annuale',
   },
 
   redditoComplessivo: {
@@ -518,12 +525,14 @@ export const PARAMETRI_2026 = {
       voce: 'Addizionali per cassa',
       norma: 'Art. 50 D.Lgs. 446/1997; art. 1 c. 5 D.Lgs. 360/1998',
       motivo:
-        'In busta paga non si versano per competenza, e non è una prassi ma la norma: l’art. 1 ' +
-        'c. 5 del D.Lgs. 360/1998 dispone che l’acconto sia determinato dal sostituto d’imposta ' +
-        'e trattenuto in un massimo di 9 rate mensili a partire da marzo, e il saldo determinato ' +
-        'all’atto del conguaglio e trattenuto in un massimo di 11 rate dal periodo di paga ' +
-        'successivo; in caso di cessazione del rapporto l’addizionale residua è prelevata in ' +
-        'unica soluzione. Il modello calcola per competenza sull’anno in corso: su una retribuzione ' +
+        'In busta paga non si versano per competenza, e non è una prassi ma la norma. E le due ' +
+        'addizionali non seguono nemmeno lo stesso meccanismo. La COMUNALE (art. 1 c. 5 ' +
+        'D.Lgs. 360/1998) prevede un acconto determinato dal sostituto e trattenuto in un ' +
+        'massimo di 9 rate da marzo, più un saldo determinato al conguaglio e trattenuto in un ' +
+        'massimo di 11 rate. La REGIONALE (art. 50 c. 4 D.Lgs. 446/1997) non ha acconto: è ' +
+        'determinata interamente all’atto del conguaglio e trattenuta in un massimo di 11 rate ' +
+        'dal periodo di paga successivo. In entrambi i casi, se il rapporto cessa, la trattenuta ' +
+        'avviene in unica soluzione. Il modello calcola per competenza sull’anno in corso: su una retribuzione ' +
         'stabile la differenza si annulla, nell’anno di assunzione o di forte aumento no.',
     },
   ],

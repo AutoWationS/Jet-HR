@@ -567,11 +567,25 @@ contiene: il suo art. 5 riguarda la graduale cessazione della sospensione del po
 di istituire l'addizionale, materia transitoria del 2011. La disciplina utile è tutta nel
 D.Lgs. 360/1998.
 
-**Cosa resta.** La disposizione parallela per l'addizionale **regionale**, art. 50 c. 2 del
-D.Lgs. 446/1997, non è ancora stata letta in originale. Il modello tratta le due addizionali
-allo stesso modo — che è la prassi corrente e ciò che le istruzioni ai modelli dichiarativi
-confermano — ma è l'ultima regola del motore senza riscontro diretto, ed è dichiarata come tale
-nel registro.
+**La gemella regionale.** L'art. 50 c. 2 del D.Lgs. 446/1997 dice la stessa cosa con le stesse
+parole:
+
+> *«L'addizionale regionale è dovuta se per lo stesso anno l'imposta sul reddito delle persone
+> fisiche, al netto delle detrazioni per essa riconosciute e dei crediti di cui agli articoli 14
+> e 15 del citato testo unico, risulta dovuta.»*
+
+Il diverso numero di articolo — 14 e 15 qui, 165 nel decreto sulla comunale — riflette solo la
+rinumerazione del TUIR del 2004. Il modello tratta le due addizionali allo stesso modo perché le
+norme sono formulate allo stesso modo, non per analogia. **Era l'ultima regola del motore senza
+riscontro diretto: ora non ce ne sono più.**
+
+**Una differenza fra le due che il modello non conosceva.** L'art. 50 c. 4 dispone che per i
+redditi di lavoro dipendente l'addizionale **regionale** sia determinata dal sostituto d'imposta
+*«all'atto di effettuazione delle operazioni di conguaglio»* e trattenuta in un massimo di
+undici rate: **non ha acconto**. La comunale invece sì, un acconto del 30% in un massimo di nove
+rate da marzo, più il saldo. Due addizionali sullo stesso cedolino, due meccanismi di cassa
+diversi — un dettaglio che rende la semplificazione di §5.2 più precisa e che si vede solo
+leggendo i due decreti di fila.
 
 ### 3.9 Addizionale regionale della Lombardia
 
