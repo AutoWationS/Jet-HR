@@ -198,7 +198,10 @@ export const FONTI = {
       'testo dei commi 4-9 e i tre esempi della circolare letti integralmente; gli esempi 1 e 2 ' +
       'sono riprodotti in un test. Il testo unico riordinato assorbe l’ulteriore detrazione ' +
       'nell’art. 13 c. 10 con la nota di corrispondenza all’art. 1 c. 6 della L. 207/2024, e ' +
-      'conferma testualmente che è “rapportata al periodo di lavoro”',
+      'conferma testualmente che è “rapportata al periodo di lavoro”. La SOMMA ESENTE invece ' +
+      'non vi è confluita: la ricerca delle percentuali nel testo unico non dà alcun ' +
+      'risultato, quindi resta disciplinata dalla sola L. 207/2024 e la fonte primaria per le ' +
+      'percentuali è quella legge, non il TUIR',
   },
 
   trattamentoIntegrativo: {
@@ -223,7 +226,9 @@ export const FONTI = {
     url: 'https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2020-02-05;3',
     verifica:
       'condizione di capienza verificata sul testo della circolare; la finestra 8.173,91-8.500 ' +
-      'in cui il trattamento spetta senza IRPEF dovuta è coperta da un test',
+      'in cui il trattamento spetta senza IRPEF dovuta è coperta da un test. Cercato nel testo ' +
+      'unico riordinato: non vi compare: il trattamento integrativo resta fuori dal TUIR, ' +
+      'disciplinato dal solo D.L. 3/2020 e dalle sue modifiche',
   },
 
   addizionaleRegionale: {
@@ -278,7 +283,9 @@ export const FONTI = {
       'dopo l’IRPEF netta e la ricevono come argomento.',
     prassi:
       'Istruzioni al quadro RV dei modelli Redditi PF e 730, che ripetono la condizione in una ' +
-      'sola frase per entrambe le addizionali.',
+      'sola frase per entrambe le addizionali. La disciplina delle addizionali non sta nel ' +
+      'TUIR e non è confluita nel testo unico riordinato: va cercata nei due decreti che le ' +
+      'istituiscono.',
     url: 'https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:1997-12-15;446',
     verifica:
       'anomalia emersa dal confronto con un calcolatore esterno (metodologia §3.4); la prova è ' +
