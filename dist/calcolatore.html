@@ -1144,35 +1144,50 @@ const FONTI = {
 
   trattamentoIntegrativo: {
     livello: 1,
-    statoVerifica: 'prassi-letta',
-    dove: 'D.L. 3/2020 conv. L. 21/2020, art. 1 c. 1, testo consolidato',
+    statoVerifica: 'atto-letto',
+    dove: 'D.L. 3/2020 conv. L. 21/2020, art. 1, testo consolidato, letto in originale',
     canale: 'normattiva',
-    lacuna:
-      'il testo è stato letto nelle note della circolare; il D.L. 3/2020 consolidato non è stato ' +
-      'aperto',
     etichetta: 'Trattamento integrativo',
     norma:
       'Art. 1 c. 1 del D.L. 5 febbraio 2020, n. 3, conv. con mod. dalla L. 2 aprile 2020, ' +
       'n. 21; soglie di 15.000 e 28.000 introdotte dall’art. 1 c. 3 della L. 234/2021; ' +
       'riduzione di 75 € inserita dall’art. 1 c. 3 della L. 207/2024',
     dettaglio:
-      'Fino a 15.000 di reddito spettano 1.200 € se l’imposta lorda supera la detrazione ' +
-      'dell’art. 13 comma 1 diminuita di 75 €, entrambi rapportati al periodo di lavoro. La ' +
-      'condizione guarda l’imposta lorda, non la netta: fra 8.173,91 e 8.500 di reddito non si ' +
-      'paga IRPEF e il trattamento spetta lo stesso. Da 15.000 a 28.000 spetta per la ' +
-      'differenza tra la somma delle detrazioni elencate dalla norma e l’imposta lorda, nel ' +
-      'limite di 1.200 €. Il testo originario del 2020 riportava soglie diverse: senza le ' +
-      'modifiche successive i numeri non tornano.',
+      'Fino a 15.000 di reddito compresi spettano 1.200 € se l’imposta lorda supera la ' +
+      'detrazione dell’art. 13 COMMA 1 diminuita di 75 €, entrambi rapportati al periodo ' +
+      'di lavoro. Il rinvio al solo comma 1 esclude la maggiorazione di 65 € del ' +
+      'c. 1.1: le due grandezze vanno tenute separate anche dove si sovrappongono, fra ' +
+      '25.000 e 28.000 di reddito. La condizione guarda l’imposta LORDA, non la netta: ' +
+      'fra 8.173,91 e 8.500 di reddito non si paga IRPEF e il trattamento spetta lo ' +
+      'stesso. Da 15.000 a 28.000 spetta per la differenza fra la somma delle detrazioni ' +
+      'elencate dalla norma e l’imposta lorda, nel limite di 1.200 €; ma quelle voci sono ' +
+      'quasi tutte oneri detraibili per spese sostenute fino al 31/12/2021, che il ' +
+      'modello non rappresenta, e con la sola detrazione dell’art. 13 l’imposta lorda le ' +
+      'supera sempre. In questo perimetro la seconda fascia vale strutturalmente zero.',
     prassi:
       'Circolare 4/E del 16/05/2025, par. 1.1 — la riduzione di 75 € “mira a neutralizzare ' +
       'l’incremento della detrazione … che avrebbe potuto determinare l’esclusione dal ' +
       'beneficio di alcuni soggetti”.',
     url: 'https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2020-02-05;3',
     verifica:
-      'condizione di capienza verificata sul testo della circolare; la finestra 8.173,91-8.500 ' +
-      'in cui il trattamento spetta senza IRPEF dovuta è coperta da un test. Cercato nel testo ' +
-      'unico riordinato: non vi compare: il trattamento integrativo resta fuori dal TUIR, ' +
-      'disciplinato dal solo D.L. 3/2020 e dalle sue modifiche',
+      'VERIFICATO sull’articolo in originale, testo consolidato. Il c. 1 lega la ' +
+      'condizione della prima fascia alla “detrazione spettante ai sensi dell’articolo ' +
+      '13, comma 1”: il rinvio al SOLO comma 1 è la ragione per cui il motore passa alla ' +
+      'funzione la detrazione base e non il totale, e la distinzione morde davvero fra ' +
+      '25.000 e 28.000, dove la maggiorazione del c. 1.1 esiste ma non entra nel ' +
+      'confronto. Lo scarto di 75 € compare fra doppie parentesi — segno della modifica ' +
+      'operata dalla L. 207/2024 — con le parole “rapportato al periodo di lavoro ' +
+      'nell’anno”, che il motore applica allo scarto e non solo all’importo; e il c. 2 ' +
+      'conferma che l’intero trattamento “è rapportato al periodo di lavoro”. Il confine ' +
+      'della prima fascia è “non superiore a 15.000 euro”, quindi a 15.000 esatti spetta ' +
+      'ancora. La condizione è scritta con un “superiore a”, non con un “pari o ' +
+      'superiore”: il motore usa un > stretto. Resta un margine interpretativo ' +
+      'dichiarato: nella seconda fascia la norma pone un tetto di “1.200 euro” e il c. 2 ' +
+      'rapporta il trattamento al periodo di lavoro, senza dire se il tetto vada ' +
+      'ragguagliato prima o dopo; il motore lo ragguaglia, e su un anno intero le due ' +
+      'letture coincidono. In questo perimetro la questione è teorica, perché la seconda ' +
+      'fascia vale sempre zero. Gli esempi della circolare 4/E restano il riscontro ' +
+      'numerico, riprodotti nei test',
   },
 
   addizionaleRegionale: {
@@ -1514,17 +1529,17 @@ const PARAMETRI_2026 = {
         'Fuori perimetro è la simulazione del flusso mese per mese, non il risultato.',
     },
     {
-      voce: 'Recupero del cuneo non spettante in dieci rate',
-      norma: 'L. 207/2024 art. 1 cc. 7 e 8',
+      voce: 'Recupero in busta paga di cuneo e trattamento integrativo non spettanti',
+      norma: 'L. 207/2024 art. 1 cc. 7 e 8; D.L. 3/2020 art. 1 cc. 3 e 4',
       motivo:
-        'Il sostituto d’imposta riconosce somma esente e ulteriore detrazione “in via ' +
-        'automatica … all’atto dell’erogazione delle retribuzioni” e ne “verifica in sede di ' +
-        'conguaglio la spettanza”. Se al conguaglio non spettano le recupera, e sopra 60 € il ' +
-        'recupero avviene “in dieci rate di pari ammontare”. È di nuovo una regola di cassa ' +
-        'infrannuale con esito annuale: chi ha diritto alla misura per l’intero anno non vede ' +
-        'alcun recupero, ed è il caso modellato. La compensazione del credito da parte del ' +
-        'sostituto (c. 8, art. 17 D.Lgs. 241/1997) sta interamente dal lato azienda e non tocca ' +
-        'la busta paga.',
+        'Le due norme hanno lo stesso schema: il sostituto riconosce la misura “in via ' +
+        'automatica” all’atto dell’erogazione delle retribuzioni e ne “verifica in sede di ' +
+        'conguaglio la spettanza”; se non spetta la recupera, e sopra 60 € il recupero è ' +
+        'rateizzato. Cambia solo il numero delle rate: DIECI per il cuneo, OTTO per il ' +
+        'trattamento integrativo, che è più antico. È di nuovo una regola di cassa infrannuale ' +
+        'con esito annuale: chi ha diritto alla misura per l’intero anno non vede alcun ' +
+        'recupero, ed è il caso modellato. La compensazione del credito da parte del sostituto ' +
+        '(art. 17 D.Lgs. 241/1997) sta interamente dal lato azienda e non tocca la busta paga.',
     },
     {
       voce: 'Addizionali per cassa',

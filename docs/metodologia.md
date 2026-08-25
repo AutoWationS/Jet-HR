@@ -463,15 +463,17 @@ livello:
 
 | Stato | Significato | Quante |
 |---|---|:--:|
-| `atto-letto` | il testo applicabile è stato letto | **9**, tutte senza lacune residue |
-| `prassi-letta` | letto dentro una circolare che riporta la norma per esteso | 1 |
+| `atto-letto` | il testo applicabile è stato letto | **10**, tutte senza lacune residue |
+| `prassi-letta` | letto dentro una circolare che riporta la norma per esteso | — |
 | `fonte-istituzionale` | letto sul sito dell'ente che emana l'atto, non sull'atto | 2 |
 | `non-verificata` | nessuna lettura diretta | 2 |
 
 Le sei fonti che erano `atto-corrispondente` sono state chiuse aprendo il **testo vigente del
-D.P.R. 917/1986** (§3.10.1): non ce ne sono più in quello stato. Nessuna delle nove `atto-letto`
-ha lacune residue — le ultime due sono state chiuse leggendo in originale il comma della
-L. 199/2025 e i commi 4-9 della L. 207/2024 (§3.10.2).
+D.P.R. 917/1986** (§3.10.1): non ce ne sono più in quello stato. Nessuna delle dieci
+`atto-letto` ha lacune residue, e **non resta nessuna fonte `prassi-letta`**: ogni misura fiscale
+del prototipo poggia ormai su una norma primaria letta in originale, non su una circolare che la
+riporta (§3.10.2 e §3.10.3). Le quattro fonti ancora aperte riguardano i contributi, i due atti
+locali e il conteggio dei giorni.
 
 Ogni fonte che non sia `atto-letto` dichiara inoltre un campo **`lacuna`** che nomina
 esattamente ciò che manca — *«l'art. 51 del D.P.R. 917/1986, applicabile al 2026, non è stato
@@ -791,6 +793,56 @@ via automatica»* e ne verifica la spettanza al conguaglio, recuperando in **die
 non spettante sopra i 60 €. È il terzo caso della stessa famiglia — mensilizzazione dell'1%,
 addizionali per cassa, e ora questo: regole di flusso infrannuale con esito annuale identico a
 quello che il modello calcola.
+
+### 3.10.3 Il trattamento integrativo, e due dettagli che solo l'originale dà
+
+Era l'ultima fonte `prassi-letta`. L'art. 1 del D.L. 3/2020 è stato letto sul testo consolidato,
+e ha confermato la condizione di spettanza già implementata, aggiungendo due precisazioni che la
+circolare non rendeva così nitide.
+
+**Il rinvio è al solo comma 1.** La condizione della prima fascia guarda *«la detrazione
+spettante ai sensi dell'articolo 13, comma 1»* — quindi **senza** la maggiorazione di 65 € del
+c. 1.1. È la ragione per cui `calcolaDetrazioneLavoro` restituisce `base`, `maggiorazione` e
+`totale` separati invece di un numero solo, e per cui il motore passa al trattamento integrativo
+la `base`. Le due grandezze si sovrappongono fra 25.000 e 28.000 di reddito, dove la
+maggiorazione esiste e la seconda fascia del trattamento è ancora aperta. In questo perimetro la
+scelta è **inerte** — lì il trattamento vale zero con entrambe — e vale la pena dirlo invece di
+spacciarla per una verifica che sposta un numero: diventerebbe viva appena il modello
+rappresentasse degli oneri detraibili.
+
+**Anche i 75 € sono rapportati al periodo di lavoro.** Nel testo consolidato lo scarto compare
+fra doppie parentesi — la convenzione con cui Normattiva segnala una modifica, qui quella operata
+dalla L. 207/2024 — e le parole sono *«diminuita dell'importo di 75 euro rapportato al periodo di
+lavoro nell'anno»*. Il ragguaglio cade sullo **scarto**, non solo sull'importo dei 1.200 €, ed è
+così che il motore lo applica. Il c. 2 conferma poi che l'intero trattamento *«è rapportato al
+periodo di lavoro»*.
+
+Da qui discende la soglia di 8.173,91 già documentata: con la detrazione piena di 1.955 €, la
+condizione *«imposta lorda superiore»* a 1.955 − 75 = 1.880 si avvera quando 23% × reddito supera
+1.880. Il test non mette 8.173,91 in una costante: la ricalcola dai parametri, così se cambia la
+detrazione o lo scarto cambia anche la soglia.
+
+**La seconda fascia vale zero, e non per caso.** Fra 15.000 e 28.000 il trattamento spetta per la
+differenza fra una somma di detrazioni e l'imposta lorda. Leggendo l'elenco in originale si vede
+che è quasi tutto **oneri detraibili per spese sostenute fino al 31/12/2021** — mutui, spese
+sanitarie, ristrutturazioni — che il modello non rappresenta. Resta la sola detrazione dell'art.
+13 c. 1, che l'imposta lorda supera sempre, e con margini larghi: a 20.000 di reddito la
+detrazione è 2.642 contro 4.600 di imposta. La seconda fascia è quindi zero **per costruzione**,
+non per un accidente numerico, ed è un limite dichiarato del perimetro. Il test lo scrive così:
+scorre la fascia di cento in cento e verifica la *ragione* — che la detrazione stia sotto
+l'imposta lorda — non solo il risultato.
+
+Un margine interpretativo resta, ed è dichiarato: nella seconda fascia la norma pone un tetto di
+*«1.200 euro»* e il c. 2 rapporta il trattamento al periodo di lavoro, senza dire se il tetto vada
+ragguagliato prima o dopo la differenza. Il motore lo ragguaglia; su un anno intero le due
+letture coincidono, e in questo perimetro la questione è teorica perché il risultato è comunque
+zero.
+
+Infine il c. 3 ha completato la voce fuori perimetro aperta con il cuneo: stesso schema —
+riconoscimento automatico, verifica al conguaglio, recupero rateizzato sopra i 60 € — ma **otto**
+rate invece di dieci. Le due misure sono figlie di stagioni diverse e il legislatore non ha
+uniformato il numero: è il genere di dettaglio che un prototipo può ignorare e un software di
+paghe no.
 
 ### 3.11 Nota sull'ambiente di sviluppo
 

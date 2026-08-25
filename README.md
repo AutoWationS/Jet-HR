@@ -106,8 +106,9 @@ quattro dettagli sul rapporto al periodo di lavoro. Gli esempi 1 e 2 sono due ca
 prassi, fonte dell'ente, non verificata — e, se incompleta, un campo `lacuna` che nomina ciò che
 manca più il documento da aprire per chiuderla. Un test impedisce alla prosa di dirsi
 «VERIFICATO» quando lo stato non lo consente: è la correzione di un difetto reale, sei fonti si
-erano autopromosse citando il testo unico riordinato al posto di quello vigente. Oggi **nove
-fonti su quattordici sono chiuse sull'atto applicabile**, nessuna con lacune residue;
+erano autopromosse citando il testo unico riordinato al posto di quello vigente. Oggi **dieci
+fonti su quattordici sono chiuse sull'atto applicabile**, nessuna con lacune residue, e nessuna
+misura fiscale poggia più su una circolare al posto della norma;
 `node scripts/verifica-fonti.mjs` stampa cosa resta e dove trovarlo. Un secondo test legge il
 sorgente del registro e cade se una fonte dichiara due volte la stessa chiave: anche quello è la
 correzione di un difetto reale, sei note di verifica aggiornate che l'object literal cancellava
@@ -123,6 +124,9 @@ i commi 4-9 della L. 207/2024 sul cuneo — la misura che sposta più euro nel p
 stati letti in originale invece che dentro una circolare. Hanno confermato ogni confine ed
 esplicitato due cose che la prassi non diceva: l'esclusione dei pensionati dal cuneo, e che
 l'annualizzazione del reddito vale *«ai soli fini dell'individuazione della percentuale»*.
+Stessa cosa per il trattamento integrativo (D.L. 3/2020): l'originale mostra che la condizione
+rinvia al **solo comma 1** dell'art. 13, quindi senza la maggiorazione di 65 €, e che il
+ragguaglio al periodo di lavoro cade anche sui 75 € di scarto.
 
 **7. Audit delle fonti.** Ogni fonte del registro dichiara il proprio **livello** nella gerarchia
 (1 = norma primaria, 2 = prassi e atti locali) e un test impedisce che una fonte di livello 1

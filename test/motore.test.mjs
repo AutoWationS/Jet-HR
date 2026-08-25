@@ -17,6 +17,7 @@ import {
   calcolaDetrazioneLavoro,
   calcolaUlterioreDetrazione,
   calcolaSommaEsente,
+  calcolaTrattamentoIntegrativo,
   applicaScaglioni,
   curvaNetto,
   tronca,
@@ -461,4 +462,48 @@ test('i confini del cuneo sono quelli scritti nella norma, estremi compresi', ()
   assert.equal(ud(36000), 500, 'meta\' esatta del decalage: 1.000 x (40.000-36.000)/8.000');
   assert.equal(ud(40000), 0, 'a 40.000 il decalage e\' arrivato a zero');
   assert.equal(ud(40000.01), 0);
+});
+
+test('trattamento integrativo: i confini del D.L. 3/2020, letti nell originale', () => {
+  const lorda = (r) => applicaScaglioni(r, P.irpef.scaglioni).totale;
+  const ti = (r, giorni = 365) =>
+    calcolaTrattamentoIntegrativo(
+      r,
+      lorda(r),
+      { articolo13Comma1: calcolaDetrazioneLavoro(r, P, giorni).base },
+      P,
+      giorni,
+    );
+
+  // c. 1, primo periodo: "se il reddito complessivo NON E' SUPERIORE a 15.000
+  // euro". A 15.000 esatti spetta ancora, per intero.
+  assert.equal(ti(15000), P.trattamentoIntegrativo.importo);
+  assert.equal(ti(15000.01), 0, 'un centesimo sopra si cambia fascia');
+
+  // c. 1, secondo e terzo periodo: fra 15.000 e 28.000 spetta per la differenza
+  // fra la somma delle detrazioni elencate e l'imposta lorda. Quelle voci sono
+  // quasi tutte oneri detraibili per spese sostenute fino al 31/12/2021, che il
+  // modello non rappresenta. Resta la sola detrazione dell'art. 13 c. 1, che
+  // l'imposta lorda supera sempre: in questo perimetro la seconda fascia vale
+  // zero non per caso ma per costruzione, ed e' un limite dichiarato, non un
+  // bug. Il test tiene ferma la RAGIONE, non solo il risultato.
+  for (let r = 15100; r <= 28000; r += 100) {
+    assert.ok(
+      calcolaDetrazioneLavoro(r, P, 365).base < lorda(r),
+      `a ${r} la detrazione dell'art. 13 supererebbe l'imposta lorda: la seconda fascia si accenderebbe`,
+    );
+    assert.equal(ti(r), 0);
+  }
+  assert.equal(ti(28000.01), 0, 'oltre 28.000 non spetta in nessun caso');
+
+  // c. 1: la condizione rinvia alla detrazione "ai sensi dell'articolo 13,
+  // COMMA 1", quindi senza la maggiorazione di 65 euro del c. 1.1. Le due
+  // grandezze si sovrappongono fra 25.000 e 28.000, dove la maggiorazione
+  // esiste: il motore passa alla funzione la base e non il totale. In questo
+  // perimetro la scelta e' inerte, perche' li' la seconda fascia vale zero con
+  // entrambe; diventerebbe viva appena il modello rappresentasse degli oneri
+  // detraibili. Il test documenta che le due grandezze sono davvero diverse.
+  const d = calcolaDetrazioneLavoro(26000, P, 365);
+  assert.equal(d.maggiorazione, P.detrazioneLavoroDipendente.maggiorazione.importo);
+  assert.notEqual(d.base, d.totale);
 });
