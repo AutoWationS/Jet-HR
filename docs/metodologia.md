@@ -463,11 +463,13 @@ livello:
 
 | Stato | Significato | Quante |
 |---|---|:--:|
-| `atto-letto` | il testo applicabile è stato letto | 2 |
-| `atto-corrispondente` | letto un testo che vi corrisponde, non quello vigente | 6 |
+| `atto-letto` | il testo applicabile è stato letto | **8** |
 | `prassi-letta` | letto dentro una circolare che riporta la norma per esteso | 2 |
 | `fonte-istituzionale` | letto sul sito dell'ente che emana l'atto, non sull'atto | 2 |
 | `non-verificata` | nessuna lettura diretta | 2 |
+
+Le sei fonti che erano `atto-corrispondente` sono state chiuse aprendo il **testo vigente del
+D.P.R. 917/1986** (§3.10.1): non ce ne sono più in quello stato.
 
 Ogni fonte che non sia `atto-letto` dichiara inoltre un campo **`lacuna`** che nomina
 esattamente ciò che manca — *«l'art. 51 del D.P.R. 917/1986, applicabile al 2026, non è stato
@@ -694,6 +696,27 @@ e la conferma sta in un terzo documento, quello sul conguaglio. Implementare il 
 leggendo solo la prima delle tre avrebbe reso il modello **sbagliato**, cambiando anche il caso
 di riferimento verificato a mano. Tre documenti per non scrivere una riga di codice è un
 risultato, non uno spreco.
+
+### 3.10.1 Il testo vigente del TUIR conferma tutte le inferenze
+
+Le sei fonti che poggiavano sul testo unico riordinato sono state chiuse sul **D.P.R. 917/1986
+nella versione applicabile al 2026**. Ogni deduzione tratta dalla nota di corrispondenza si è
+rivelata esatta, il che è tranquillizzante ma andava dimostrato e non supposto.
+
+| Cosa era dedotto | Cosa dice il testo vigente |
+|---|---|
+| aliquote 23 / **33** / 43 | art. 11 c. 1: la lett. b) riporta il 33% fra doppie parentesi, segno della modifica recente |
+| capienza al **comma 3** | art. 11 c. 3: *«fino alla concorrenza del suo ammontare»* — il numero del comma è quello citato |
+| minimi 690 e 1.380 **dentro la lett. a)** | art. 13 c. 1 lett. a): i due minimi stanno nella lettera, dopo l'importo di 1.955 |
+| i 65 € al **comma 1.1** | art. 13 c. 1.1: *«è aumentata di un importo pari a 65 euro, se il reddito complessivo è superiore a 25.000 euro ma non a 35.000 euro»* |
+| il c. 1-bis era il bonus Renzi, abrogato | art. 13 c. 1-bis: *«COMMA ABROGATO DAL D.L. 5 FEBBRAIO 2020, N. 3»* |
+| quattro cifre decimali al **comma 6** | art. 13 c. 6, con una differenza: il testo vigente rinvia ai *«commi 1, 3, 4 e 5»*, il riordino ai commi 1, 3 e 5, perché nel frattempo un comma è stato soppresso |
+| non concorrenza dei contributi | art. 51 c. 2 lett. a), parola per parola |
+
+Restano due lacune minori, entrambe dichiarate: l'**art. 8**, che definisce il reddito
+complessivo, e l'**art. 49**, che definisce il reddito di lavoro dipendente — quest'ultimo letto
+nella sola versione riordinata. Nessuno dei due incide su un valore calcolato: intervengono
+nelle definizioni a monte, che il modello assume per semplificazione dichiarata.
 
 ### 3.11 Nota sull'ambiente di sviluppo
 

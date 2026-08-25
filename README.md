@@ -103,9 +103,12 @@ prassi, non norma primaria — è stata letta integralmente: ha confermato tre s
 quattro dettagli sul rapporto al periodo di lavoro. Gli esempi 1 e 2 sono due casi di test.
 
 **5. Stato di verifica tipizzato.** Ogni fonte dichiara *come* è stata verificata — atto letto,
-testo corrispondente, prassi, fonte dell'ente, non verificata — e, se incompleta, un campo
-`lacuna` che nomina ciò che manca. Un test impedisce alla prosa di dirsi «VERIFICATO» quando lo
-stato non lo consente: è la correzione di un difetto reale, sei fonti si erano autopromosse.
+prassi, fonte dell'ente, non verificata — e, se incompleta, un campo `lacuna` che nomina ciò che
+manca più il documento da aprire per chiuderla. Un test impedisce alla prosa di dirsi
+«VERIFICATO» quando lo stato non lo consente: è la correzione di un difetto reale, sei fonti si
+erano autopromosse citando il testo unico riordinato al posto di quello vigente. Oggi **otto
+fonti su quattordici sono chiuse sull'atto applicabile**; `node scripts/verifica-fonti.mjs`
+stampa cosa resta e dove trovarlo.
 
 **6. Lettura del testo normativo.** Gli artt. 11 e 13 sono stati letti sul testo unico
 pubblicato in Gazzetta Ufficiale. Hanno confermato le aliquote, la formula della capienza e la

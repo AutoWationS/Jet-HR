@@ -878,12 +878,15 @@ footer {
 const FONTI = {
   irpef: {
     livello: 1,
-    statoVerifica: 'atto-corrispondente',
-    dove: 'D.P.R. 917/1986 (TUIR), testo vigente 2026 — art. 11',
+    statoVerifica: 'atto-letto',
+    verifica: 'VERIFICATO sul testo vigente del D.P.R. 917/1986: l’art. 11 c. 1 riporta ' +
+      '“a) fino a 28.000 euro, 23 per cento; b) oltre 28.000 euro e fino a 50.000 euro, ' +
+      '33 per cento; c) oltre 50.000 euro, 43 per cento”. Le tre aliquote e le due soglie ' +
+      'implementate coincidono con il testo applicabile all’anno d’imposta modellato',
+    dove: 'L. 199/2025, art. 1 c. 3, testo consolidato',
     canale: 'normattiva',
-    lacuna:
-      'il testo applicabile al 2026 — D.P.R. 917/1986 come modificato dalla L. 199/2025 — non è ' +
-      'stato letto: la lettura è sul testo unico riordinato che vi corrisponde',
+    lacuna: 'il testo vigente riporta la modifica già recepita: il comma della L. 199/2025 che la ' +
+      'opera non è stato letto in originale',
     etichetta: 'Aliquote e scaglioni IRPEF',
     norma:
       'Art. 11 c. 1 lett. b) TUIR (D.P.R. 917/1986), come modificato dall’art. 1 c. 3 ' +
@@ -909,12 +912,12 @@ const FONTI = {
 
   imposta: {
     livello: 1,
-    statoVerifica: 'atto-corrispondente',
+    statoVerifica: 'atto-letto',
+    verifica: 'VERIFICATO sul testo vigente: l’art. 11 c. 3 dispone che l’imposta netta si determina ' +
+      'operando sull’imposta lorda, “fino alla concorrenza del suo ammontare”, le detrazioni ' +
+      'degli artt. 12, 13, 15, 16 e 16-bis. Il numero del comma è quello citato dal registro',
     dove: 'D.P.R. 917/1986 (TUIR), testo vigente 2026 — art. 11 c. 3',
     canale: 'normattiva',
-    lacuna:
-      'letto sul testo unico riordinato (c. 4); il c. 3 del D.P.R. 917/1986, che è il ' +
-      'riferimento per il 2026, non è stato aperto',
     etichetta: 'Imposta netta e limite di capienza',
     norma: 'Art. 11 c. 3 TUIR',
     dettaglio:
@@ -933,12 +936,16 @@ const FONTI = {
 
   detrazioneLavoro: {
     livello: 1,
-    statoVerifica: 'atto-corrispondente',
+    statoVerifica: 'atto-letto',
+    verifica: 'VERIFICATO sul testo vigente del D.P.R. 917/1986. L’art. 13 c. 1 lett. a) contiene i ' +
+      'minimi di 690 e 1.380 € DENTRO la lettera, quindi per i soli redditi fino a 15.000: è la ' +
+      'lettura che ha corretto un errore del motore. Il c. 1.1 dispone testualmente che la ' +
+      'detrazione “è aumentata di un importo pari a 65 euro, se il reddito complessivo è ' +
+      'superiore a 25.000 euro ma non a 35.000 euro”, confermando importo, fascia e collocazione. ' +
+      'Il c. 1-bis risulta “COMMA ABROGATO DAL D.L. 5 FEBBRAIO 2020, N. 3”, che è esattamente ' +
+      'quanto il registro afferma',
     dove: 'D.P.R. 917/1986 (TUIR), testo vigente 2026 — art. 13 cc. 1 e 1.1',
     canale: 'normattiva',
-    lacuna:
-      'la collocazione della maggiorazione al c. 1.1 del testo 2026 è dedotta dalla nota di ' +
-      'corrispondenza del riordino, non letta sul D.P.R. 917/1986',
     etichetta: 'Detrazione per redditi di lavoro dipendente',
     norma:
       'Art. 13 c. 1 TUIR (importo base elevato a 1.955 € dall’art. 1 c. 2 lett. b della ' +
@@ -969,11 +976,13 @@ const FONTI = {
 
   arrotondamentoRapporti: {
     livello: 1,
-    statoVerifica: 'atto-corrispondente',
+    statoVerifica: 'atto-letto',
+    verifica: 'VERIFICATO sul testo vigente: l’art. 13 c. 6 dispone che “se il risultato dei rapporti ' +
+      'indicati nei commi 1, 3, 4 e 5 è maggiore di zero, lo stesso si assume nelle prime ' +
+      'quattro cifre decimali”. Resta il margine interpretativo su “si assume”: il motore ' +
+      'tronca, che è la prassi dei software di paghe',
     dove: 'D.P.R. 917/1986 (TUIR), testo vigente 2026 — art. 13 c. 6',
     canale: 'normattiva',
-    lacuna:
-      'letto al c. 8 del riordino; il c. 6 del D.P.R. 917/1986 non è stato aperto',
     etichetta: 'Le quattro cifre decimali dell’art. 13',
     norma: 'Art. 13 c. 6 TUIR (c. 8 nel testo unico riordinato)',
     dettaglio:
@@ -1058,12 +1067,16 @@ const FONTI = {
 
   nonConcorrenzaContributi: {
     livello: 1,
-    statoVerifica: 'atto-corrispondente',
-    dove: 'D.P.R. 917/1986 (TUIR), testo vigente 2026 — art. 51 c. 2 lett. a)',
+    statoVerifica: 'atto-letto',
+    verifica: 'VERIFICATO sul testo vigente: l’art. 51 c. 2 lett. a) dispone che “non concorrono a ' +
+      'formare il reddito: a) i contributi previdenziali e assistenziali versati dal datore di ' +
+      'lavoro o dal lavoratore in ottemperanza a disposizioni di legge”. Chiude la catena con ' +
+      'cui il modello sostiene che la somma esente del cuneo si calcola sull’imponibile e non ' +
+      'sulla RAL (metodologia §3.4), e conferma il termine esatto: non concorrenza, non deduzione',
+    dove: 'D.P.R. 917/1986 (TUIR), testo vigente 2026 — art. 49',
     canale: 'normattiva',
-    lacuna:
-      'letto all’art. 53 del riordino; l’art. 51 del D.P.R. 917/1986, applicabile al 2026, non è ' +
-      'stato aperto',
+    lacuna: 'l’art. 49, che definisce il reddito di lavoro dipendente, è stato letto nella versione ' +
+      'del testo unico riordinato e non su quella vigente',
     etichetta: 'I contributi obbligatori non formano reddito',
     norma: 'Artt. 49 e 51 c. 2 lett. a) TUIR',
     dettaglio:
@@ -1265,12 +1278,16 @@ const FONTI = {
 
   redditoComplessivo: {
     livello: 1,
-    statoVerifica: 'atto-corrispondente',
-    dove: 'D.P.R. 917/1986 (TUIR), testo vigente 2026 — artt. 8 e 13 c. 6-bis',
+    statoVerifica: 'atto-letto',
+    verifica: 'VERIFICATO sul testo vigente per la regola che incide sul calcolo: l’art. 13 c. 6-bis ' +
+      'dispone che “ai fini del presente articolo il reddito complessivo è assunto al netto del ' +
+      'reddito dell’unità immobiliare adibita ad abitazione principale”. Il rinvio alla ' +
+      'circolare 22/E è citato testualmente dalla 4/E/2025 a pag. 6; semplificazione dichiarata ' +
+      'in metodologia §5.1',
+    dove: 'D.P.R. 917/1986 (TUIR), testo vigente 2026 — art. 8',
     canale: 'normattiva',
-    lacuna:
-      'la regola dell’abitazione principale è letta sul riordino; il c. 6-bis dell’art. 13 del ' +
-      'D.P.R. 917/1986 e l’art. 8 non sono stati aperti',
+    lacuna: 'l’art. 8, che definisce il reddito complessivo, non è stato aperto: è stato letto il ' +
+      'solo art. 13 c. 6-bis',
     etichetta: 'Nozione di reddito complessivo usata per le soglie',
     norma: 'Art. 8 TUIR; art. 13 c. 6-bis TUIR; art. 1 c. 9 della L. 207/2024',
     dettaglio:
