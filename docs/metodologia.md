@@ -463,13 +463,15 @@ livello:
 
 | Stato | Significato | Quante |
 |---|---|:--:|
-| `atto-letto` | il testo applicabile è stato letto | **8** |
+| `atto-letto` | il testo applicabile è stato letto | **8** (7 senza lacune residue) |
 | `prassi-letta` | letto dentro una circolare che riporta la norma per esteso | 2 |
 | `fonte-istituzionale` | letto sul sito dell'ente che emana l'atto, non sull'atto | 2 |
 | `non-verificata` | nessuna lettura diretta | 2 |
 
 Le sei fonti che erano `atto-corrispondente` sono state chiuse aprendo il **testo vigente del
-D.P.R. 917/1986** (§3.10.1): non ce ne sono più in quello stato.
+D.P.R. 917/1986** (§3.10.1): non ce ne sono più in quello stato. Delle otto `atto-letto`, sette
+non hanno alcuna lacuna residua; la restante è quella sulle aliquote IRPEF, che ha letto il testo
+vigente già modificato ma non il comma della L. 199/2025 che opera la modifica.
 
 Ogni fonte che non sia `atto-letto` dichiara inoltre un campo **`lacuna`** che nomina
 esattamente ciò che manca — *«l'art. 51 del D.P.R. 917/1986, applicabile al 2026, non è stato
@@ -713,10 +715,35 @@ rivelata esatta, il che è tranquillizzante ma andava dimostrato e non supposto.
 | quattro cifre decimali al **comma 6** | art. 13 c. 6, con una differenza: il testo vigente rinvia ai *«commi 1, 3, 4 e 5»*, il riordino ai commi 1, 3 e 5, perché nel frattempo un comma è stato soppresso |
 | non concorrenza dei contributi | art. 51 c. 2 lett. a), parola per parola |
 
-Restano due lacune minori, entrambe dichiarate: l'**art. 8**, che definisce il reddito
-complessivo, e l'**art. 49**, che definisce il reddito di lavoro dipendente — quest'ultimo letto
-nella sola versione riordinata. Nessuno dei due incide su un valore calcolato: intervengono
-nelle definizioni a monte, che il modello assume per semplificazione dichiarata.
+Restavano due lacune minori — l'**art. 8**, che definisce il reddito complessivo, e l'**art.
+49**, che definisce il reddito di lavoro dipendente. Sono state chiuse anch'esse sul testo
+vigente. Nessuna delle due incide su un valore calcolato, ma entrambe reggono un'affermazione
+del modello, e valeva la pena leggerle proprio perché sono definizioni:
+
+- **art. 49 c. 1**: sono redditi di lavoro dipendente *«quelli che derivano da rapporti aventi
+  per oggetto la prestazione di lavoro, con qualsiasi qualifica, alle dipendenze e sotto la
+  direzione di altri»*. È la categoria in cui ricade il caso simulato, e quella su cui si
+  commisura la somma esente del cuneo: insieme all'art. 51 c. 2 lett. a) chiude la catena di
+  §3.4 — la percentuale si applica all'imponibile, non alla RAL.
+- **art. 8 c. 1**: *«il reddito complessivo si determina sommando i redditi di ogni categoria
+  che concorrono a formarlo e sottraendo le perdite derivanti dall'esercizio di arti e
+  professioni»*. È una definizione **per somma di categorie**: non contiene di per sé le
+  estensioni del reddito di riferimento — cedolare secca, forfetario, mance — che stanno nelle
+  norme di settore e nell'art. 1 c. 9 della L. 207/2024. La lettura conferma che i due concetti
+  vanno tenuti distinti, come il registro già faceva, e non trattati come sinonimi.
+
+#### Un difetto trovato mentre si chiudevano queste fonti
+
+Aggiornando le note di verifica delle sei fonti, la prosa nuova era stata inserita in cima al
+blocco senza togliere quella vecchia in fondo. In un object literal JavaScript **vince
+l'ultima**: le sei fonti continuavano a mostrare il testo superato, e nessun test se ne
+accorgeva perché l'oggetto caricato era perfettamente valido. Il difetto è visibile soltanto nel
+sorgente, quindi ora c'è un test che legge `src/parametri.js` come testo e cade se una fonte
+dichiara due volte la stessa chiave.
+
+È un difetto piccolo con una morale grande: un aggiornamento può fallire in silenzio anche
+quando il codice gira. Il registro delle fonti serve a impedire che il modello menta; questo
+test serve a impedire che menta il registro.
 
 ### 3.11 Nota sull'ambiente di sviluppo
 

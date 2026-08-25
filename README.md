@@ -107,8 +107,11 @@ prassi, fonte dell'ente, non verificata — e, se incompleta, un campo `lacuna` 
 manca più il documento da aprire per chiuderla. Un test impedisce alla prosa di dirsi
 «VERIFICATO» quando lo stato non lo consente: è la correzione di un difetto reale, sei fonti si
 erano autopromosse citando il testo unico riordinato al posto di quello vigente. Oggi **otto
-fonti su quattordici sono chiuse sull'atto applicabile**; `node scripts/verifica-fonti.mjs`
-stampa cosa resta e dove trovarlo.
+fonti su quattordici sono chiuse sull'atto applicabile**, sette senza alcuna lacuna residua;
+`node scripts/verifica-fonti.mjs` stampa cosa resta e dove trovarlo. Un secondo test legge il
+sorgente del registro e cade se una fonte dichiara due volte la stessa chiave: anche quello è la
+correzione di un difetto reale, sei note di verifica aggiornate che l'object literal cancellava
+in silenzio.
 
 **6. Lettura del testo normativo.** Gli artt. 11 e 13 sono stati letti sul testo unico
 pubblicato in Gazzetta Ufficiale. Hanno confermato le aliquote, la formula della capienza e la

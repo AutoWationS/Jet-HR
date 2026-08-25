@@ -887,10 +887,6 @@ const FONTI = {
   irpef: {
     livello: 1,
     statoVerifica: 'atto-letto',
-    verifica: 'VERIFICATO sul testo vigente del D.P.R. 917/1986: l’art. 11 c. 1 riporta ' +
-      '“a) fino a 28.000 euro, 23 per cento; b) oltre 28.000 euro e fino a 50.000 euro, ' +
-      '33 per cento; c) oltre 50.000 euro, 43 per cento”. Le tre aliquote e le due soglie ' +
-      'implementate coincidono con il testo applicabile all’anno d’imposta modellato',
     dove: 'L. 199/2025, art. 1 c. 3, testo consolidato',
     canale: 'normattiva',
     lacuna: 'il testo vigente riporta la modifica già recepita: il comma della L. 199/2025 che la ' +
@@ -911,19 +907,18 @@ const FONTI = {
       'scaglioni, non l’aliquota vigente.',
     url: 'https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2025-12-30;199',
     verifica:
-      'Le tre aliquote 23% / 33% / 43% e le soglie 28.000 e ' +
-      '50.000 sono state lette sull’art. 11 c. 1 del testo unico pubblicato in Gazzetta ' +
-      'Ufficiale (S.O. n. 26/L alla G.U. n. 152 del 3/7/2026), che riporta la nota di ' +
-      'corrispondenza con l’art. 11 del D.P.R. 917/1986. Quel testo si applica dal 2027, ma ' +
-      'sulle aliquote non diverge da quello vigente nel 2026',
+      'VERIFICATO sul testo vigente del D.P.R. 917/1986: l’art. 11 c. 1 riporta “a) fino a ' +
+      '28.000 euro, 23 per cento; b) oltre 28.000 euro e fino a 50.000 euro, 33 per cento; ' +
+      'c) oltre 50.000 euro, 43 per cento”. Le tre aliquote e le due soglie implementate ' +
+      'coincidono con il testo applicabile all’anno d’imposta modellato. Lo stesso riscontro ' +
+      'sul testo unico pubblicato in Gazzetta Ufficiale (S.O. n. 26/L alla G.U. n. 152 del ' +
+      '3/7/2026), che porta la nota di corrispondenza con l’art. 11: quel testo si applica ' +
+      'dal 2027, ma sulle aliquote non diverge da quello vigente nel 2026',
   },
 
   imposta: {
     livello: 1,
     statoVerifica: 'atto-letto',
-    verifica: 'VERIFICATO sul testo vigente: l’art. 11 c. 3 dispone che l’imposta netta si determina ' +
-      'operando sull’imposta lorda, “fino alla concorrenza del suo ammontare”, le detrazioni ' +
-      'degli artt. 12, 13, 15, 16 e 16-bis. Il numero del comma è quello citato dal registro',
     dove: 'D.P.R. 917/1986 (TUIR), testo vigente 2026 — art. 11 c. 3',
     canale: 'normattiva',
     etichetta: 'Imposta netta e limite di capienza',
@@ -936,22 +931,16 @@ const FONTI = {
     url:
       'https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.del.presidente.della.repubblica:1986-12-22;917',
     verifica:
-      'La formula “fino alla concorrenza del suo ammontare” è stata letta sul ' +
-      'testo normativo. Nel testo unico riordinato la regola sta al comma 4 anziché al ' +
-      'comma 3, effetto della rinumerazione: per l’anno d’imposta 2026 il riferimento ' +
-      'corretto resta il comma 3 del D.P.R. 917/1986',
+      'VERIFICATO sul testo vigente: l’art. 11 c. 3 dispone che l’imposta netta si determina ' +
+      'operando sull’imposta lorda, “fino alla concorrenza del suo ammontare”, le detrazioni ' +
+      'degli artt. 12, 13, 15, 16 e 16-bis. Nel testo unico riordinato la stessa regola sta al ' +
+      'comma 4 anziché al comma 3, effetto della rinumerazione: per l’anno d’imposta 2026 il ' +
+      'riferimento corretto resta il comma 3 del D.P.R. 917/1986, che è quello citato dal registro',
   },
 
   detrazioneLavoro: {
     livello: 1,
     statoVerifica: 'atto-letto',
-    verifica: 'VERIFICATO sul testo vigente del D.P.R. 917/1986. L’art. 13 c. 1 lett. a) contiene i ' +
-      'minimi di 690 e 1.380 € DENTRO la lettera, quindi per i soli redditi fino a 15.000: è la ' +
-      'lettura che ha corretto un errore del motore. Il c. 1.1 dispone testualmente che la ' +
-      'detrazione “è aumentata di un importo pari a 65 euro, se il reddito complessivo è ' +
-      'superiore a 25.000 euro ma non a 35.000 euro”, confermando importo, fascia e collocazione. ' +
-      'Il c. 1-bis risulta “COMMA ABROGATO DAL D.L. 5 FEBBRAIO 2020, N. 3”, che è esattamente ' +
-      'quanto il registro afferma',
     dove: 'D.P.R. 917/1986 (TUIR), testo vigente 2026 — art. 13 cc. 1 e 1.1',
     canale: 'normattiva',
     etichetta: 'Detrazione per redditi di lavoro dipendente',
@@ -972,23 +961,22 @@ const FONTI = {
     url:
       'https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.del.presidente.della.repubblica:1986-12-22;917',
     verifica:
-      'Letto sul testo unico riordinato (S.O. n. 26/L alla G.U. n. 152 del 3/7/2026), che porta ' +
-      'la nota di corrispondenza con l’art. 13 del D.P.R. 917/1986. Confermati: gli importi ' +
-      '1.955, 1.910, 1.190 e le due formule per fascia; il fatto che i minimi di 690 e 1.380 € ' +
-      'stiano DENTRO la lettera a) — la lettura che ha corretto un errore del motore; la ' +
-      'maggiorazione di 65 € per redditi oltre 25.000 e fino a 35.000, che nel testo riordinato ' +
-      'sta al comma 2 e nel testo 2026 al comma 1.1. Era il valore più esposto del prototipo ' +
-      'perché è quello su cui il modello diverge da un calcolatore esterno (metodologia §3.4): ' +
-      'ora poggia sul testo di legge',
+      'VERIFICATO sul testo vigente del D.P.R. 917/1986. L’art. 13 c. 1 lett. a) contiene i ' +
+      'minimi di 690 e 1.380 € DENTRO la lettera, quindi per i soli redditi fino a 15.000: è la ' +
+      'lettura che ha corretto un errore del motore. Il c. 1.1 dispone testualmente che la ' +
+      'detrazione “è aumentata di un importo pari a 65 euro, se il reddito complessivo è ' +
+      'superiore a 25.000 euro ma non a 35.000 euro”, confermando importo, fascia e ' +
+      'collocazione. Il c. 1-bis risulta “COMMA ABROGATO DAL D.L. 5 FEBBRAIO 2020, N. 3”, che ' +
+      'è esattamente quanto il registro afferma. Il riscontro sul testo unico riordinato ' +
+      '(S.O. n. 26/L alla G.U. n. 152 del 3/7/2026) conferma gli importi 1.955, 1.910 e 1.190 ' +
+      'e le due formule per fascia, con la maggiorazione al comma 2 in luogo del comma 1.1. ' +
+      'Era il valore più esposto del prototipo perché è quello su cui il modello diverge da un ' +
+      'calcolatore esterno (metodologia §3.4): ora poggia sul testo di legge',
   },
 
   arrotondamentoRapporti: {
     livello: 1,
     statoVerifica: 'atto-letto',
-    verifica: 'VERIFICATO sul testo vigente: l’art. 13 c. 6 dispone che “se il risultato dei rapporti ' +
-      'indicati nei commi 1, 3, 4 e 5 è maggiore di zero, lo stesso si assume nelle prime ' +
-      'quattro cifre decimali”. Resta il margine interpretativo su “si assume”: il motore ' +
-      'tronca, che è la prassi dei software di paghe',
     dove: 'D.P.R. 917/1986 (TUIR), testo vigente 2026 — art. 13 c. 6',
     canale: 'normattiva',
     etichetta: 'Le quattro cifre decimali dell’art. 13',
@@ -1003,9 +991,13 @@ const FONTI = {
     url:
       'https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.del.presidente.della.repubblica:1986-12-22;917',
     verifica:
-      'Letto sul testo unico riordinato. Resta un margine interpretativo su “si assume”: il ' +
-      'motore tronca, che è la prassi corrente dei software di paghe; leggerlo come ' +
-      'arrotondamento cambierebbe l’esito di pochi centesimi',
+      'VERIFICATO sul testo vigente: l’art. 13 c. 6 dispone che “se il risultato dei rapporti ' +
+      'indicati nei commi 1, 3, 4 e 5 è maggiore di zero, lo stesso si assume nelle prime ' +
+      'quattro cifre decimali”. Nel testo unico riordinato la stessa regola sta al comma 8 e ' +
+      'rinvia ai commi 1, 3 e 5: differenza di rinumerazione, non di sostanza, e il rapporto ' +
+      'usato dal motore è quello del comma 1, citato da entrambe le versioni. Resta un ' +
+      'margine interpretativo su “si assume”: il motore tronca, che è la prassi corrente dei ' +
+      'software di paghe; leggerlo come arrotondamento cambierebbe l’esito di pochi centesimi',
   },
 
   baseContributiva: {
@@ -1076,15 +1068,8 @@ const FONTI = {
   nonConcorrenzaContributi: {
     livello: 1,
     statoVerifica: 'atto-letto',
-    verifica: 'VERIFICATO sul testo vigente: l’art. 51 c. 2 lett. a) dispone che “non concorrono a ' +
-      'formare il reddito: a) i contributi previdenziali e assistenziali versati dal datore di ' +
-      'lavoro o dal lavoratore in ottemperanza a disposizioni di legge”. Chiude la catena con ' +
-      'cui il modello sostiene che la somma esente del cuneo si calcola sull’imponibile e non ' +
-      'sulla RAL (metodologia §3.4), e conferma il termine esatto: non concorrenza, non deduzione',
-    dove: 'D.P.R. 917/1986 (TUIR), testo vigente 2026 — art. 49',
+    dove: 'D.P.R. 917/1986 (TUIR), testo vigente 2026 — artt. 49 e 51 c. 2 lett. a)',
     canale: 'normattiva',
-    lacuna: 'l’art. 49, che definisce il reddito di lavoro dipendente, è stato letto nella versione ' +
-      'del testo unico riordinato e non su quella vigente',
     etichetta: 'I contributi obbligatori non formano reddito',
     norma: 'Artt. 49 e 51 c. 2 lett. a) TUIR',
     dettaglio:
@@ -1097,13 +1082,17 @@ const FONTI = {
     url:
       'https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.del.presidente.della.repubblica:1986-12-22;917',
     verifica:
-      'Letto sul testo unico riordinato (S.O. n. 26/L alla G.U. n. 152 del 3/7/2026, art. 53, ' +
-      'con nota di corrispondenza all’art. 51 del D.P.R. 917/1986): “Non concorrono a formare ' +
-      'il reddito: a) i contributi previdenziali e assistenziali versati dal datore di lavoro o ' +
-      'dal lavoratore in ottemperanza a disposizioni di legge”. Il testo conferma anche il ' +
-      'termine esatto — non concorrenza, non deduzione — e chiude la catena con cui il modello ' +
-      'sostiene che la somma esente del cuneo si calcola sull’imponibile e non sulla RAL ' +
-      '(metodologia §3.4)',
+      'VERIFICATO sul testo vigente. L’art. 51 c. 2 lett. a) dispone che “non concorrono a ' +
+      'formare il reddito: a) i contributi previdenziali e assistenziali versati dal datore di ' +
+      'lavoro o dal lavoratore in ottemperanza a disposizioni di legge”. L’art. 49 c. 1 ' +
+      'definisce redditi di lavoro dipendente “quelli che derivano da rapporti aventi per ' +
+      'oggetto la prestazione di lavoro, con qualsiasi qualifica, alle dipendenze e sotto la ' +
+      'direzione di altri”: è la categoria in cui ricade il caso simulato e quella su cui si ' +
+      'commisura la somma esente del cuneo. Le due letture chiudono la catena con cui il ' +
+      'modello sostiene che la somma esente si calcola sull’imponibile e non sulla RAL ' +
+      '(metodologia §3.4), e confermano il termine esatto: non concorrenza, non deduzione. ' +
+      'Il riscontro sul testo unico riordinato (art. 53, con nota di corrispondenza all’art. ' +
+      '51) dà lo stesso testo',
   },
 
   cuneoFiscale: {
@@ -1287,15 +1276,8 @@ const FONTI = {
   redditoComplessivo: {
     livello: 1,
     statoVerifica: 'atto-letto',
-    verifica: 'VERIFICATO sul testo vigente per la regola che incide sul calcolo: l’art. 13 c. 6-bis ' +
-      'dispone che “ai fini del presente articolo il reddito complessivo è assunto al netto del ' +
-      'reddito dell’unità immobiliare adibita ad abitazione principale”. Il rinvio alla ' +
-      'circolare 22/E è citato testualmente dalla 4/E/2025 a pag. 6; semplificazione dichiarata ' +
-      'in metodologia §5.1',
-    dove: 'D.P.R. 917/1986 (TUIR), testo vigente 2026 — art. 8',
+    dove: 'D.P.R. 917/1986 (TUIR), testo vigente 2026 — artt. 8 e 13 c. 6-bis',
     canale: 'normattiva',
-    lacuna: 'l’art. 8, che definisce il reddito complessivo, non è stato aperto: è stato letto il ' +
-      'solo art. 13 c. 6-bis',
     etichetta: 'Nozione di reddito complessivo usata per le soglie',
     norma: 'Art. 8 TUIR; art. 13 c. 6-bis TUIR; art. 1 c. 9 della L. 207/2024',
     dettaglio:
@@ -1311,10 +1293,17 @@ const FONTI = {
     url:
       'https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.del.presidente.della.repubblica:1986-12-22;917',
     verifica:
-      'il rinvio alla circolare 22/E è citato testualmente dalla 4/E/2025 a pag. 6. La regola ' +
-      'del reddito assunto al netto dell’abitazione principale è stata letta sul testo ' +
-      'normativo (art. 13 c. 9 del testo riordinato, c. 6-bis nel testo 2026); ' +
-      'semplificazione dichiarata in metodologia §5.1',
+      'VERIFICATO sul testo vigente per entrambe le regole che incidono sul calcolo. L’art. 8 ' +
+      'c. 1 dispone che “il reddito complessivo si determina sommando i redditi di ogni ' +
+      'categoria che concorrono a formarlo e sottraendo le perdite derivanti dall’esercizio ' +
+      'di arti e professioni”: è una definizione per somma di categorie, che non contiene di ' +
+      'per sé le estensioni del reddito di riferimento (cedolare secca, forfetario, mance). ' +
+      'Quelle stanno nelle norme di settore e nell’art. 1 c. 9 della L. 207/2024: è la ragione ' +
+      'per cui il registro tiene distinti i due concetti invece di trattarli come sinonimi. ' +
+      'L’art. 13 c. 6-bis dispone che “ai fini del presente articolo il reddito complessivo è ' +
+      'assunto al netto del reddito dell’unità immobiliare adibita ad abitazione principale”. ' +
+      'Il rinvio alla circolare 22/E è citato testualmente dalla 4/E/2025 a pag. 6; la ' +
+      'semplificazione a imponibile da lavoro dipendente è dichiarata in metodologia §5.1',
   },
 
   ragguaglioGiorni: {

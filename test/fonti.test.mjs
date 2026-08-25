@@ -7,6 +7,7 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 
 import { PARAMETRI_2026 as P, FONTI, fonteDi } from '../src/parametri.js';
 
@@ -212,5 +213,33 @@ test('il perimetro escluso e dichiarato voce per voce, con norma e motivo', () =
   assert.ok(P.fuoriPerimetro.length >= 5);
   for (const voce of P.fuoriPerimetro) {
     assert.ok(voce.voce && voce.norma && voce.motivo, `voce fuori perimetro incompleta: ${voce.voce}`);
+  }
+});
+
+test('nessuna fonte dichiara due volte la stessa chiave', () => {
+  // Difetto reale, occorso una volta: aggiornando la nota di verifica di sei
+  // fonti la prosa nuova e' stata inserita in cima al blocco senza togliere
+  // quella vecchia in fondo. In un object literal vince l'ultima, quindi le
+  // sei fonti continuavano a mostrare il testo superato e nessun test se ne
+  // accorgeva: l'oggetto caricato era perfettamente valido. L'unico posto in
+  // cui il difetto e' visibile e' il sorgente, quindi e' li' che si guarda.
+  const sorgente = readFileSync(new URL('../src/parametri.js', import.meta.url), 'utf8');
+  const righe = sorgente.split('\n');
+  let fonte = null;
+  let viste = new Set();
+  for (const riga of righe) {
+    const apertura = riga.match(/^ {2}([a-zA-Z0-9]+): \{/);
+    if (apertura) {
+      fonte = apertura[1];
+      viste = new Set();
+      continue;
+    }
+    const chiave = riga.match(/^ {4}([a-zA-Z0-9]+):/);
+    if (!chiave || !fonte) continue;
+    assert.ok(
+      !viste.has(chiave[1]),
+      `fonte ${fonte}: la chiave "${chiave[1]}" e' dichiarata due volte, la seconda cancella la prima`,
+    );
+    viste.add(chiave[1]);
   }
 });
