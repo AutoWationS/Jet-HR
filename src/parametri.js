@@ -507,19 +507,17 @@ export const FONTI = {
 
   ragguaglioGiorni: {
     livello: 2,
-    statoVerifica: 'non-verificata',
-    dove: 'Circolare Ministero delle Finanze n. 326/E del 23/12/1997 — cercare la parola “bisestile”, che nel documento compare poche volte, non “365”',
+    statoVerifica: 'atto-letto',
+    dove: 'Circolare Ministero delle Finanze n. 326/E del 23/12/1997, per i giorni che danno diritto alla detrazione e per il caso di più rapporti — cercare “retribuzione assoggettata”',
     canale: 'def',
     lacuna:
-      'la circolare non è stata letta in originale: la convenzione dei 365 giorni è ' +
-      'applicata sulla base di prassi consolidata. Non è confermato nemmeno il numero ' +
-      'del paragrafo, indicato per memoria e non per lettura',
+      'il passaggio letto conferma la convenzione dell’anno di 365 giorni; le altre due ' +
+      'regole del dettaglio — quali giorni si contano e come si trattano più rapporti ' +
+      'contemporanei — non compaiono in quel passaggio e restano su prassi consolidata',
     etichetta: 'Come si contano i giorni di lavoro nell’anno',
     norma:
-      'Circolare Ministero delle Finanze n. 326/E del 23/12/1997; il paragrafo esatto non ' +
-      'è stato individuato. Le fonti secondarie indicano anche la circolare Agenzia ' +
-      'delle Entrate n. 15/E del 16/03/2007 per i giorni che danno diritto alla ' +
-      'detrazione',
+      'Circolare Ministero delle Finanze n. 326/E del 23/12/1997, par. 3.3 (periodo di ' +
+      'paga) e par. 3.4 (effettuazione della ritenuta)',
     dettaglio:
       'L’anno va sempre assunto di 365 giorni, anche se bisestile. I giorni da considerare sono ' +
       'quelli che hanno dato diritto a retribuzione assoggettata a ritenuta, comprese festività ' +
@@ -527,17 +525,18 @@ export const FONTI = {
       'periodi contemporanei si contano una volta sola.',
     url: 'https://def.finanze.it/DocTribFrontend/RicercaLibera.jsp',
     verifica:
-      'NON VERIFICATA, ed è l’unica del registro. La convenzione è applicata dal motore ' +
-      'al ragguaglio di detrazioni, ulteriore detrazione e trattamento integrativo; il ' +
-      'testo della circolare non è stato aperto. Vale la pena registrare come questa ' +
-      'riga ha rischiato di peggiorare: la citazione era stata RITIRATA sul presupposto ' +
-      'che la ricerca della stringa “365” nel documento non desse risultati, mentre ne ' +
-      'dava troppi. Il presupposto era sbagliato, quindi la citazione è tornata al suo ' +
-      'posto — come indizio da verificare, che è ciò che è sempre stata. È il secondo ' +
-      'caso nel progetto in cui a essere sbagliata è la CORREZIONE e non l’affermazione ' +
-      'iniziale: il primo fu l’art. 14 c. 8 del D.Lgs. 23/2011. Sul caso modellato, che ' +
-      'è un anno intero, il ragguaglio vale 365/365: la lacuna morde solo su un rapporto ' +
-      'parziale',
+      'VERIFICATO sul par. 3.3 della circolare, che dispone testualmente: “per ' +
+      'l’applicazione della ritenuta, l’anno si deve intendere suddiviso in 12 mesi, 24 ' +
+      'quindicine, 52 settimane e 365 giorni (anche negli anni bisestili)”. La ' +
+      'convenzione che il motore usa come denominatore di ogni ragguaglio è quella, ' +
+      'scritta in prassi e non dedotta. Il par. 3.4 la collega all’uso che ne facciamo: ' +
+      'l’imposta va decurtata “delle detrazioni previste negli articoli 12 e 13 dello ' +
+      'stesso TUIR, RAPPORTATE AL PERIODO STESSO”, con le aliquote applicate “sulla base ' +
+      'delle aliquote progressive per scaglioni di reddito”. La riga era rimasta ' +
+      'l’ultima non verificata del registro, ed è stata la più faticosa non perché il ' +
+      'testo fosse oscuro ma perché la stringa cercata era sbagliata: “365” in un ' +
+      'documento fiscale è rumore, “bisestile” porta al punto in un colpo. Restano fuori ' +
+      'dal passaggio letto le altre due regole del dettaglio, dichiarate in lacuna',
   },
 };
 
@@ -723,6 +722,22 @@ export const PARAMETRI_2026 = {
         'con esito annuale: chi ha diritto alla misura per l’intero anno non vede alcun ' +
         'recupero, ed è il caso modellato. La compensazione del credito da parte del sostituto ' +
         '(art. 17 D.Lgs. 241/1997) sta interamente dal lato azienda e non tocca la busta paga.',
+    },
+    {
+      voce: 'Tassazione autonoma delle mensilità aggiuntive',
+      norma:
+        'Art. 23 del D.P.R. 600/1973; circolare Ministero delle Finanze n. 326/E del ' +
+        '23/12/1997, par. 3.4',
+      motivo:
+        'La tredicesima non si somma alla retribuzione del mese in cui è pagata: la circolare ' +
+        'prescrive per le mensilità aggiuntive “un trattamento autonomo”, applicando le ' +
+        'aliquote “ragguagliando a mese i corrispondenti scaglioni annui di reddito”. Il ' +
+        'cedolino di dicembre ha quindi una trattenuta diversa da quella che si otterrebbe ' +
+        'dividendo l’imposta annua per il numero di mensilità. È la quarta regola di cassa ' +
+        'infrannuale del perimetro — con la mensilizzazione dell’1%, le addizionali e il ' +
+        'recupero del cuneo — e come le altre si chiude al conguaglio, perché l’imposta è ' +
+        'dovuta per anno solare. Il modello divide il netto annuo per le mensilità per dare una ' +
+        'misura leggibile, non per riprodurre il cedolino di dicembre.',
     },
     {
       voce: 'Addizionali per cassa',

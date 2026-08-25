@@ -463,18 +463,22 @@ livello:
 
 | Stato | Significato | Quante |
 |---|---|:--:|
-| `atto-letto` | il testo applicabile è stato letto | **13** su 14 |
+| `atto-letto` | il testo applicabile è stato letto | **14 su 14** |
 | `prassi-letta` | letto dentro una circolare che riporta la norma per esteso | — |
 | `fonte-istituzionale` | letto sul sito dell'ente che emana l'atto, non sull'atto | — |
-| `non-verificata` | nessuna lettura diretta | 1 |
+| `non-verificata` | nessuna lettura diretta | — |
 
 Le sei fonti che erano `atto-corrispondente` sono state chiuse aprendo il **testo vigente del
 D.P.R. 917/1986** (§3.10.1): non ce ne sono più in quello stato. Nessuna delle dieci
-`atto-letto` ha lacune residue tranne due, entrambe dichiarate e circoscritte (§3.12), e **non
-resta nessuna fonte `prassi-letta` né `fonte-istituzionale`**: ogni parametro del prototipo
-poggia ormai su un atto letto, non su una circolare che lo riporta né sulla pagina di un ente
-(§3.7.1, §3.10.2, §3.10.3, §3.12). L'unica fonte ancora `non-verificata` è la convenzione sul
-conteggio dei giorni, che sul caso modellato vale 365/365.
+**Tutte e quattordici le fonti hanno ora avuto il proprio atto aperto**: non resta nessuna
+`prassi-letta`, nessuna `fonte-istituzionale`, nessuna `non-verificata`. Nessun parametro poggia
+più su una circolare che riporta la norma, né sulla pagina di un ente al posto dell'atto
+(§3.7.1, §3.10.2, §3.10.3, §3.12).
+
+Due fonti conservano una **lacuna dichiarata**, e nessuna delle due tocca un numero del caso
+modellato: il 9,19% è letto su una circolare del 2011 e non riconfermato su un documento del
+2026, e del conteggio dei giorni è confermata la convenzione dei 365 ma non le due regole
+accessorie. Una lacuna nominata è un compito; il registro non ne ha più di anonime.
 
 Ogni fonte che non sia `atto-letto` dichiara inoltre un campo **`lacuna`** che nomina
 esattamente ciò che manca — *«l'art. 51 del D.P.R. 917/1986, applicabile al 2026, non è stato
@@ -960,42 +964,71 @@ risultato di una stratificazione, non di una norma unica.
 che sia identica oggi. La lacuna resta quindi aperta, ma è di un tipo diverso da prima — non più
 «nessuna fonte», ma «nessuna conferma sull'anno in corso».
 
-#### I giorni: una citazione ritirata, e rimessa
+#### I giorni: una citazione ritirata, rimessa e infine verificata
 
-Questa riga è l'unica ancora `non-verificata`, e merita il racconto per intero perché è finita
-due volte nel posto sbagliato.
+Questa riga è finita due volte nel posto sbagliato prima di chiudersi, ed è la più istruttiva
+del progetto.
 
-Il registro indica la circolare del Ministero delle Finanze n. 326/E del 23/12/1997 per la
+Il registro indicava la circolare del Ministero delle Finanze n. 326/E del 23/12/1997 per la
 convenzione dei 365 giorni. Alla domanda «cosa trovi cercando *365* in quel testo?» la risposta
-è arrivata come *«non trovo nulla»*, e la citazione è stata **ritirata**: non sostituita in
-silenzio con la circolare 15/E del 2007 che indicano le fonti secondarie, perché rimpiazzare una
-citazione sbagliata senza aprirla sarebbe ripetere l'errore in forma più elegante.
+è arrivata come *«non trovo nulla»*, e la citazione è stata **ritirata**. Solo che il presupposto
+era sbagliato: di risultati ce n'erano **troppi** — «365» in un documento fiscale è rumore — e
+non era chiaro quale fosse quello buono. La citazione è quindi tornata al suo posto come indizio
+da verificare, e il registro ha guadagnato una riga in più: **la stringa da cercare non è «365»,
+è «bisestile»**, che compare poche volte.
 
-Solo che il presupposto era sbagliato. Di risultati ce n'erano, **troppi** — «365» è una stringa
-che in un documento fiscale compare ovunque — e non era chiaro quale fosse quello giusto. La
-citazione è quindi tornata al suo posto, con lo stato che ha sempre avuto: **indizio da
-verificare**, non fonte verificata.
+Con quella chiave il punto è saltato fuori al primo colpo, al **par. 3.3, «Periodo di paga»**:
 
-Due lezioni, e la seconda è più utile della prima.
+> *«Per l'applicazione della ritenuta, l'anno si deve intendere suddiviso in 12 mesi, 24
+> quindicine, 52 settimane e 365 giorni (anche negli anni bisestili).»*
 
-**La correzione può essere più sbagliata dell'errore.** È il secondo caso: il primo fu l'art. 14
-c. 8 del D.Lgs. 23/2011 (§3.7), dove alla data inventata è seguita una smentita altrettanto
-falsa. Qui non c'era nemmeno un errore da correggere — solo una lacuna già dichiarata — e la
-«correzione» ha tolto informazione utile. Chi verifica sviluppa una fretta di chiudere che
-somiglia molto a quella di chi non verifica affatto.
+La convenzione che il motore usa come denominatore di ogni ragguaglio è scritta lì, in prassi,
+non dedotta. E il **par. 3.4** la collega all'uso che ne facciamo: l'imposta va decurtata *«delle
+detrazioni previste negli articoli 12 e 13 dello stesso TUIR, rapportate al periodo stesso»*,
+applicando *«le aliquote progressive per scaglioni di reddito»*. Denominatore e ragguaglio delle
+detrazioni stanno in due paragrafi consecutivi della stessa circolare.
+
+Restano fuori dal passaggio letto le altre due regole che il registro descrive — quali giorni si
+contano e come si trattano più rapporti contemporanei — ed è quello che la lacuna ora dichiara.
+
+**Il par. 3.4 ha poi restituito qualcosa che non stavo cercando.** Le mensilità aggiuntive hanno
+*«un trattamento autonomo»*: la tredicesima non si somma alla retribuzione del mese, si tassa
+*«ragguagliando a mese i corrispondenti scaglioni annui di reddito»*. Il cedolino di dicembre ha
+quindi una trattenuta diversa da quella che si otterrebbe dividendo l'imposta annua per tredici —
+ed è esattamente ciò che il prototipo mostra in alto, come «netto mensile». È la **quarta** regola
+di cassa infrannuale del perimetro, dopo la mensilizzazione dell'1%, le addizionali e il recupero
+del cuneo, e come le altre si chiude al conguaglio perché l'imposta è dovuta per anno solare. È
+ora una voce fuori perimetro dichiarata: **il netto diviso per le mensilità è una misura
+leggibile, non il cedolino di dicembre.**
+
+#### Il bilancio degli errori
+
+Vale la pena tenerlo scritto, perché è il vero risultato del lavoro sulle fonti.
+
+| | |
+|---|---|
+| errori di citazione | **3** — art. 13 c. 1-bis (§3.5), art. 14 c. 8 D.Lgs. 23/2011 (§3.7), par. 3 anziché 3.3 della 326/E |
+| correzioni a loro volta sbagliate | **2** — la smentita dell'art. 14 c. 8, e questa ritrattazione |
+| errori di calcolo trovati | **2** — addizionali in no tax area, minimo di 690 € su tutte le fasce |
+| errori di calcolo sopravvissuti | **0** |
+
+Due lezioni.
+
+**La correzione può essere più sbagliata dell'errore.** È successo due volte. Nel caso dell'art.
+14 c. 8, alla data inventata è seguita una smentita altrettanto falsa. Qui non c'era nemmeno un
+errore da correggere — solo una lacuna già dichiarata — e la «correzione» ha tolto informazione
+utile. Chi verifica sviluppa una fretta di chiudere che somiglia molto a quella di chi non
+verifica affatto.
 
 **Una ricerca a vuoto e una ricerca affogata si somigliano.** «Nessun risultato» e «troppi
 risultati» sono esiti opposti che arrivano descritti quasi con le stesse parole, e portano a
-conclusioni opposte. La differenza sta nella stringa: **«365» è inutile in un documento fiscale,
-«bisestile» compare poche volte** e porta dritto al punto. Il registro ora indica quella parola
-nel campo che dice come aprire il documento — perché una lacuna con l'indirizzo è un compito, e
-una lacuna con l'indirizzo *e la chiave giusta* è un compito di cinque minuti.
+conclusioni opposte. La differenza sta tutta nella stringa scelta.
 
-Restano dunque tre errori di citazione — l'art. 13 c. 1-bis (§3.5), l'art. 14 c. 8 (§3.7) e il
-paragrafo mai confermato della 326/E — e due correzioni sbagliate. Zero errori di calcolo
-sopravvissuti. La conclusione è quella: **la parte fragile di un lavoro del genere non sono i
-calcoli, sono i riferimenti.** I calcoli li verifica un test; i riferimenti li verifica solo chi
-apre il documento — e li sbaglia di nuovo se lo apre di fretta.
+La conclusione è quella che conta per chi legge questo repository: **la parte fragile di un
+lavoro del genere non sono i calcoli, sono i riferimenti.** I calcoli li verifica un test e non
+mentono; i riferimenti li verifica solo chi apre il documento — e li sbaglia di nuovo se lo apre
+di fretta. Per questo il registro non è fatto di commenti ma di dati, e per questo tre test lo
+tengono onesto.
 
 ### 3.11 Nota sull'ambiente di sviluppo
 
