@@ -960,24 +960,42 @@ risultato di una stratificazione, non di una norma unica.
 che sia identica oggi. La lacuna resta quindi aperta, ma è di un tipo diverso da prima — non più
 «nessuna fonte», ma «nessuna conferma sull'anno in corso».
 
-#### I giorni: una citazione ritirata
+#### I giorni: una citazione ritirata, e rimessa
 
-Il registro indicava la circolare del Ministero delle Finanze n. 326/E del 23/12/1997, par. 3.
-Cercando la stringa «365» in quel testo su def.finanze.it **non compare nulla**. La citazione è
-stata quindi **ritirata**, non sostituita in silenzio: le fonti secondarie indicano la circolare
-Agenzia delle Entrate n. 15/E del 16/03/2007, ma quella non è stata letta, e mettere una
-citazione nuova al posto di una sbagliata senza aprirla sarebbe ripetere l'errore in una forma
-più elegante.
+Questa riga è l'unica ancora `non-verificata`, e merita il racconto per intero perché è finita
+due volte nel posto sbagliato.
 
-È il terzo errore di citazione del progetto — dopo l'art. 13 c. 1-bis (§3.5) e l'art. 14 c. 8 del
-D.Lgs. 23/2011 (§3.7) — e come i primi due non tocca un numero: la convenzione dei 365 giorni è
-quella applicata da tutti i software di paghe, e sul caso modellato, che è un anno intero, il
-ragguaglio vale 365/365. Serve a chi simula un rapporto parziale, ed è lì che la lacuna va tenuta
-davanti agli occhi.
+Il registro indica la circolare del Ministero delle Finanze n. 326/E del 23/12/1997 per la
+convenzione dei 365 giorni. Alla domanda «cosa trovi cercando *365* in quel testo?» la risposta
+è arrivata come *«non trovo nulla»*, e la citazione è stata **ritirata**: non sostituita in
+silenzio con la circolare 15/E del 2007 che indicano le fonti secondarie, perché rimpiazzare una
+citazione sbagliata senza aprirla sarebbe ripetere l'errore in forma più elegante.
 
-Tre errori di citazione su tre correzioni riuscite dice una cosa sola: **la parte fragile di un
-lavoro del genere non sono i calcoli, sono i riferimenti.** I calcoli li verifica un test; i
-riferimenti li verifica solo chi apre il documento.
+Solo che il presupposto era sbagliato. Di risultati ce n'erano, **troppi** — «365» è una stringa
+che in un documento fiscale compare ovunque — e non era chiaro quale fosse quello giusto. La
+citazione è quindi tornata al suo posto, con lo stato che ha sempre avuto: **indizio da
+verificare**, non fonte verificata.
+
+Due lezioni, e la seconda è più utile della prima.
+
+**La correzione può essere più sbagliata dell'errore.** È il secondo caso: il primo fu l'art. 14
+c. 8 del D.Lgs. 23/2011 (§3.7), dove alla data inventata è seguita una smentita altrettanto
+falsa. Qui non c'era nemmeno un errore da correggere — solo una lacuna già dichiarata — e la
+«correzione» ha tolto informazione utile. Chi verifica sviluppa una fretta di chiudere che
+somiglia molto a quella di chi non verifica affatto.
+
+**Una ricerca a vuoto e una ricerca affogata si somigliano.** «Nessun risultato» e «troppi
+risultati» sono esiti opposti che arrivano descritti quasi con le stesse parole, e portano a
+conclusioni opposte. La differenza sta nella stringa: **«365» è inutile in un documento fiscale,
+«bisestile» compare poche volte** e porta dritto al punto. Il registro ora indica quella parola
+nel campo che dice come aprire il documento — perché una lacuna con l'indirizzo è un compito, e
+una lacuna con l'indirizzo *e la chiave giusta* è un compito di cinque minuti.
+
+Restano dunque tre errori di citazione — l'art. 13 c. 1-bis (§3.5), l'art. 14 c. 8 (§3.7) e il
+paragrafo mai confermato della 326/E — e due correzioni sbagliate. Zero errori di calcolo
+sopravvissuti. La conclusione è quella: **la parte fragile di un lavoro del genere non sono i
+calcoli, sono i riferimenti.** I calcoli li verifica un test; i riferimenti li verifica solo chi
+apre il documento — e li sbaglia di nuovo se lo apre di fretta.
 
 ### 3.11 Nota sull'ambiente di sviluppo
 

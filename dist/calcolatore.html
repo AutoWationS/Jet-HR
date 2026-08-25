@@ -1367,17 +1367,18 @@ const FONTI = {
   ragguaglioGiorni: {
     livello: 2,
     statoVerifica: 'non-verificata',
-    dove: 'Circolare Agenzia delle Entrate n. 15/E del 16/03/2007, sui giorni che danno diritto alla detrazione',
+    dove: 'Circolare Ministero delle Finanze n. 326/E del 23/12/1997 — cercare la parola “bisestile”, che nel documento compare poche volte, non “365”',
     canale: 'def',
     lacuna:
-      'la citazione precedente alla circolare 326/E del 1997 è stata RITIRATA: la ricerca ' +
-      'della stringa “365” nel testo su def.finanze.it non dà alcun risultato. Il ' +
-      'riferimento corrente alla circolare 15/E del 2007 viene da fonti secondarie e non ' +
-      'è stato letto in originale',
+      'la circolare non è stata letta in originale: la convenzione dei 365 giorni è ' +
+      'applicata sulla base di prassi consolidata. Non è confermato nemmeno il numero ' +
+      'del paragrafo, indicato per memoria e non per lettura',
     etichetta: 'Come si contano i giorni di lavoro nell’anno',
     norma:
-      'Convenzione di prassi sul ragguaglio al periodo di lavoro; riferimento indicato ' +
-      'dalle fonti secondarie: circolare Agenzia delle Entrate n. 15/E del 16/03/2007',
+      'Circolare Ministero delle Finanze n. 326/E del 23/12/1997; il paragrafo esatto non ' +
+      'è stato individuato. Le fonti secondarie indicano anche la circolare Agenzia ' +
+      'delle Entrate n. 15/E del 16/03/2007 per i giorni che danno diritto alla ' +
+      'detrazione',
     dettaglio:
       'L’anno va sempre assunto di 365 giorni, anche se bisestile. I giorni da considerare sono ' +
       'quelli che hanno dato diritto a retribuzione assoggettata a ritenuta, comprese festività ' +
@@ -1385,14 +1386,17 @@ const FONTI = {
       'periodi contemporanei si contano una volta sola.',
     url: 'https://def.finanze.it/DocTribFrontend/RicercaLibera.jsp',
     verifica:
-      'NON VERIFICATA, e con una citazione in meno rispetto a prima. Il registro indicava ' +
-      'la circolare 326/E del 23/12/1997 par. 3; cercando “365” in quel testo su ' +
-      'def.finanze.it non compare nulla, quindi la citazione è stata ritirata invece di ' +
-      'essere lasciata a fare da garanzia. È il terzo errore di citazione del progetto, ' +
-      'dopo l’art. 13 c. 1-bis e l’art. 14 c. 8 del D.Lgs. 23/2011, e come i primi due ' +
-      'non tocca un numero: la convenzione dei 365 giorni resta quella applicata da ' +
-      'tutti i software di paghe, e sul caso modellato — anno intero — il ragguaglio ' +
-      'vale 365/365. Serve a chi simula un rapporto parziale',
+      'NON VERIFICATA, ed è l’unica del registro. La convenzione è applicata dal motore ' +
+      'al ragguaglio di detrazioni, ulteriore detrazione e trattamento integrativo; il ' +
+      'testo della circolare non è stato aperto. Vale la pena registrare come questa ' +
+      'riga ha rischiato di peggiorare: la citazione era stata RITIRATA sul presupposto ' +
+      'che la ricerca della stringa “365” nel documento non desse risultati, mentre ne ' +
+      'dava troppi. Il presupposto era sbagliato, quindi la citazione è tornata al suo ' +
+      'posto — come indizio da verificare, che è ciò che è sempre stata. È il secondo ' +
+      'caso nel progetto in cui a essere sbagliata è la CORREZIONE e non l’affermazione ' +
+      'iniziale: il primo fu l’art. 14 c. 8 del D.Lgs. 23/2011. Sul caso modellato, che ' +
+      'è un anno intero, il ragguaglio vale 365/365: la lacuna morde solo su un rapporto ' +
+      'parziale',
   },
 };
 
