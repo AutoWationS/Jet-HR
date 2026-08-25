@@ -573,7 +573,36 @@ allo stesso modo — che è la prassi corrente e ciò che le istruzioni ai model
 confermano — ma è l'ultima regola del motore senza riscontro diretto, ed è dichiarata come tale
 nel registro.
 
-### 3.9 Nota sull'ambiente di sviluppo
+### 3.9 Addizionale regionale della Lombardia
+
+Chiusa sulla pagina istituzionale di Regione Lombardia, che ha confermato le quattro aliquote e
+i quattro scaglioni implementati, e ha aggiunto tre cose che il modello dava per assunte.
+
+**Le aliquote sono progressive.** La Regione usa esattamente questa parola: *«le aliquote
+progressive stabilite dall'art. 72 della l.r. 10 del 2003»*, applicate *«sui medesimi scaglioni
+previsti per l'IRPEF»*. Il motore le applica per scaglioni successivi, non in misura unica
+sull'intero reddito — era una scelta di modellazione non ancora verificata, e ora lo è. Non è
+scontata: l'addizionale comunale di Milano funziona nel modo opposto, aliquota unica sull'intero
+imponibile.
+
+**La base è la stessa dell'addizionale comunale**: reddito complessivo determinato ai fini
+IRPEF, al netto degli oneri deducibili. Le due addizionali condividono la base e divergono solo
+nella struttura delle aliquote.
+
+**La norma esatta**: art. 72 della l.r. 14 luglio 2003, n. 10, come da ultimo modificato
+dall'art. 1 c. 1 lett. a) della l.r. 31 marzo 2022, n. 5, che *«ha adeguato gli scaglioni di
+reddito a quanto stabilito dal comma 2 dell'art. 1 della legge 30 dicembre 2021, n. 234»*, a
+partire dall'anno 2022. Da qui il disallineamento documentato: gli scaglioni regionali sono
+fermi alla struttura IRPEF del 2022, quattro fasce, mentre l'IRPEF statale è passata a tre.
+Il registro citava genericamente "aliquote deliberate dalla Regione": era doppiamente impreciso,
+perché servono una legge regionale e non una delibera, e perché quella legge è del 2022 e non
+di ogni anno.
+
+Fra gli allegati la pagina riporta la convenzione con l'Agenzia delle Entrate per il triennio
+**2026-2028**, che conferma l'attualità della pagina. Il testo della legge regionale non è stato
+letto in originale: è la cautela che resta.
+
+### 3.10 Nota sull'ambiente di sviluppo
 
 Le verifiche automatiche contro calcolatori online non sono eseguibili dalla suite: l'ambiente
 di sviluppo non ha accesso di rete verso quei siti, e lo stesso vale per Normattiva,
