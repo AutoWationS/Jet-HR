@@ -20,7 +20,7 @@ Oppure apri direttamente `dist/calcolatore.html` con un doppio clic: è la stess
 tutto inline, generata dai medesimi sorgenti.
 
 ```bash
-npm test                               # 26 test, nessuna dipendenza da installare
+npm test                               # 29 test, nessuna dipendenza da installare
 node scripts/tabella-riferimento.mjs   # 11 RAL con tutte le voci intermedie
 ```
 
@@ -33,7 +33,7 @@ Il cuore dell'esercizio non è la pagina, è la sequenza. In busta paga si scend
 ```
    RAL
 −  contributi INPS c/dipendente      IVS 9,19%, +1% oltre 56.224 €
-=  imponibile fiscale                (i contributi sono deducibili, art. 51 TUIR)
+=  imponibile fiscale                (i contributi non concorrono al reddito, art. 51 TUIR)
 −  IRPEF lorda                       23% / 33% / 43%
 +  detrazione lavoro dipendente      art. 13 c. 1, rapportata ai giorni, +65 € (c. 1.1)
 +  ulteriore detrazione cuneo        1.000 € tra 20k e 32k, décalage fino a 40k
@@ -98,9 +98,15 @@ centesimo. Le due divergenze trovate sono risolte con la norma alla mano — e *
 errore nostro**: il modello calcolava le addizionali anche in no tax area, dove non sono dovute.
 Nessun test interno poteva trovarlo: il modello non conosceva la regola.
 
-**4. Fonte primaria.** La circolare Agenzia delle Entrate 4/E del 16/05/2025 è stata letta
-integralmente: ha confermato tre scelte e corretto quattro dettagli sul rapporto al periodo di
-lavoro. Gli esempi 1 e 2 della circolare sono due casi di test.
+**4. Lettura della prassi.** La circolare Agenzia delle Entrate 4/E del 16/05/2025 — che è
+prassi, non norma primaria — è stata letta integralmente: ha confermato tre scelte e corretto
+quattro dettagli sul rapporto al periodo di lavoro. Gli esempi 1 e 2 sono due casi di test.
+
+**5. Audit delle fonti.** Ogni fonte del registro dichiara il proprio **livello** nella gerarchia
+(1 = norma primaria, 2 = prassi e atti locali) e un test impedisce che una fonte di livello 1
+punti a una scheda divulgativa invece che a una banca dati normativa. Un secondo test confronta
+i numeri scritti in prosa nelle fonti con i parametri effettivi: se un valore cambia e la
+descrizione no, la suite cade.
 
 ---
 
@@ -113,7 +119,7 @@ lavoro. Gli esempi 1 e 2 della circolare sono due casi di test.
 | `src/ui.js` | L'unico modulo che tocca il DOM. Non conosce nessuna regola fiscale. |
 | `src/grafico.js` | Curva netto/RAL e aliquota marginale, SVG generato a mano. |
 | `src/formato.js` | Unico posto in cui i numeri diventano stringhe. |
-| `test/` | 19 test sul motore, 4 sulle fonti, 3 sul bundle. |
+| `test/` | 19 test sul motore, 7 sulle fonti, 3 sul bundle. |
 | `scripts/bundle.mjs` | Genera `dist/` dai sorgenti; un test verifica che non possa divergere. |
 | `docs/metodologia.md` | Decisioni, catena di calcolo, verifiche, semplificazioni, fonti. |
 

@@ -157,7 +157,7 @@ function mostraRisultato(r) {
   pezzi.push(
     riga({
       voce: 'Imponibile fiscale IRPEF',
-      nota: 'RAL al netto dei contributi previdenziali, deducibili per legge',
+      nota: 'RAL al netto dei contributi previdenziali, che non concorrono a formare reddito',
       norma: 'art. 51 c. 2 lett. a TUIR',
       importo: r.imponibileFiscale,
       quota: su(r.imponibileFiscale),
@@ -365,7 +365,9 @@ function mostraFonti() {
     .map(
       (f) => `
       <article class="fonte">
-        <h3>${f.etichetta}</h3>
+        <h3>${f.etichetta}<span class="livello liv-${f.livello}">${
+          f.livello === 1 ? 'norma primaria' : 'prassi e atti locali'
+        }</span></h3>
         <p class="norma">${f.norma}</p>
         <p>${f.dettaglio}</p>
         ${f.prassi ? `<p class="prassi">${f.prassi}</p>` : ''}

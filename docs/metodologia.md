@@ -75,8 +75,10 @@ contributi  = IVS + aggiuntivo
 imponibile fiscale = RAL − contributi
 ```
 
-I contributi previdenziali obbligatori sono deducibili (art. 51 c. 2 lett. a TUIR): non
-concorrono a formare il reddito di lavoro dipendente.
+I contributi previdenziali obbligatori **non concorrono a formare** il reddito di lavoro
+dipendente (art. 51 c. 2 lett. a TUIR). Il termine tecnico conta: è non concorrenza, non
+deduzione — l'onere deducibile è un'altra cosa (art. 10 c. 1 lett. e TUIR), e confonderle è uno
+dei modi più rapidi per perdere credibilità su questo dominio.
 
 **Semplificazione**: nel modello *reddito complessivo = imponibile fiscale*. Le soglie del
 taglio del cuneo e delle detrazioni sono lette lì sopra. Nella realtà il reddito complessivo
@@ -176,8 +178,8 @@ per cui la marginale effettiva in quella fascia supera il 60% (§4).
 | 28.000 – 50.000 € | 1,72% |
 | oltre 50.000 € | 1,73% |
 
-Nota: gli scaglioni regionali sono ancora quelli **a cinque fasce pre-riforma**, non allineati
-ai tre scaglioni IRPEF. È un disallineamento reale della norma, non un errore del modello.
+Nota: gli scaglioni regionali sono ancora quelli **ante riforma** (quattro fasce, agganciate
+alle soglie 15.000 / 28.000 / 50.000), non allineati ai tre scaglioni IRPEF. È un disallineamento reale della norma, non un errore del modello.
 
 **Nessuna delle due è dovuta se l'IRPEF netta è zero.** L'art. 50 c. 2 del D.Lgs. 446/1997
 (regionale) e l'art. 1 c. 4 del D.Lgs. 360/1998 (comunale) subordinano l'addizionale al fatto
@@ -234,7 +236,7 @@ passaggio si rompe, il test dice **quale**.
 
 ### 3.2 Suite di test
 
-`npm test` esegue 21 test. Diciotto sul motore, in tre famiglie:
+`npm test` esegue 29 test. Diciannove sul motore, in tre famiglie:
 
 1. **Casi di riferimento** (15k / 25k / 35k / 60k): ogni voce intermedia verificata, non solo
    il totale. Un test che controlla solo il netto finale non dice dove si è rotto il calcolo.
@@ -394,10 +396,56 @@ test dedicato che fissa entrambi gli estremi della finestra.
 > abrogato dal D.L. 3/2020 e sostituito dal trattamento integrativo. Una versione precedente di
 > questo documento e del codice citava erroneamente il c. 1-bis.
 
-### 3.5 Nota sull'ambiente di sviluppo
+### 3.5 Audit delle fonti
+
+Le fonti sono state sottoposte a una revisione indipendente, parametro per parametro, con un
+metro dichiarato: livello 1 norma primaria, livello 2 prassi e atti locali, livello 3 dottrina
+qualificata, livello 4 divulgazione. Per un lavoro serio i livelli 1 e 2 sono obbligatori, il 3
+vale come conferma, il 4 non è citabile.
+
+L'audit ha prodotto tre esiti, tutti recepiti.
+
+**Un errore di calcolo.** Il registro presentava il minimo di 690 € della detrazione dell'art. 13
+come regola generale. Nel testo quel minimo sta **dentro la lettera a)**, cioè vale solo per
+redditi fino a 15.000. Il motore aveva seguito la citazione invece della norma: con RAL 40.000 e
+100 giorni di lavoro restituiva 690 € di detrazione invece di 325,29 €, cioè 365 € di imposta in
+meno. Il test che avrebbe dovuto presidiare il punto codificava la stessa regola sbagliata,
+quindi non lo intercettava. Corretti entrambi.
+
+È il rovescio esatto della tesi del progetto: si diceva che le fonti-come-dati impediscono alla
+pagina di divergere dal calcolo, e qui non c'era divergenza — **il motore era allineato a una
+fonte scritta male**. La garanzia copriva il collegamento, non il contenuto.
+
+**Citazioni imprecise.** Otto correzioni: la lettera b) e il comma modificante mancanti nella
+citazione dell'art. 11; la legge di conversione mancante per il D.L. 384/1992, che è proprio
+l'atto da cui l'art. 3-ter trae esistenza; le soglie del trattamento integrativo attribuite alla
+L. 207/2024 anziché alla L. 234/2021; l'addizionale regionale descritta come "deliberata" quando
+la legge chiede una **legge** regionale; l'abrogazione del c. 1-bis attribuita a una circolare
+che non ne parla; e la parola "deducibilità" usata dove la norma dice "non concorrenza".
+
+**Fonti mancanti.** Tre regole erano implementate senza alcuna fonte dichiarata: l'art. 11 c. 3
+TUIR (l'imposta netta si determina *fino alla concorrenza* dell'imposta lorda — la norma che
+rende l'IRPEF non negativa), l'art. 12 della L. 153/1969 come riscritto dall'art. 6 del
+D.Lgs. 314/1997 (perché l'aliquota contributiva si applica al lordo), e la circolare 326/E del
+23/12/1997 (l'anno si assume sempre di 365 giorni, anche bisestile).
+
+Non tutti i rilievi sono stati accolti. L'audit segnalava come errata la citazione della
+circolare 22/E del 19/11/2024 per la nozione di reddito di riferimento: è invece corretta, e la
+prova sta nella 4/E/2025 stessa, che a pagina 6 vi rinvia testualmente. Un audit va verificato
+come qualunque altra fonte.
+
+Il registro dichiara ora il **livello** di ogni fonte, e due test lo presidiano: una fonte di
+livello 1 non può puntare a una scheda divulgativa invece che a una banca dati normativa, e i
+numeri scritti in prosa nelle fonti devono coincidere con i parametri usati dal motore.
+`node scripts/verifica-fonti.mjs` stampa il registro come checklist con i link da aprire.
+
+### 3.6 Nota sull'ambiente di sviluppo
 
 Le verifiche automatiche contro calcolatori online non sono eseguibili dalla suite: l'ambiente
-di sviluppo non ha accesso di rete verso quei siti. Il confronto di §3.4 è stato eseguito
+di sviluppo non ha accesso di rete verso quei siti, e lo stesso vale per Normattiva,
+def.finanze.it e agenziaentrate.gov.it. I permalink di livello 1 nel registro non sono quindi
+stati aperti da qui: il campo `verifica` di ciascuna fonte dice esattamente cosa è stato
+controllato e cosa no. Il confronto di §3.4 è stato eseguito
 manualmente. Le verifiche riproducibili con un comando restano quelle di §3.1 (ricalcolo
 manuale codificato nel primo test) e §3.2 (suite completa).
 

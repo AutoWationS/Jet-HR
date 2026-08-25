@@ -167,14 +167,28 @@ test('detrazione art. 13: continuita sui confini di fascia', () => {
   assert.equal(calcolaDetrazioneLavoro(35000.01, P, 365).maggiorazione, 0);
 });
 
-test('detrazione art. 13: rapporto ai giorni e pavimento di 690 euro', () => {
+test('detrazione art. 13: rapporto ai giorni, e il minimo vale solo nella prima fascia', () => {
+  // Il ragguaglio ai giorni e' lineare...
   const meta = calcolaDetrazioneLavoro(30000, P, 182);
   const intero = calcolaDetrazioneLavoro(30000, P, 365);
-  vicino(meta.base, Math.max((intero.base * 182) / 365, 690), 0.02);
+  vicino(meta.base, (intero.base * 182) / 365, 0.02);
 
-  // Pochi giorni su reddito basso: interviene il minimo di 690
-  const pochiGiorni = calcolaDetrazioneLavoro(10000, P, 30);
-  vicino(pochiGiorni.base, 690);
+  // ...e NON e' protetto da alcun pavimento sopra i 15.000 di reddito: i minimi
+  // di 690 e 1.380 euro stanno dentro la LETTERA a) dell'art. 13 c. 1, quindi
+  // valgono solo per redditi fino a 15.000. Lo schema della circ. 4/E/2025 li
+  // riporta infatti nella sola prima riga della tabella.
+  // Regressione: prima il minimo si applicava a tutte le fasce e questo caso
+  // restituiva 690 invece di 325,29.
+  vicino(calcolaDetrazioneLavoro(36324, P, 100).base, (1910 * (50000 - 36324)) / 22000 * (100 / 365), 0.02);
+
+  // Dentro la prima fascia il pavimento interviene davvero
+  vicino(calcolaDetrazioneLavoro(10000, P, 30).base, 690);
+  vicino(calcolaDetrazioneLavoro(10000, P, 30, true).base, 1380); // tempo determinato
+
+  // Il minimo non puo' superare la detrazione teorica spettante
+  const soglia = P.detrazioneLavoroDipendente.fasce[0].fino;
+  assert.equal(calcolaDetrazioneLavoro(soglia + 1, P, 1).base > 0, true);
+  assert.ok(calcolaDetrazioneLavoro(soglia + 1, P, 1).base < 690, 'sopra 15.000 nessun pavimento');
 });
 
 test('ulteriore detrazione: decalage lineare tra 32.000 e 40.000', () => {

@@ -44,11 +44,106 @@ test('ogni fonte e completa nei campi che la pagina mostra', () => {
 test('nessuna fonte orfana: ognuna e citata da un parametro o dichiarata trasversale', () => {
   // Fonti che non appartengono a un singolo blocco ma valgono per il modello
   // nel suo insieme (regole di ordine, nozioni, deducibilita').
-  const TRASVERSALI = ['deducibilitaContributi', 'addizionaliNoTaxArea', 'redditoComplessivo'];
+  const TRASVERSALI = [
+    'imposta',
+    'baseContributiva',
+    'nonConcorrenzaContributi',
+    'addizionaliNoTaxArea',
+    'redditoComplessivo',
+    'ragguaglioGiorni',
+  ];
   const citate = new Set([...BLOCCHI.map((n) => P[n].fonte), ...TRASVERSALI]);
 
   for (const chiave of Object.keys(FONTI)) {
     assert.ok(citate.has(chiave), `la fonte "${chiave}" non e' usata da nessun parametro`);
+  }
+});
+
+test('ogni fonte dichiara il proprio livello nella gerarchia', () => {
+  for (const [chiave, fonte] of Object.entries(FONTI)) {
+    assert.ok([1, 2].includes(fonte.livello), `fonte ${chiave}: livello mancante o non valido`);
+  }
+});
+
+test('una fonte di livello 1 punta a un testo normativo, non a una scheda divulgativa', () => {
+  // Il difetto piu' facile da commettere: dichiarare "norma primaria" e poi linkare
+  // la pagina informativa di un portale. Qui il link deve essere una banca dati
+  // normativa: Normattiva, Gazzetta Ufficiale o la Documentazione Economica e
+  // Finanziaria del MEF.
+  const BANCHE_DATI = /^https:\/\/(www\.)?(normattiva\.it|gazzettaufficiale\.it|def\.finanze\.it)/;
+  for (const [chiave, fonte] of Object.entries(FONTI)) {
+    if (fonte.livello !== 1) continue;
+    assert.match(fonte.url, BANCHE_DATI, `fonte ${chiave}: livello 1 ma URL non normativo`);
+  }
+});
+
+test('i numeri scritti nelle fonti coincidono con i parametri usati dal motore', () => {
+  // Le fonti riscrivono in prosa importi e soglie ("1.955 euro", "56.224 euro").
+  // Se il parametro cambia e la prosa no, la pagina mente. Questo test lega le
+  // due cose: ogni numero citato deve esistere davvero tra i parametri.
+  const valori = new Set();
+  const raccogli = (nodo) => {
+    if (typeof nodo === 'number' && Number.isFinite(nodo)) {
+      valori.add(nodo);
+      valori.add(nodo * 100); // le aliquote compaiono in prosa come percentuali
+      return;
+    }
+    if (nodo && typeof nodo === 'object') Object.values(nodo).forEach(raccogli);
+  };
+  raccogli({
+    inps: P.inps,
+    irpef: P.irpef,
+    detrazione: P.detrazioneLavoroDipendente,
+    cuneo: P.cuneoFiscale,
+    ti: P.trattamentoIntegrativo,
+    reg: P.addizionaleRegionale,
+    com: P.addizionaleComunale,
+  });
+  // Anni, numeri di legge e articoli non sono parametri: vanno ignorati.
+  const IGNORA = new Set([
+    1, 2, 3, 4, 6, 8, 9, 10, 11, 12, 13, 15, 16, 21, 22, 23, 29, 30, 31, 33, 35, 43, 44, 49,
+    50, 51, 55, 75, 117, 153, 199, 207, 234, 314, 326, 335, 360, 384, 438, 446, 917, 1969,
+    1986, 1992, 1995, 1997, 1998, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 200000,
+    730, // nome di un modello dichiarativo, non un parametro
+  ]);
+
+  for (const [chiave, fonte] of Object.entries(FONTI)) {
+    const prosa = [fonte.dettaglio, fonte.prassi]
+      .filter(Boolean)
+      .join(' ')
+      // Via le date (16/05/2025) e i riferimenti normativi (n. 199, art. 13,
+      // c. 1, D.Lgs. 446/1997): non sono parametri di calcolo.
+      .replace(/\d{1,2}\/\d{1,2}\/\d{2,4}/g, ' ')
+      .replace(/\d+\/\d+/g, ' ')
+      .replace(/\b(?:n|art|artt|c|cc|lett|par|§)\.?\s*\d+[\w-]*(?:\s*-\s*\d+)?/gi, ' ')
+      // "commi 726-729", "comma 727"
+      .replace(/\bcomm[ai]\s+\d+(?:\s*-\s*\d+)?/gi, ' ');
+    // "1.955", "56.224", "0,80", "7,1", "8.173,91"
+    const numeri = prosa.match(/\d[\d.]*(?:,\d+)?/g) ?? [];
+    for (const grezzo of numeri) {
+      const n = Number(grezzo.replace(/\./g, '').replace(',', '.'));
+      if (!Number.isFinite(n) || IGNORA.has(n)) continue;
+      // 8.173,91 e' una soglia derivata (1.955 - 75) / 23%: la ricalcoliamo
+      // Alcuni numeri in prosa sono GRANDEZZE DERIVATE dai parametri, non
+      // parametri: la soglia di capienza del trattamento integrativo e il salto
+      // di netto alla soglia comunale. Vanno riconosciute ricalcolandole, non
+      // messe in whitelist: se cambia un parametro devono cambiare anche loro.
+      const derivati = [
+        {
+          valore:
+            (P.detrazioneLavoroDipendente.fasce[0].base - P.trattamentoIntegrativo.scartoCapienza) /
+            P.irpef.scaglioni[0].aliquota,
+          tolleranza: 0.02,
+        },
+        {
+          valore: P.addizionaleComunale.sogliaEsenzione * P.addizionaleComunale.aliquota,
+          tolleranza: 1, // in prosa e' scritto "circa 184 euro"
+        },
+      ];
+      const ok =
+        valori.has(n) || derivati.some((d) => Math.abs(d.valore - n) <= d.tolleranza);
+      assert.ok(ok, `fonte ${chiave}: il numero ${grezzo} non corrisponde a nessun parametro`);
+    }
   }
 });
 

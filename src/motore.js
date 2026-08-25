@@ -91,7 +91,7 @@ export function calcolaContributi(ral, parametri, opzioni = {}) {
  * 2. Detrazione per redditi di lavoro dipendente (art. 13 TUIR)
  * -------------------------------------------------------------------------- */
 
-export function calcolaDetrazioneLavoro(redditoComplessivo, parametri, giorni) {
+export function calcolaDetrazioneLavoro(redditoComplessivo, parametri, giorni, tempoDeterminato = false) {
   const p = parametri.detrazioneLavoroDipendente;
   const R = Math.max(0, redditoComplessivo);
 
@@ -102,10 +102,16 @@ export function calcolaDetrazioneLavoro(redditoComplessivo, parametri, giorni) {
   // La detrazione base e' rapportata ai giorni di lavoro nell'anno...
   let rapportata = (teorica * giorni) / p.giorniAnno;
 
-  // ...con un pavimento di 690 euro per i rapporti a tempo indeterminato,
-  // ma solo se una detrazione spetta (oltre 50.000 non spetta nulla).
-  if (teorica > 0) {
-    rapportata = Math.max(rapportata, Math.min(p.minimoTempoIndeterminato, teorica));
+  // ...con un pavimento di 690 euro (1.380 a tempo determinato) che pero' vale
+  // SOLO nella prima fascia: nel testo dell'art. 13 quei minimi stanno dentro
+  // la lettera a), cioe' per reddito complessivo fino a 15.000 euro. Anche lo
+  // schema della circ. 4/E/2025 li riporta nella sola prima riga della tabella.
+  // Applicarli a tutte le fasce gonfiava la detrazione dei rapporti brevi con
+  // reddito medio-alto (RAL 40.000 su 100 giorni: 690 invece di 325,29).
+  const sogliaPrimaFascia = p.fasce[0].fino;
+  if (teorica > 0 && R <= sogliaPrimaFascia) {
+    const minimo = tempoDeterminato ? p.minimoTempoDeterminato : p.minimoTempoIndeterminato;
+    rapportata = Math.max(rapportata, Math.min(minimo, teorica));
   }
 
   // La maggiorazione di 65 euro NON e' rapportata al periodo di lavoro.
