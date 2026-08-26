@@ -76,14 +76,36 @@ export function applicaScaglioni(imponibile, scaglioni) {
  * 1. Contributi previdenziali a carico del dipendente
  * -------------------------------------------------------------------------- */
 
+/** I tre contratti che il modello distingue. L'apprendistato e' a tempo
+ *  INDETERMINATO per l'art. 41 c. 1 del D.Lgs. 81/2015: eredita quindi il minimo
+ *  dell'art. 13, non quello doppio del tempo determinato. */
+export const CONTRATTI = ['indeterminato', 'determinato', 'apprendistato'];
+
+/** Aliquota IVS a carico del lavoratore, per tipo di contratto. Separata dal
+ *  calcolo perche' e' il punto in cui una lacuna del registro diventa un errore
+ *  di calcolo, e va quindi fermata invece che aggirata. */
+export function aliquotaIvsDi(tipoContratto, parametri) {
+  if (tipoContratto !== 'apprendistato') return parametri.inps.aliquotaIvs;
+  const aliquota = parametri.inps.aliquotaIvsApprendista;
+  if (aliquota == null) {
+    throw new Error(
+      "aliquota IVS dell'apprendista non parametrizzata: la fonte non e' ancora " +
+        'stata letta (vedi FONTI.apprendistato). Il motore preferisce fermarsi ' +
+        "piuttosto che applicare l'aliquota ordinaria e restituire un netto sbagliato.",
+    );
+  }
+  return aliquota;
+}
+
 export function calcolaContributi(ral, parametri, opzioni = {}) {
   const p = parametri.inps;
   const applicaMassimale = opzioni.applicaMassimale ?? true;
+  const tipoContratto = opzioni.tipoContratto ?? 'indeterminato';
 
   // Il massimale contributivo vale solo per chi non ha anzianita' al 31/12/1995.
   const baseImponibile = applicaMassimale ? Math.min(ral, p.massimaleAnnuo) : ral;
 
-  const ivs = baseImponibile * p.aliquotaIvs;
+  const ivs = baseImponibile * aliquotaIvsDi(tipoContratto, parametri);
 
   // +1% sulla sola quota eccedente la prima fascia di retribuzione pensionabile.
   const eccedenza = Math.max(0, baseImponibile - p.primaFasciaPensionabile);
@@ -97,6 +119,7 @@ export function calcolaContributi(ral, parametri, opzioni = {}) {
     aggiuntivo: euro(aggiuntivo),
     totale: euro(totale),
     aliquotaEffettiva: ral > 0 ? totale / ral : 0,
+    tipoContratto,
     massimaleApplicato: applicaMassimale && ral > p.massimaleAnnuo,
   };
 }
@@ -376,10 +399,15 @@ export function calcolaNetto(input, parametri = PARAMETRI_DEFAULT) {
   const giorniLavorati = Number(input.giorniLavorati) || parametri.detrazioneLavoroDipendente.giorniAnno;
   const applicaMassimale = input.applicaMassimale ?? true;
   const oneriDeducibili = Math.max(0, Number(input.oneriDeducibili) || 0);
-  const tempoDeterminato = !!input.tempoDeterminato;
+  const tipoContratto = CONTRATTI.includes(input.tipoContratto)
+    ? input.tipoContratto
+    : 'indeterminato';
+  // Solo il tempo determinato raddoppia il minimo dell'art. 13 c. 1 lett. a):
+  // l'apprendistato e' a tempo indeterminato per l'art. 41 c. 1 D.Lgs. 81/2015.
+  const tempoDeterminato = tipoContratto === 'determinato';
 
   // --- Contributi previdenziali -------------------------------------------
-  const contributi = calcolaContributi(ral, parametri, { applicaMassimale });
+  const contributi = calcolaContributi(ral, parametri, { applicaMassimale, tipoContratto });
 
   // --- Imponibile fiscale --------------------------------------------------
   // Art. 10 TUIR: gli oneri deducibili si sottraggono dal reddito, non
@@ -449,6 +477,7 @@ export function calcolaNetto(input, parametri = PARAMETRI_DEFAULT) {
       mensilita,
       giorniLavorati,
       applicaMassimale,
+      tipoContratto,
       tempoDeterminato,
       oneriDeducibili,
       coniugeACarico: !!input.coniugeACarico,
@@ -523,13 +552,22 @@ export function aliquotaMarginale(ral, parametri = PARAMETRI_DEFAULT, input = {}
 function calcolaNettoSemplice(input, parametri) {
   const ral = Math.max(0, Number(input.ral) || 0);
   const giorni = Number(input.giorniLavorati) || parametri.detrazioneLavoroDipendente.giorniAnno;
+  const tipoContratto = CONTRATTI.includes(input.tipoContratto)
+    ? input.tipoContratto
+    : 'indeterminato';
   const contributi = calcolaContributi(ral, parametri, {
     applicaMassimale: input.applicaMassimale ?? true,
+    tipoContratto,
   });
   const oneri = Math.max(0, Number(input.oneriDeducibili) || 0);
   const imponibile = Math.max(0, ral - contributi.totale - oneri);
   const irpefLorda = applicaScaglioni(imponibile, parametri.irpef.scaglioni).totale;
-  const detrLavoro = calcolaDetrazioneLavoro(imponibile, parametri, giorni, !!input.tempoDeterminato);
+  const detrLavoro = calcolaDetrazioneLavoro(
+    imponibile,
+    parametri,
+    giorni,
+    tipoContratto === 'determinato',
+  );
   const familiari = calcolaDetrazioniFamiliari(imponibile, input, parametri);
   const detrTotali =
     detrLavoro.totale + calcolaUlterioreDetrazione(imponibile, parametri, giorni) + familiari.totale;

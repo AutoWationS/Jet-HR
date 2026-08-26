@@ -1269,10 +1269,59 @@ Su un anno intero il contratto **non sposta un euro**. Si vede solo su un rappor
 reddito basso — cioè esattamente la situazione di chi ha un contratto a termine breve, il che
 spiega perché la norma esista. È implementato ed esposto nel modulo.
 
-**Apprendistato: sì, molto — e non è implementato.** L'apprendista versa un'aliquota
-contributiva ridotta rispetto al 9,19% ordinario, quindi il netto cambia in modo grosso.
-La misura non è scritta nel modello: sarebbe l'unico numero preso a memoria anziché da una fonte
-letta, e il registro non lo consente. È fuori perimetro con l'indicazione della norma da aprire.
+**Apprendistato: sì, molto — e il codice è pronto tranne un numero.** L'art. 41 c. 1 del
+D.Lgs. 81/2015 dispone che *«l'apprendistato è un contratto di lavoro a tempo indeterminato
+finalizzato alla formazione e alla occupazione dei giovani»*. Quella riga risolve la domanda che
+bloccava tutto: il minimo garantito dell'art. 13 è quello del tempo **indeterminato**, non quello
+doppio del determinato. Prenderlo a caso sarebbe valso 690 € di errore su un apprendista con
+rapporto parziale. C'è un test che lo tiene fermo.
+
+Resta l'aliquota contributiva, e lì è successa una cosa che vale il paragrafo che segue.
+
+#### Quattro fonti secondarie d'accordo, e tutte sbagliate
+
+L'aliquota a carico dell'apprendista è data ovunque al **5,84%**, attribuita concordemente
+all'**art. 1 c. 773 della L. 296/2006**. Il comma è stato letto. Dice questo:
+
+> *«la contribuzione dovuta dai **datori di lavoro** per gli apprendisti artigiani e non
+> artigiani è complessivamente rideterminata nel 10 per cento della retribuzione imponibile ai
+> fini previdenziali»*
+
+— e prosegue riducendola di 8,5 e 7 punti nei primi due anni per chi occupa fino a nove addetti.
+**Della quota a carico dell'apprendista non dice una parola.** È il quarto errore di citazione
+intercettato nel progetto, e il primo in cui a sbagliare non è una fonte ma un consenso: quattro
+siti indipendenti che si citano a vicenda. Il c. 773 è comunque diventato la fonte, letta, di
+un'altra voce del perimetro — le aliquote a carico del datore.
+
+Il 5,84% è con ogni probabilità stratificato come il 9,19%, salito da 5,54% nel 2007 per lo
+stesso incremento di 0,30 punti: va quindi cercato nella prassi INPS, non in una legge.
+
+#### Una lacuna che diventerebbe un errore: come si ferma
+
+Qui il registro non basta. Le altre lacune dichiarate non toccano un numero; questa lo
+toccherebbe in pieno, perché senza aliquota il motore userebbe quella ordinaria e restituirebbe
+un netto **sbagliato con l'aria di essere giusto** — che è il difetto peggiore possibile per uno
+strumento del genere.
+
+La soluzione è portare la disciplina delle fonti dentro il codice:
+
+```js
+aliquotaIvsApprendista: null,   // lacuna dichiarata, non dimenticanza
+```
+
+e una funzione che **si rifiuta di calcolare** invece di ripiegare sull'aliquota ordinaria:
+
+```js
+if (aliquota == null) throw new Error("aliquota IVS dell'apprendista non parametrizzata…")
+```
+
+Nel modulo la voce «Apprendistato» c'è ed è **disabilitata**, con scritto perché. Un test verifica
+che il motore sollevi l'errore, e un altro che l'apprendistato erediti il minimo giusto dell'art.
+13 — così il giorno in cui l'aliquota arriva resta da cambiare **una riga**, e i due
+comportamenti sono già presidiati.
+
+È lo stesso principio del campo `lacuna` nel registro delle fonti, applicato al motore: **una
+mancanza dichiarata è un compito, una mancanza silenziosa è un bug**.
 
 **Contributo addizionale NASpI: no.** Sul tempo determinato grava un contributo addizionale
 (art. 2 c. 28 L. 92/2012), aumentato a ogni rinnovo, ma è **interamente a carico del datore**.

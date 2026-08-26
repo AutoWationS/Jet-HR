@@ -636,10 +636,10 @@ test('tempo determinato: il minimo dell art. 13 vale il doppio, ma solo dove mor
   // una risposta piu' utile di un campo in piu'.
   const netto = (o) => calcolaNetto({ ral: 13000, ...o }, P).netto.annuo;
 
-  assert.equal(netto({}), netto({ tempoDeterminato: true }), 'anno intero: nessuna differenza');
+  assert.equal(netto({}), netto({ tipoContratto: 'determinato' }), 'anno intero: nessuna differenza');
 
   const ind = calcolaNetto({ ral: 13000, giorniLavorati: 100 }, P);
-  const det = calcolaNetto({ ral: 13000, giorniLavorati: 100, tempoDeterminato: true }, P);
+  const det = calcolaNetto({ ral: 13000, giorniLavorati: 100, tipoContratto: 'determinato' }, P);
   assert.equal(ind.irpef.detrazioneLavoro, P.detrazioneLavoroDipendente.minimoTempoIndeterminato);
   assert.equal(det.irpef.detrazioneLavoro, P.detrazioneLavoroDipendente.minimoTempoDeterminato);
   assert.ok(det.netto.annuo > ind.netto.annuo, 'a termine e anno parziale: netto piu alto');
@@ -647,5 +647,36 @@ test('tempo determinato: il minimo dell art. 13 vale il doppio, ma solo dove mor
   // Sopra i 15.000 la lettera a) non si applica piu' e i minimi spariscono,
   // qualunque sia il contratto: e' l'errore che il modello aveva davvero fatto.
   const sopra = (o) => calcolaNetto({ ral: 25000, giorniLavorati: 100, ...o }, P).irpef.detrazioneLavoro;
-  assert.equal(sopra({}), sopra({ tempoDeterminato: true }));
+  assert.equal(sopra({}), sopra({ tipoContratto: 'determinato' }));
+});
+
+test('l apprendistato eredita il minimo del tempo indeterminato, non quello doppio', () => {
+  // Art. 41 c. 1 D.Lgs. 81/2015: "l'apprendistato e' un contratto di lavoro a
+  // tempo indeterminato". Da quella riga dipende quale dei due minimi dell'art.
+  // 13 c. 1 lett. a) si applica, e sbagliarla varrebbe 690 euro su un rapporto
+  // parziale. Il test la tiene ferma anche se un giorno l'aliquota arrivera'.
+  const P2 = { ...P, inps: { ...P.inps, aliquotaIvsApprendista: P.inps.aliquotaIvs } };
+  const opz = { ral: 13000, giorniLavorati: 100 };
+
+  const appr = calcolaNetto({ ...opz, tipoContratto: 'apprendistato' }, P2);
+  const ind = calcolaNetto({ ...opz, tipoContratto: 'indeterminato' }, P2);
+  const det = calcolaNetto({ ...opz, tipoContratto: 'determinato' }, P2);
+
+  assert.equal(appr.irpef.detrazioneLavoro, ind.irpef.detrazioneLavoro);
+  assert.notEqual(appr.irpef.detrazioneLavoro, det.irpef.detrazioneLavoro);
+});
+
+test('senza la fonte, il motore si ferma invece di inventare l aliquota', () => {
+  // Il difetto che questo test previene e' il piu' insidioso del progetto: una
+  // lacuna del registro che diventa un numero sbagliato con l'aria di essere
+  // giusto. L'aliquota dell'apprendista non e' ancora letta, quindi il parametro
+  // vale null e il motore rifiuta di calcolare. Meglio un errore che un netto
+  // plausibile e falso.
+  assert.equal(P.inps.aliquotaIvsApprendista, null, 'se e stata letta, aggiorna questo test');
+  assert.throws(
+    () => calcolaNetto({ ral: 20000, tipoContratto: 'apprendistato' }, P),
+    /non parametrizzata/,
+  );
+  // Gli altri due contratti non sono toccati.
+  assert.ok(calcolaNetto({ ral: 20000, tipoContratto: 'determinato' }, P).netto.annuo > 0);
 });

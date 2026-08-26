@@ -55,6 +55,7 @@ test('nessuna fonte orfana: ognuna e citata da un parametro o dichiarata trasver
     'redditoComplessivo',
     'ragguaglioGiorni',
     'oneriDeducibili',
+    'apprendistato',
   ];
   const citate = new Set([...BLOCCHI.map((n) => P[n].fonte), ...TRASVERSALI]);
 

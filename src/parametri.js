@@ -573,6 +573,42 @@ export const FONTI = {
       'in cui si vive non sposta questo calcolo',
   },
 
+  apprendistato: {
+    livello: 1,
+    statoVerifica: 'atto-letto',
+    dove: 'D.Lgs. 81/2015, artt. 41 e 43-45, letti in originale',
+    canale: 'normattiva',
+    lacuna:
+      'la disciplina del contratto è letta; l’aliquota contributiva a carico dell’apprendista ' +
+      'no, e senza quella il tipo di contratto non è esponibile nel modulo',
+    etichetta: 'Apprendistato: natura del contratto',
+    norma: 'Artt. 41 e 43-45 del D.Lgs. 81/2015',
+    dettaglio:
+      'L’apprendistato è un contratto di lavoro A TEMPO INDETERMINATO finalizzato alla ' +
+      'formazione, e la definizione decide una cosa concreta: il minimo garantito della ' +
+      'detrazione dell’art. 13 è quello del tempo indeterminato, non quello — doppio — del ' +
+      'tempo determinato. Le tipologie sono tre: per la qualifica e il diploma, ' +
+      'professionalizzante, di alta formazione e ricerca. Nella prima e nella terza le ore di ' +
+      'formazione presso l’istituzione formativa non sono retribuite e quelle a carico del ' +
+      'datore lo sono in misura ridotta, il che abbassa la retribuzione effettiva rispetto a ' +
+      'quella contrattuale: è un effetto sulla RAL, cioè a monte di questo modello.',
+    url: 'https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2015-06-15;81',
+    verifica:
+      'VERIFICATO sul testo vigente. L’art. 41 c. 1 dispone che “l’apprendistato è un ' +
+      'contratto di lavoro a tempo indeterminato finalizzato alla formazione e alla ' +
+      'occupazione dei giovani”: è la riga che serviva, e chiude in un colpo la domanda su ' +
+      'quale minimo dell’art. 13 applicare. Prenderlo a caso sarebbe valso 690 € di errore su ' +
+      'un apprendista con rapporto parziale. Il c. 2 elenca le tre tipologie, disciplinate ' +
+      'dagli artt. 43, 44 e 45. Due precisazioni che cambiano il perimetro: gli artt. 43 c. 7 ' +
+      'e 45 c. 3 dispongono che per le ore di formazione svolte nell’istituzione formativa ' +
+      '“il datore di lavoro è esonerato da ogni obbligo retributivo” e che per quelle a suo ' +
+      'carico spetta “una retribuzione pari al 10 per cento di quella che gli sarebbe dovuta”, ' +
+      'quindi la retribuzione effettiva di un apprendista di primo o terzo livello è più bassa ' +
+      'di quella contrattuale; e gli artt. 43 c. 8 e 44 c. 5 ammettono l’apprendistato A TEMPO ' +
+      'DETERMINATO per le attività stagionali, che è l’eccezione alla regola del c. 1. Manca ' +
+      'solo l’aliquota contributiva dell’apprendista, che non sta in questo decreto',
+  },
+
   ragguaglioGiorni: {
     livello: 2,
     statoVerifica: 'atto-letto',
@@ -619,6 +655,15 @@ export const PARAMETRI_2026 = {
   inps: {
     fonte: 'contributi',
     aliquotaIvs: 0.0919,
+    /**
+     * Aliquota IVS dell'apprendista. NON e' un numero mancante per pigrizia: e'
+     * una lacuna dichiarata. Le fonti secondarie la danno al 5,84% e la
+     * attribuiscono all'art. 1 c. 773 della L. 296/2006, ma quel comma e' stato
+     * letto e riguarda la sola quota del datore. Finche' resta null il motore
+     * rifiuta di calcolare un apprendista invece di usare l'aliquota ordinaria e
+     * restituire un numero sbagliato con l'aria di essere giusto.
+     */
+    aliquotaIvsApprendista: null,
     aliquotaAggiuntiva: 0.01,
     primaFasciaPensionabile: 56224,
     massimaleAnnuo: 122295,
@@ -907,6 +952,27 @@ export const PARAMETRI_2026 = {
         'al 10% dal terzo. È costo azienda e non tocca la busta paga, come gli sgravi per le ' +
         'assunzioni agevolate e il contributo addizionale NASpI: fuori perimetro per la stessa ' +
         'ragione, non per mancanza di fonte.',
+    },
+    {
+      voce: 'Apprendistato: ore di formazione non retribuite o retribuite al dieci per cento',
+      norma: 'Artt. 43 c. 7 e 45 c. 3 del D.Lgs. 81/2015, letti in originale',
+      motivo:
+        'Nell’apprendistato per la qualifica e in quello di alta formazione, per le ore svolte ' +
+        'presso l’istituzione formativa “il datore di lavoro è esonerato da ogni obbligo ' +
+        'retributivo”, e per quelle a suo carico spetta “una retribuzione pari al 10 per cento ' +
+        'di quella che gli sarebbe dovuta”, salvo diversa previsione dei contratti collettivi. ' +
+        'La retribuzione effettiva è quindi più bassa di quella contrattuale, ma l’effetto sta ' +
+        'a monte di questo modello: la RAL è il punto di partenza, non un risultato.',
+    },
+    {
+      voce: 'Apprendistato stagionale a tempo determinato',
+      norma: 'Artt. 43 c. 8 e 44 c. 5 del D.Lgs. 81/2015, letti in originale',
+      motivo:
+        'La regola dell’art. 41 c. 1 — l’apprendistato è a tempo indeterminato — ha ' +
+        'un’eccezione: per le attività stagionali i contratti collettivi possono prevedere ' +
+        'l’apprendistato anche a tempo determinato. In quel caso il minimo garantito della ' +
+        'detrazione dell’art. 13 sarebbe quello, doppio, del tempo determinato. Il prototipo ' +
+        'tratta l’apprendistato come indeterminato, che è la regola, e dichiara l’eccezione.',
     },
     {
       voce: 'Contributo addizionale NASpI sui contratti a termine',
