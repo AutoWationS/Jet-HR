@@ -151,7 +151,7 @@ descrizione no, la suite cade.
 | `src/ui.js` | L'unico modulo che tocca il DOM. Non conosce nessuna regola fiscale. |
 | `src/grafico.js` | Curva netto/RAL e aliquota marginale, SVG generato a mano. |
 | `src/formato.js` | Unico posto in cui i numeri diventano stringhe. |
-| `test/` | 19 test sul motore, 11 sulle fonti, 3 sul bundle. |
+| `test/` | 30 test sul motore, 12 sulle fonti, 3 sul bundle. |
 | `scripts/bundle.mjs` | Genera `dist/` dai sorgenti; un test verifica che non possa divergere. |
 | `docs/metodologia.md` | Decisioni, catena di calcolo, verifiche, semplificazioni, fonti. |
 

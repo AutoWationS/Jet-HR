@@ -305,14 +305,18 @@ passaggio si rompe, il test dice **quale**.
 
 ### 3.2 Suite di test
 
-`npm test` esegue 29 test. Diciannove sul motore, in tre famiglie:
+`npm test` esegue 45 test. Trenta sul motore, in quattro famiglie:
 
 1. **Casi di riferimento** (15k / 25k / 35k / 60k): ogni voce intermedia verificata, non solo
    il totale. Un test che controlla solo il netto finale non dice dove si è rotto il calcolo.
 2. **Blocchi isolati**: continuità delle formule sui confini di fascia (15.000 / 28.000 /
    50.000), rapporto ai giorni e pavimento di 690 €, *décalage* dell'ulteriore detrazione,
    percentuali della somma esente, massimale e aliquota aggiuntiva INPS.
-3. **Invarianti sull'intera curva**, da 1.000 a 200.000 €:
+3. **Regole lette e implementate di recente**: i confini del cuneo estremo per estremo, le tre
+   lettere dell'art. 12 con gli esiti secchi del comma 4, il fatto che le detrazioni per
+   famiglia non seguano il periodo di lavoro, i tre tipi di contratto, e il guardiano che ferma
+   il motore quando manca un'aliquota.
+4. **Invarianti sull'intera curva**, da 1.000 a 200.000 €:
    - coerenza contabile `netto = RAL − trattenute + bonus` per ogni RAL;
    - l'IRPEF netta non è mai negativa;
    - **il netto scende solo attraversando una delle soglie dichiarate** — se comparisse una
