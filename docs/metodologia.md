@@ -600,15 +600,16 @@ livello:
 
 | Stato | Significato | Quante |
 |---|---|:--:|
-| `atto-letto` | il testo applicabile è stato letto | **16 su 16** |
-| `prassi-letta` | letto dentro una circolare che riporta la norma per esteso | — |
+| `atto-letto` | il testo applicabile è stato letto | **16 su 17** |
+| `prassi-letta` | letto dentro una circolare che riporta la norma per esteso | 1 |
 | `fonte-istituzionale` | letto sul sito dell'ente che emana l'atto, non sull'atto | — |
 | `non-verificata` | nessuna lettura diretta | — |
 
 Le sei fonti che erano `atto-corrispondente` sono state chiuse aprendo il **testo vigente del
 D.P.R. 917/1986** (§3.10.1): non ce ne sono più in quello stato. Nessuna delle dieci
-**Tutte e sedici le fonti hanno avuto il proprio atto aperto**: non resta nessuna
-`prassi-letta`, nessuna `fonte-istituzionale`, nessuna `non-verificata`. Nessun parametro poggia
+**Sedici fonti su diciassette hanno avuto il proprio atto aperto**, e la diciassettesima —
+l'aliquota dell'apprendista — è `prassi-letta` per una ragione dichiarata: quel numero non sta in
+una legge singola, esattamente come il 9,19%. Nessun parametro poggia
 più su una circolare che riporta la norma, né sulla pagina di un ente al posto dell'atto
 (§3.7.1, §3.10.2, §3.10.3, §3.12).
 
@@ -1269,19 +1270,28 @@ Su un anno intero il contratto **non sposta un euro**. Si vede solo su un rappor
 reddito basso — cioè esattamente la situazione di chi ha un contratto a termine breve, il che
 spiega perché la norma esista. È implementato ed esposto nel modulo.
 
-**Apprendistato: sì, molto — e il codice è pronto tranne un numero.** L'art. 41 c. 1 del
-D.Lgs. 81/2015 dispone che *«l'apprendistato è un contratto di lavoro a tempo indeterminato
-finalizzato alla formazione e alla occupazione dei giovani»*. Quella riga risolve la domanda che
-bloccava tutto: il minimo garantito dell'art. 13 è quello del tempo **indeterminato**, non quello
-doppio del determinato. Prenderlo a caso sarebbe valso 690 € di errore su un apprendista con
-rapporto parziale. C'è un test che lo tiene fermo.
+**Apprendistato: sì, e parecchio.** L'art. 41 c. 1 del D.Lgs. 81/2015 dispone che
+*«l'apprendistato è un contratto di lavoro a tempo indeterminato finalizzato alla formazione e
+alla occupazione dei giovani»*. Quella riga risolve la domanda che bloccava tutto: il minimo
+garantito dell'art. 13 è quello del tempo **indeterminato**, non quello doppio del determinato.
+Prenderlo a caso sarebbe valso 690 € di errore su un apprendista con rapporto parziale.
 
-Resta l'aliquota contributiva, e lì è successa una cosa che vale il paragrafo che segue.
+Quello che cambia davvero è l'aliquota contributiva: **5,84% invece di 9,19%**, per la durata del
+periodo di formazione e per un anno dopo l'eventuale prosecuzione del rapporto (art. 47 c. 7).
+
+| RAL | Contributi | Imponibile | Netto |
+|---:|---:|---:|---:|
+| 35.000 ordinario | 3.216,50 | 31.783,50 | 26.032,18 |
+| 35.000 apprendista | **2.044,00** | 32.956,00 | **26.566,91** |
+
+Il risparmio contributivo è di 1.172,50 € ma il netto sale di **534,73**: meno contributi
+significa **più imponibile**, quindi più imposta. È lo stesso meccanismo degli oneri deducibili
+letto al contrario, e c'è un test che tiene fermo il segno di entrambe le disuguaglianze.
 
 #### Quattro fonti secondarie d'accordo, e tutte sbagliate
 
-L'aliquota a carico dell'apprendista è data ovunque al **5,84%**, attribuita concordemente
-all'**art. 1 c. 773 della L. 296/2006**. Il comma è stato letto. Dice questo:
+L'aliquota del 5,84% è data ovunque come disposta dall'**art. 1 c. 773 della L. 296/2006**. Il
+comma è stato letto. Dice questo:
 
 > *«la contribuzione dovuta dai **datori di lavoro** per gli apprendisti artigiani e non
 > artigiani è complessivamente rideterminata nel 10 per cento della retribuzione imponibile ai
@@ -1289,39 +1299,49 @@ all'**art. 1 c. 773 della L. 296/2006**. Il comma è stato letto. Dice questo:
 
 — e prosegue riducendola di 8,5 e 7 punti nei primi due anni per chi occupa fino a nove addetti.
 **Della quota a carico dell'apprendista non dice una parola.** È il quarto errore di citazione
-intercettato nel progetto, e il primo in cui a sbagliare non è una fonte ma un consenso: quattro
-siti indipendenti che si citano a vicenda. Il c. 773 è comunque diventato la fonte, letta, di
-un'altra voce del perimetro — le aliquote a carico del datore.
+intercettato nel progetto, e il primo in cui a sbagliare non è una fonte ma un consenso: siti
+indipendenti che si citano a vicenda. Il comma è comunque diventato la fonte, letta, di un'altra
+voce del perimetro: le aliquote a carico del datore.
 
-Il 5,84% è con ogni probabilità stratificato come il 9,19%, salito da 5,54% nel 2007 per lo
-stesso incremento di 0,30 punti: va quindi cercato nella prassi INPS, non in una legge.
+La norma vera è l'**art. 21 della L. 41/1986**, e l'ha indicata la circolare INPS n. 108 del
+14/11/2018, par. 3.3:
 
-#### Una lacuna che diventerebbe un errore: come si ferma
+> *«l'aliquota contributiva a carico dell'apprendista è pari a quella prevista
+> dall'assicurazione generale obbligatoria con una riduzione di tre punti ed è quindi pari al
+> 5,84% della retribuzione imponibile, per tutta la durata del periodo di formazione»*
 
-Qui il registro non basta. Le altre lacune dichiarate non toccano un numero; questa lo
-toccherebbe in pieno, perché senza aliquota il motore userebbe quella ordinaria e restituirebbe
-un netto **sbagliato con l'aria di essere giusto** — che è il difetto peggiore possibile per uno
-strumento del genere.
+**Il numero non poggia su quella sola frase.** La circolare lo ripete quattro volte nei paragrafi
+successivi, ogni volta come addendo di un totale diverso: 15,84 = 10 + 5,84; 17,45 = 11,61 +
+5,84; 8,95 = 3,11 + 5,84; 10,45 = 4,61 + 5,84. Quattro conferme interne allo stesso documento
+valgono più di una citazione ripetuta da quattro documenti diversi.
 
-La soluzione è portare la disciplina delle fonti dentro il codice:
+**Due punti restano aperti e sono dichiarati.** L'art. 21 della L. 41/1986 non è stato aperto. E
+la riduzione *«di tre punti»* non si riconcilia con il 9,19% che il modello usa per il regime
+ordinario: 9,19 − 3 farebbe 6,19, non 5,84. La base da cui la circolare toglie i tre punti è
+un'aliquota diversa, che non esplicita. Il modello usa il **numero enunciato**, non quello
+ricostruito — che è la scelta giusta quando i due non coincidono.
+
+#### Una lacuna che sarebbe diventata un errore: come è stata fermata
+
+Vale la pena raccontare cosa è successo nel frattempo, perché è il pezzo di metodo più utile.
+
+Le altre lacune del registro non toccano un numero. Questa lo toccava in pieno: senza aliquota il
+motore avrebbe usato quella ordinaria e restituito un netto **sbagliato con l'aria di essere
+giusto** — il difetto peggiore possibile per uno strumento del genere. La disciplina delle fonti
+è stata quindi portata dentro il codice:
 
 ```js
 aliquotaIvsApprendista: null,   // lacuna dichiarata, non dimenticanza
 ```
 
-e una funzione che **si rifiuta di calcolare** invece di ripiegare sull'aliquota ordinaria:
+con una funzione che **si rifiuta di calcolare** invece di ripiegare sull'aliquota ordinaria, e
+la voce del modulo disabilitata con scritto perché. Oggi il parametro ha il suo valore, ma il
+guardiano è rimasto: se un domani si aggiunge un contratto con regime proprio e ci si dimentica
+del parametro, il calcolo si ferma. Un test lo verifica passando un registro artificialmente
+svuotato.
 
-```js
-if (aliquota == null) throw new Error("aliquota IVS dell'apprendista non parametrizzata…")
-```
-
-Nel modulo la voce «Apprendistato» c'è ed è **disabilitata**, con scritto perché. Un test verifica
-che il motore sollevi l'errore, e un altro che l'apprendistato erediti il minimo giusto dell'art.
-13 — così il giorno in cui l'aliquota arriva resta da cambiare **una riga**, e i due
-comportamenti sono già presidiati.
-
-È lo stesso principio del campo `lacuna` nel registro delle fonti, applicato al motore: **una
-mancanza dichiarata è un compito, una mancanza silenziosa è un bug**.
+È lo stesso principio del campo `lacuna` nel registro, applicato al motore: **una mancanza
+dichiarata è un compito, una mancanza silenziosa è un bug.**
 
 **Contributo addizionale NASpI: no.** Sul tempo determinato grava un contributo addizionale
 (art. 2 c. 28 L. 92/2012), aumentato a ogni rinnovo, ma è **interamente a carico del datore**.

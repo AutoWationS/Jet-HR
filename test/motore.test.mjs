@@ -655,6 +655,8 @@ test('l apprendistato eredita il minimo del tempo indeterminato, non quello dopp
   // tempo indeterminato". Da quella riga dipende quale dei due minimi dell'art.
   // 13 c. 1 lett. a) si applica, e sbagliarla varrebbe 690 euro su un rapporto
   // parziale. Il test la tiene ferma anche se un giorno l'aliquota arrivera'.
+  // Il reddito va tenuto uguale fra i tre: l'apprendista ha meno contributi e
+  // quindi piu' imponibile, e il confronto sui minimi vuole la stessa base.
   const P2 = { ...P, inps: { ...P.inps, aliquotaIvsApprendista: P.inps.aliquotaIvs } };
   const opz = { ral: 13000, giorniLavorati: 100 };
 
@@ -666,17 +668,37 @@ test('l apprendistato eredita il minimo del tempo indeterminato, non quello dopp
   assert.notEqual(appr.irpef.detrazioneLavoro, det.irpef.detrazioneLavoro);
 });
 
-test('senza la fonte, il motore si ferma invece di inventare l aliquota', () => {
-  // Il difetto che questo test previene e' il piu' insidioso del progetto: una
-  // lacuna del registro che diventa un numero sbagliato con l'aria di essere
-  // giusto. L'aliquota dell'apprendista non e' ancora letta, quindi il parametro
-  // vale null e il motore rifiuta di calcolare. Meglio un errore che un netto
-  // plausibile e falso.
-  assert.equal(P.inps.aliquotaIvsApprendista, null, 'se e stata letta, aggiorna questo test');
+test('apprendistato: aliquota ridotta, e il netto sale di conseguenza', () => {
+  // INPS circ. 108/2018 par. 3.3: l'aliquota a carico dell'apprendista e' il
+  // 5,84%, non il 9,19% ordinario. E' l'unica differenza contributiva del
+  // modello, e si propaga: meno contributi -> imponibile piu' alto -> piu'
+  // imposta, ma il saldo resta ampiamente positivo per il lavoratore.
+  const ord = calcolaNetto({ ral: 35000 }, P);
+  const app = calcolaNetto({ ral: 35000, tipoContratto: 'apprendistato' }, P);
+
+  vicino(app.contributi.totale, 35000 * P.inps.aliquotaIvsApprendista, 0.01);
+  assert.ok(app.imponibileFiscale > ord.imponibileFiscale, 'meno contributi, piu imponibile');
+  assert.ok(app.irpef.lorda > ord.irpef.lorda, 'e quindi piu imposta lorda');
+  assert.ok(app.netto.annuo > ord.netto.annuo, 'ma il netto sale comunque');
+
+  // Il risparmio contributivo lordo e' 3,35 punti di RAL; il netto ne trattiene
+  // meno, perche' una parte torna allo Stato come imposta sul maggiore
+  // imponibile. E' lo stesso meccanismo degli oneri deducibili, al contrario.
+  const risparmioContributi = ord.contributi.totale - app.contributi.totale;
+  const guadagnoNetto = app.netto.annuo - ord.netto.annuo;
+  assert.ok(guadagnoNetto > 0 && guadagnoNetto < risparmioContributi);
+});
+
+test('un contratto senza aliquota ferma il motore invece di farlo inventare', () => {
+  // Il guardiano che ha tenuto il modello onesto finche' la fonte mancava, e che
+  // resta come rete: se un domani si aggiunge un contratto con un regime proprio
+  // e ci si dimentica del parametro, il calcolo si ferma invece di ripiegare in
+  // silenzio sull'aliquota ordinaria e restituire un netto plausibile e falso.
+  const senzaFonte = { ...P, inps: { ...P.inps, aliquotaIvsApprendista: null } };
   assert.throws(
-    () => calcolaNetto({ ral: 20000, tipoContratto: 'apprendistato' }, P),
+    () => calcolaNetto({ ral: 20000, tipoContratto: 'apprendistato' }, senzaFonte),
     /non parametrizzata/,
   );
-  // Gli altri due contratti non sono toccati.
-  assert.ok(calcolaNetto({ ral: 20000, tipoContratto: 'determinato' }, P).netto.annuo > 0);
+  // Gli altri due contratti non dipendono da quel parametro.
+  assert.ok(calcolaNetto({ ral: 20000, tipoContratto: 'determinato' }, senzaFonte).netto.annuo > 0);
 });
