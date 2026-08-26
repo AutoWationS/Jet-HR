@@ -533,6 +533,49 @@ esente sull'imponibile (§3.4). Erano le tre decisioni più esposte del progetto
 confermate una per una da un confronto che riproduce esattamente il comportamento altrui vale
 più di un test che passa.
 
+### 3.4.2 Terzo giro: l'apprendistato scopre un difetto che otto casi non avevano visto
+
+Il confronto è stato ripetuto sull'apprendistato, RAL 35.000. Prima cosa: **sull'aliquota siamo
+d'accordo**. Il loro imponibile è 32.956, che è 35.000 × (1 − 5,84%): il numero letto sulla
+circolare INPS è lo stesso che usa un calcolatore editoriale in produzione. La verifica più
+importante è passata.
+
+Poi il modello ricostruito al §3.4.1 riproduce ancora una volta tutto:
+
+| Voce | Modello | Esterno | Δ |
+|---|---:|---:|---:|
+| Imposte lorde (IRPEF 8.075,48 + addizionali 738,79) | 8.814,27 | 8.814 | ✓ |
+| Detrazione art. 13 | 1.544,68 | 1.610 | **+65,05** |
+| Ulteriore detrazione cuneo | **880,50** | 1.000 | **+119,50** |
+| Imposte nette | 6.389,09 | 6.204,54 | −184,55 |
+| **Netto annuo** | **26.566,91** | **26.751** | **+184,55** |
+
+Il primo scarto è il doppio conteggio dei 65 € già diagnosticato. **Il secondo è nuovo**, ed è
+più grave.
+
+**Il décalage dell'ulteriore detrazione non c'è.** L'art. 1 c. 6 lett. b) della L. 207/2024 —
+letto in originale al §3.10.2 — dispone che oltre i 32.000 di reddito complessivo la detrazione
+di 1.000 € vale *«al prodotto tra 1.000 euro e l'importo corrispondente al rapporto tra 40.000
+euro, diminuito del reddito complessivo, e 8.000 euro»*. A 32.956 fa 880,50. Il calcolatore
+esterno dà 1.000 secchi: applica l'importo pieno su tutta la fascia 20.000-40.000, ignorando la
+lettera b).
+
+Non è un caso di nicchia. Riguarda **chiunque abbia un reddito complessivo fra 32.000 e 40.000**,
+cioè grosso modo una RAL fra 35.200 e 44.000 — una delle fasce più popolate del lavoro
+dipendente. L'errore cresce da zero a 1.000 € muovendosi dentro la fascia.
+
+**E questo è il punto di metodo.** Otto casi di confronto non l'avevano trovato, perché nessuno
+cadeva in quella fascia: il caso di riferimento sta a 31.783,50, quarantaquattro euro sotto la
+soglia. È stata l'aliquota dell'apprendista, abbassando i contributi, a spingere l'imponibile da
+31.783,50 a 32.956 e a farlo scavallare.
+
+Un test di regressione non l'avrebbe mai visto, perché i test verificano il modello contro sé
+stesso. Un confronto esterno ripetuto su casi *diversi* sì — e la lezione è che il valore di un
+banco di prova non sta nel numero di casi ma in **dove cadono**: nove casi tutti nella stessa
+fascia valgono meno di due che stanno ai due lati di una soglia. La suite lo sapeva già — c'è un
+test che percorre i confini del cuneo centesimo per centesimo (§3.10.2) — e il confronto esterno
+ha finito per confermare, dall'esterno, proprio quel test.
+
 ### 3.5 Audit delle fonti
 
 Le fonti sono state sottoposte a una revisione indipendente, parametro per parametro, con un
