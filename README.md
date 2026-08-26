@@ -4,25 +4,30 @@ Prototipo che, data una **RAL**, proietta la **retribuzione netta annua e mensil
 **ogni voce trattenuta sul lordo**: contributi previdenziali, IRPEF, addizionali locali, e le
 somme non imponibili che tornano in busta paga.
 
-Caso modellato: impiegato del settore privato, tempo indeterminato, residente a **Milano**,
-nessun familiare a carico, nessuna agevolazione. Anno d'imposta **2026**.
+Caso modellato: impiegato del settore privato, residente a **Milano**, anno d'imposta **2026**.
+Contratto, familiari a carico e oneri deducibili sono parametri; tutto ciò che resta fuori è
+elencato voce per voce, con la norma che lo esclude.
+
+**▶ Provalo qui: https://autowations.github.io/Jet-HR/**
 
 ---
 
-## Prova in 60 secondi
+## Da dove partire, secondo cosa vuoi vedere
+
+| Se vuoi… | Guarda |
+|---|---|
+| provarlo | il link qui sopra, oppure `dist/calcolatore.html` con un doppio clic |
+| capire *come* calcola | [`src/motore.js`](src/motore.js) — funzioni pure, zero DOM, un commento per ogni regola |
+| capire *perché* quei numeri | [`src/parametri.js`](src/parametri.js) — il registro `FONTI`: per ogni valore la norma, come è stata verificata e cosa manca |
+| il ragionamento per esteso | [`docs/metodologia.md`](docs/metodologia.md) — decisioni, verifiche, errori trovati, semplificazioni |
 
 ```bash
-python3 -m http.server 8080     # oppure: npx serve .
-# apri http://localhost:8080
-```
-
-Oppure apri direttamente `dist/calcolatore.html` con un doppio clic: è la stessa pagina con
-tutto inline, generata dai medesimi sorgenti.
-
-```bash
-npm test                               # 33 test, nessuna dipendenza da installare
+npm test                               # 45 test, nessuna dipendenza da installare
+node scripts/verifica-fonti.mjs        # stato di verifica di ogni fonte, e cosa resta da aprire
 node scripts/tabella-riferimento.mjs   # 11 RAL con tutte le voci intermedie
 ```
+
+Nessun `npm install`: solo ES modules e `node --test`.
 
 ---
 
