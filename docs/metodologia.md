@@ -484,7 +484,8 @@ Cinque regole bastano a riprodurre **tutti** i loro output al centesimo, su tutt
 
 1. imponibile = RAL × (1 − 9,19%), **senza l'aliquota aggiuntiva dell'1%**;
 2. *«IRPEF lorda»* = IRPEF + addizionali (etichetta, non modello — già noto);
-3. addizionale comunale **sempre dovuta**, senza soglia di esenzione e senza no tax area;
+3. addizionali **sempre dovute**, anche con IRPEF netta pari a zero, e comunale senza soglia
+   di esenzione;
 4. detrazione dell'art. 13 = base + **2 × 65 €** nella fascia della maggiorazione;
 5. somma esente del cuneo calcolata **sulla RAL** anziché sull'imponibile.
 
@@ -512,7 +513,7 @@ diagnosticati al paragrafo precedente, identici e costanti.
 | Voce | Modello | Esterno | Perché |
 |---|---:|---:|---|
 | IRPEF netta | 0 | 0 | d'accordo |
-| Addizionali | **0** | 379,76 | art. 50 c. 2 D.Lgs. 446/1997: senza IRPEF non sono dovute. E la comunale non lo sarebbe comunque, sotto i 23.000 |
+| Addizionali | **0** | 379,76 | art. 50 c. 2 D.Lgs. 446/1997: senza IRPEF non sono dovute, e vale per entrambe. La comunale (145,30) non lo sarebbe comunque, sotto i 23.000 |
 | Somma esente | **871,78** | 960,00 | 4,8% dell'imponibile, non della RAL |
 | Trattamento integrativo | **909,33** | 0 | seconda fascia del D.L. 3/2020, che si accende solo con l'art. 12 |
 | **Netto annuo** | **19.943,11** | **14.565** | |
@@ -525,6 +526,25 @@ Anche accettando i loro stessi numeri il risultato avrebbe dovuto essere 19.122 
 Non è un difetto da poco per chi lo usa: nella fascia di reddito in cui un lavoratore con
 familiari a carico non paga IRPEF — quella dove sapere il netto conta di più — quel calcolatore
 sbaglia di oltre cinquemila euro l'anno.
+
+**Un dubbio da sciogliere: non è colpa del comune.** Il form dell'altro calcolatore non chiede
+il comune ma un'**aliquota comunale in percentuale**, impostata a 0,8 — la stessa del modello. Si
+potrebbe sospettare che le divergenze nascano da lì. Non è così, e lo dimostra la ricostruzione
+stessa: le loro *«imposte lorde»* coincidono con le nostre al centesimo in tutti i casi
+(8.398, 11.623, 16.911, 4.557, 8.814), e quel totale contiene le addizionali. Se la comunale o la
+regionale fossero diverse, non tornerebbe.
+
+Va però distinta una cosa che il paragrafo precedente accorpava, ed è una distinzione onesta:
+
+| | Cos'è | Di chi è |
+|---|---|---|
+| addizionali dovute con IRPEF netta zero (**234,46** di regionale nel caso F) | l'art. 50 c. 2 del D.Lgs. 446/1997 le lega alla debenza dell'IRPEF, e vale per qualunque regione | **errore** |
+| comunale sull'intero imponibile sotto i 23.000 (**145,30** nel caso F) | la soglia è una scelta del singolo comune, e un form che chiede un'aliquota non ha dove metterla | **limite del modello di input**, non errore |
+
+La seconda riga non è un difetto: è una conseguenza di aver scelto un input più generico. Ma non
+salva il caso F, perché la prima riga da sola basta a rendere dovute delle addizionali che non lo
+sono — e perché la comunale, in quel caso, non sarebbe dovuta **nemmeno** per la no tax area,
+indipendentemente da qualsiasi soglia comunale.
 
 **Cosa ci insegna sul nostro modello.** Tre delle cinque regole ricostruite corrispondono ad
 altrettante scelte che avevamo preso *contro* la prassi corrente, ciascuna motivata su una norma
@@ -575,6 +595,30 @@ banco di prova non sta nel numero di casi ma in **dove cadono**: nove casi tutti
 fascia valgono meno di due che stanno ai due lati di una soglia. La suite lo sapeva già — c'è un
 test che percorre i confini del cuneo centesimo per centesimo (§3.10.2) — e il confronto esterno
 ha finito per confermare, dall'esterno, proprio quel test.
+
+### 3.4.3 Che cosa il confronto dimostra, e che cosa no
+
+Tre giri di confronto hanno prodotto quattro divergenze attribuibili all'altro calcolatore e due
+al modello — queste ultime corrette. È un bilancio che invita all'eccesso di fiducia, quindi vale
+la pena scrivere i limiti.
+
+**Cosa il confronto dimostra.** Dove i due modelli divergono, c'è sempre un testo che decide, e
+in tutti i casi è stato letto: l'art. 13 c. 1.1 per i 65 €, l'art. 1 c. 6 lett. b) della
+L. 207/2024 per il décalage, l'art. 50 c. 2 del D.Lgs. 446/1997 per le addizionali, la circolare
+INPS n. 6/2026 per l'aliquota aggiuntiva dell'1%. Non è una questione di opinioni.
+
+**Cosa non dimostra.** Che il modello sia giusto dove i due **coincidono**. Un errore commesso da
+entrambi resta invisibile a questo metodo, e il confronto esterno non sostituisce la lettura
+delle fonti: la integra. È anche il motivo per cui il registro esiste.
+
+**E una cautela sull'attribuzione.** Il codice altrui non è visibile. Dire che «applicano 130 €
+dove la norma ne prevede 65» è un'inferenza dal comportamento, per quanto solida: regge su cinque
+casi, sparisce esattamente fuori dalla fascia della maggiorazione, e nessuna altra ipotesi
+riproduce i loro numeri. Ma resta un'inferenza, ed è scritta così.
+
+Va detto anche il rovescio: quel calcolatore fa cose che questo prototipo non fa — mostra il
+costo azienda, gli sgravi per le assunzioni agevolate, il regime contributivo del datore. Il
+confronto misura la sola parte che si sovrappone.
 
 ### 3.5 Audit delle fonti
 
