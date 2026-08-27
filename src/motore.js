@@ -405,6 +405,9 @@ export function calcolaNetto(input, parametri = PARAMETRI_DEFAULT) {
   // L'anno fiscale e' di 365 giorni per convenzione (circ. 326/E/1997): il
   // motore vincola l'input a quel calendario invece di fidarsi del chiamante.
   // Con 400 giorni la detrazione rapportata SUPEREREBBE quella teorica.
+  // Convenzione del parametro, deliberata: zero, assente o non numerico
+  // valgono "anno intero" (e' il default del JSDoc, non un giorno di
+  // calendario); ogni altro valore e' riportato dentro [1, 365].
   const giorniAnno = parametri.detrazioneLavoroDipendente.giorniAnno;
   const giorniLavorati = Math.min(
     giorniAnno,
@@ -568,6 +571,7 @@ export function aliquotaMarginale(ral, parametri = PARAMETRI_DEFAULT, input = {}
 function calcolaNettoSemplice(input, parametri) {
   const ral = Math.max(0, Number(input.ral) || 0);
   const giorniAnno = parametri.detrazioneLavoroDipendente.giorniAnno;
+  // Stessa convenzione di calcolaNetto: 0 o assente = anno intero.
   const giorni = Math.min(giorniAnno, Math.max(1, Number(input.giorniLavorati) || giorniAnno));
   const tipoContratto = CONTRATTI.includes(input.tipoContratto)
     ? input.tipoContratto

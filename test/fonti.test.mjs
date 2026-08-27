@@ -23,6 +23,13 @@ const BLOCCHI = [
   'detrazioniFamiliari',
 ];
 
+/** Visita ogni nodo (oggetto o array) dell'albero dei parametri. */
+const perOgniNodo = (nodo, fn) => {
+  if (!nodo || typeof nodo !== 'object') return;
+  fn(nodo);
+  Object.values(nodo).forEach((figlio) => perOgniNodo(figlio, fn));
+};
+
 test('ogni blocco di parametri dichiara una fonte esistente', () => {
   for (const nome of BLOCCHI) {
     const blocco = P[nome];
@@ -32,16 +39,13 @@ test('ogni blocco di parametri dichiara una fonte esistente', () => {
     assert.equal(fonteDi(blocco), FONTI[blocco.fonte]);
   }
 
-  // Anche i sotto-blocchi con una fonte propria (es. le aliquote agevolate
-  // dell'addizionale regionale) devono puntare a una fonte che esiste.
-  const controlla = (nodo) => {
-    if (!nodo || typeof nodo !== 'object') return;
+  // Anche i sotto-blocchi con una fonte propria devono puntare a una fonte
+  // che esiste: si visita l'intero albero, non solo il primo livello.
+  perOgniNodo(P, (nodo) => {
     if (typeof nodo.fonte === 'string') {
       assert.ok(FONTI[nodo.fonte], `un blocco punta alla fonte inesistente "${nodo.fonte}"`);
     }
-    Object.values(nodo).forEach(controlla);
-  };
-  controlla(P);
+  });
 });
 
 test('ogni fonte e completa nei campi che la pagina mostra', () => {
@@ -71,12 +75,9 @@ test('nessuna fonte orfana: ognuna e citata da un parametro o dichiarata trasver
   // Le fonti citate si raccolgono su TUTTO l'albero dei parametri, non solo
   // sui blocchi di primo livello: anche un sotto-blocco puo' averne una.
   const citate = new Set(TRASVERSALI);
-  const raccogli = (nodo) => {
-    if (!nodo || typeof nodo !== 'object') return;
+  perOgniNodo(P, (nodo) => {
     if (typeof nodo.fonte === 'string') citate.add(nodo.fonte);
-    Object.values(nodo).forEach(raccogli);
-  };
-  raccogli(P);
+  });
 
   for (const chiave of Object.keys(FONTI)) {
     assert.ok(citate.has(chiave), `la fonte "${chiave}" non e' usata da nessun parametro`);

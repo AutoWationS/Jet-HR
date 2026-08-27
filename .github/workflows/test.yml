@@ -4,8 +4,11 @@
 # qualcosa. Zero dipendenze da installare, come in locale.
 name: test
 
+# push limitato al ramo principale: sui rami in pull request basta l'evento
+# pull_request, altrimenti ogni commit farebbe girare la stessa suite due volte.
 on:
   push:
+    branches: [Jet-HR]
   pull_request:
 
 jobs:
