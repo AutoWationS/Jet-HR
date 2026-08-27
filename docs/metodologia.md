@@ -1324,7 +1324,7 @@ risultato è che **il netto non è una funzione monotona della RAL**.
 | imponibile 23.000 € | 25.327,61 € | esenzione addizionale comunale Milano | −183,96 € |
 | reddito 35.000 € | 38.542,01 € | maggiorazione art. 13 c. 1.1 (65 €) | −64,98 € |
 
-E il salto opposto, a **RAL 9.001,14 €**: **+1.200,03 €** di netto per un centesimo di lordo in
+E il salto opposto, a **RAL 9.001,14 €**: **+1.200,01 €** di netto per un centesimo di lordo in
 più. È la condizione di capienza del trattamento integrativo (`IRPEF lorda > 1.955 − 75`).
 In quel punto l'aliquota marginale effettiva vale **−1.196%**.
 
