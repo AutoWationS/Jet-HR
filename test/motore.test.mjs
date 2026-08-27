@@ -689,57 +689,27 @@ test('apprendistato: aliquota ridotta, e il netto sale di conseguenza', () => {
   assert.ok(guadagnoNetto > 0 && guadagnoNetto < risparmioContributi);
 });
 
-test('addizionale regionale: aliquote agevolate lombarde per carichi di famiglia', () => {
-  // La Lombardia sostituisce la scala per scaglioni con un'aliquota unica
-  // sull'intero imponibile in due casi legati ai figli fiscalmente a carico
-  // (di OGNI eta', non i soli 21-29enni delle detrazioni): 0,90% con almeno
-  // tre figli entro 50.000 di imponibile (+10.000 per figlio oltre il terzo),
-  // 1,23% con almeno un figlio con disabilita' entro la stessa soglia.
-  // Fonte dichiarata non ancora letta in originale: vedi il registro.
+test('le agevolazioni regionali per carichi di famiglia sono abrogate: i figli non toccano l addizionale', () => {
+  // L'art. 72 della l.r. 10/2003, letto per intero sul testo consolidato, si
+  // esaurisce nella tabella delle aliquote: i commi 1-bis e 1-ter sono stati
+  // abrogati dall'art. 12 c. 1 lett. c) della l.r. 26/2020, il c. 2 dall'art. 1
+  // c. 1 lett. b) della l.r. 5/2022. Le aliquote agevolate per famiglie
+  // numerose o figli con disabilita' che guide e schede riportano ancora non
+  // hanno base nel testo vigente 2026: il modello le aveva implementate su quel
+  // consenso — dichiarando la fonte non verificata — e le ha RIMOSSE alla
+  // lettura dell'atto. Questo test impedisce che rientrino da una guida invece
+  // che da una legge: i figli cambiano le detrazioni, mai l'addizionale.
   const base = calcolaNetto({ ral: 45000 }, P); // imponibile 40.864,50
-  vicino(base.addizionali.regionale, 611.17);
-  assert.equal(base.addizionali.regionaleAgevolata, false);
+  const conFigli = calcolaNetto({ ral: 45000, figliACarico: 3 }, P);
 
-  // Tre figli a carico: 0,90% piatto. La comunale non cambia.
-  const tre = calcolaNetto({ ral: 45000, figliACaricoTotali: 3 }, P);
-  vicino(tre.addizionali.regionale, 367.78); // 40.864,50 x 0,9%
-  assert.equal(tre.addizionali.regionaleAgevolata, true);
-  assert.equal(tre.addizionali.regionaleAliquota, 0.009);
-  vicino(tre.addizionali.comunale, base.addizionali.comunale);
-  vicino(tre.netto.annuo - base.netto.annuo, 611.17 - 367.78);
+  vicino(base.addizionali.regionale, 611.17); // scaglioni ordinari
+  vicino(conFigli.addizionali.regionale, 611.17); // identica: nessuna agevolazione
+  vicino(conFigli.addizionali.comunale, base.addizionali.comunale);
+  assert.ok(conFigli.irpef.familiari.figli > 0, 'le detrazioni per figli restano');
 
-  // Con due figli l'agevolazione non spetta.
-  const due = calcolaNetto({ ral: 45000, figliACaricoTotali: 2 }, P);
-  vicino(due.addizionali.regionale, 611.17);
-  assert.equal(due.addizionali.regionaleAgevolata, false);
-
-  // Figlio con disabilita': 1,23% piatto, anche senza tre figli.
-  const dis = calcolaNetto({ ral: 45000, figliConDisabilita: true }, P);
-  vicino(dis.addizionali.regionale, 502.63); // 40.864,50 x 1,23%
-  assert.equal(dis.addizionali.regionaleAliquota, 0.0123);
-
-  // Se spettano entrambe vale la piu' favorevole.
-  const entrambe = calcolaNetto({ ral: 45000, figliACaricoTotali: 3, figliConDisabilita: true }, P);
-  assert.equal(entrambe.addizionali.regionaleAliquota, 0.009);
-
-  // La soglia e' sull'imponibile e cresce di 10.000 per figlio oltre il terzo:
-  // a 54.448,24 di imponibile tre figli non bastano, quattro si'.
-  const sopra3 = calcolaNetto({ ral: 60000, figliACaricoTotali: 3 }, P);
-  assert.equal(sopra3.addizionali.regionaleAgevolata, false);
-  vicino(sopra3.addizionali.regionale, 845.25); // scaglioni ordinari
-  const sopra4 = calcolaNetto({ ral: 60000, figliACaricoTotali: 4 }, P);
-  assert.equal(sopra4.addizionali.regionaleAgevolata, true);
-  vicino(sopra4.addizionali.regionale, 490.03); // 54.448,24 x 0,9%
-
-  // I figli delle detrazioni contano anche qui senza doverli ripetere:
-  // il totale non puo' essere inferiore ai 21-29enni dichiarati.
-  const soloDetrazioni = calcolaNetto({ ral: 45000, figliACarico: 3 }, P);
-  assert.equal(soloDetrazioni.addizionali.regionaleAgevolata, true);
-
-  // In no tax area resta tutto non dovuto: l'agevolazione non "riaccende" nulla.
-  const nta = calcolaNetto({ ral: 9000, figliACaricoTotali: 3 }, P);
-  assert.equal(nta.addizionali.nonDovutePerImpostaZero, true);
-  assert.equal(nta.addizionali.regionale, 0);
+  // E il blocco dei parametri non deve riacquistare un ramo "agevolazioni"
+  // senza che una fonte letta lo giustifichi.
+  assert.equal(P.addizionaleRegionale.agevolazioni, undefined);
 });
 
 test('il motore vincola i giorni al calendario fiscale, come la UI', () => {
@@ -772,7 +742,7 @@ test('l aliquota marginale e la derivata del netto: le due catene non possono di
     {},
     { coniugeACarico: true, figliACarico: 1 },
     { tipoContratto: 'apprendistato', giorniLavorati: 200 },
-    { figliACaricoTotali: 3 },
+    { applicaMassimale: false },
     { oneriDeducibili: 2000 },
   ];
   const rals = [8000, 12000, 18000, 22000, 30000, 36000, 45000, 58000, 90000, 150000];

@@ -35,9 +35,6 @@ for (const [chiave, etichetta] of Object.entries(BLOCCHI)) {
   const f = fonteDi(P[chiave]);
   if (f) (usataDa[P[chiave].fonte] ??= []).push(etichetta);
 }
-if (P.addizionaleRegionale.agevolazioni?.fonte) {
-  (usataDa[P.addizionaleRegionale.agevolazioni.fonte] ??= []).push('aliquote agevolate regionali');
-}
 
 console.log(`\nREGISTRO DELLE FONTI — anno d'imposta ${P.anno}`);
 console.log(`${Object.keys(FONTI).length} fonti · ${

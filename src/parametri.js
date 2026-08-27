@@ -387,48 +387,13 @@ export const FONTI = {
       'lettura per scaglioni dà 611,17 € di addizionale contro i 702,87 € di ' +
       'un’aliquota unica, e il netto del modello coincide al centesimo con quello del ' +
       'calcolatore esterno di metodologia §3.4. Se la lettura fosse quella piatta, il ' +
-      'confronto sarebbe fallito di 91,70 €',
-  },
-
-  addizionaleRegionaleAgevolata: {
-    livello: 2,
-    statoVerifica: 'non-verificata',
-    dove:
-      'Scheda della Lombardia nel portale del Federalismo Fiscale del MEF e istruzioni al ' +
-      'quadro RV dei modelli Redditi PF e 730, casi particolari delle addizionali regionali; ' +
-      'poi l’art. 72 della l.r. 10/2003 oltre la tabella delle aliquote',
-    canale: 'burl',
-    lacuna:
-      'l’art. 72 oltre la tabella delle aliquote, la scheda MEF e le istruzioni al quadro RV ' +
-      'non sono stati aperti: il comma esatto, la decorrenza e il conteggio del figlio a ' +
-      'carico ripartito fra i genitori restano da leggere',
-    etichetta: 'Addizionale regionale — aliquote agevolate per carichi di famiglia',
-    norma:
-      'Art. 72 della l.r. 14 luglio 2003, n. 10, disposizioni successive alla tabella delle ' +
-      'aliquote (numerazione del comma da riscontrare sull’atto)',
-    dettaglio:
-      'Due aliquote che sostituiscono la scala per scaglioni, entrambe applicate all’intero ' +
-      'imponibile e legate ai carichi di famiglia: 0,90% per chi ha almeno tre figli ' +
-      'fiscalmente a carico e un imponibile non superiore a 50.000 €, con la soglia innalzata ' +
-      'di 10.000 € per ogni figlio a carico oltre il terzo; 1,23% per chi ha fiscalmente a ' +
-      'carico almeno un figlio con disabilità, entro la stessa soglia. Contano i figli ' +
-      'fiscalmente a carico di ogni età, compresi quelli sotto i 21 anni per cui la detrazione ' +
-      'dell’art. 12 non spetta più: la platea è più larga di quella del campo usato per le ' +
-      'detrazioni, ed è il motivo per cui il modulo chiede i due numeri separatamente.',
-    prassi:
-      'Istruzioni ai modelli 730 e Redditi PF, quadro RV, casi particolari delle addizionali ' +
-      'regionali; scheda della Lombardia sul portale del Federalismo Fiscale del MEF.',
-    url: 'https://www.finanze.gov.it/it/fiscalita/fiscalita-regionale-e-locale/Addizionale-regionale-allIRPEF/disciplina-del-tributo/',
-    verifica:
-      'Non ancora letta in originale, ed è dichiarato: dall’ambiente di sviluppo la ricerca ' +
-      'web funziona ma il prelievo delle pagine di Regione, MEF e Agenzia delle Entrate è ' +
-      'bloccato dal proxy (metodologia §3.11). Le due aliquote, la soglia e l’innalzamento ' +
-      'per figlio risultano concordi su più fonti secondarie indipendenti e sulla sintesi ' +
-      'della scheda MEF restituita dalla ricerca; ma questo progetto ha già incontrato un ' +
-      'consenso di fonti secondarie compatto e sbagliato — l’aliquota dell’apprendista, ' +
-      'metodologia §5.5-bis — quindi finché l’atto o le istruzioni RV non sono aperti lo ' +
-      'stato resta questo, la pagina lo mostra in rosso e un avviso compare quando ' +
-      'l’agevolazione viene applicata davvero',
+      'confronto sarebbe fallito di 91,70 €. UNA SECONDA LETTURA, dell’articolo per ' +
+      'intero, ha poi mostrato che l’art. 72 vigente SI ESAURISCE NELLA TABELLA: i commi ' +
+      '1-bis e 1-ter sono stati abrogati dall’art. 12 c. 1 lett. c) della l.r. 26/2020 e ' +
+      'il c. 2 dall’art. 1 c. 1 lett. b) della l.r. 5/2022. Le aliquote agevolate per ' +
+      'carichi di famiglia che guide e schede riportano ancora non hanno quindi base nel ' +
+      'testo vigente 2026: il modello le aveva implementate su quel consenso e le ha ' +
+      'rimosse alla lettura dell’atto (vedi la voce dedicata del perimetro escluso)',
   },
 
   addizionaleComunale: {
@@ -831,23 +796,11 @@ export const PARAMETRI_2026 = {
       { fino: 50000, aliquota: 0.0172 },
       { fino: Infinity, aliquota: 0.0173 },
     ],
-    /**
-     * Aliquote agevolate per carichi di famiglia: sostituiscono la scala per
-     * scaglioni e si applicano all'intero imponibile. Contano i figli
-     * fiscalmente a carico DI OGNI ETA', non i soli 21-29enni delle detrazioni
-     * dell'art. 12: per questo il motore riceve un conteggio separato.
-     * La fonte non e' ancora stata letta in originale, e il registro lo dichiara.
-     */
-    agevolazioni: {
-      fonte: 'addizionaleRegionaleAgevolata',
-      treFigli: {
-        figliMinimi: 3,
-        aliquota: 0.009,
-        sogliaImponibile: 50000,
-        incrementoSogliaPerFiglio: 10000,
-      },
-      figliConDisabilita: { aliquota: 0.0123, sogliaImponibile: 50000 },
-    },
+    // Nessuna aliquota agevolata: l'art. 72 vigente si esaurisce nella tabella.
+    // Le agevolazioni per carichi di famiglia che le guide riportano ancora
+    // stavano nei commi 1-bis e 1-ter, ABROGATI dalla l.r. 26/2020: la voce
+    // dedicata del perimetro escluso racconta la trappola, e un test impedisce
+    // che rientrino da una guida invece che da una legge.
   },
 
   /** 7. Addizionale comunale, aliquota unica con soglia di esenzione. */
@@ -867,17 +820,19 @@ export const PARAMETRI_2026 = {
     {
       voce: 'Riduzione forfettaria delle detrazioni per oneri',
       norma:
-        'L. 207/2024 art. 1 c. 10 (260 € oltre 50.000); L. 199/2025 (440 € oltre 200.000); ' +
-        'art. 16-ter TUIR per il plafond oltre 75.000 €',
+        'L. 207/2024 art. 1 c. 10 (260 € oltre 50.000); art. 1 c. 4 della L. 199/2025, ' +
+        'letto in originale, che inserisce il c. 5-bis nell’art. 16-ter TUIR (440 € oltre ' +
+        '200.000); art. 16-ter cc. 1-5 TUIR per il plafond oltre 75.000 €',
       motivo:
         'Incidono sulle detrazioni per oneri dell’art. 15 TUIR, che il modello non ' +
         'rappresenta perché non ci sono oneri detraibili: applicarle gonfierebbe ' +
-        'l’imposta di un contribuente che non ha detrazioni da ridurre. Della stessa ' +
-        'famiglia è il plafond dell’art. 16-ter TUIR, introdotto dalla L. 207/2024, che ' +
-        'sopra i 75.000 € di reddito limita l’ammontare complessivo delle detrazioni per ' +
-        'oneri con coefficienti legati ai figli a carico: anch’esso inerte finché il ' +
-        'modello non rappresenta oneri detraibili, e per la stessa ragione dichiarato e ' +
-        'non applicato.',
+        'l’imposta di un contribuente che non ha detrazioni da ridurre. I 440 € del ' +
+        'c. 5-bis riducono le detrazioni al 19% (escluse le spese sanitarie), le erogazioni ' +
+        'ai partiti e i premi per rischio calamità di chi supera 200.000 € di reddito. ' +
+        'Della stessa famiglia è il plafond dell’art. 16-ter, che sopra i 75.000 € limita ' +
+        'l’ammontare complessivo delle detrazioni per oneri con coefficienti legati ai ' +
+        'figli a carico: anch’esso inerte finché il modello non rappresenta oneri ' +
+        'detraibili, e per la stessa ragione dichiarato e non applicato.',
     },
     {
       voce: 'TFR',
@@ -930,9 +885,13 @@ export const PARAMETRI_2026 = {
     },
     {
       voce: 'Buoni pasto, trasferte, auto aziendale',
-      norma: 'Art. 51 c. 2 lett. b), c. 4 lett. a) e c. 5 TUIR (art. 53 nel testo riordinato)',
+      norma:
+        'Art. 51 c. 2 lett. c), c. 4 lett. a) e c. 5 TUIR (art. 53 nel testo riordinato); ' +
+        'soglia elettronica elevata dall’art. 1 c. 14 della L. 199/2025, letto in originale',
       motivo:
-        'Ticket esenti fino a 4 € al giorno in forma cartacea e 10 € in forma elettronica; ' +
+        'Ticket esenti fino a 4 € al giorno in forma cartacea e 10 € in forma elettronica — ' +
+        'soglia portata da 8 a 10 € per il 2026 dalla legge di bilancio, che riscrive la ' +
+        'lett. c) e con ciò conferma anche la lettera esatta della citazione; ' +
         'indennità di trasferta esenti fino a 46,48 € al giorno in Italia e 77,47 € all’estero; ' +
         'auto in uso promiscuo tassata al 50% della percorrenza convenzionale, ridotta al 10% ' +
         'per le elettriche e al 20% per le ibride plug-in. Sono voci del cedolino, non della ' +
@@ -940,35 +899,45 @@ export const PARAMETRI_2026 = {
     },
     {
       voce: 'Premi di risultato a tassazione sostitutiva',
-      norma: 'Art. 1 cc. 182-189 L. 208/2015 e successive rimodulazioni',
+      norma:
+        'Art. 1 cc. 182-189 L. 208/2015; per il 2026, art. 1 cc. 8-9 della L. 199/2025, ' +
+        'letti in originale',
       motivo:
         'Imposta sostitutiva agevolata in luogo dell’IRPEF ordinaria, entro limiti di importo e ' +
-        'di reddito. Richiede un contratto collettivo di secondo livello: fuori dal caso standard.',
+        'di reddito. Richiede un contratto collettivo di secondo livello: fuori dal caso ' +
+        'standard. Per i premi erogati nel 2026 e nel 2027 l’aliquota è ridotta all’1% entro ' +
+        '5.000 € complessivi (c. 9), mentre il 5% disposto dal c. 385 della L. 207/2024 per il ' +
+        'triennio è stato limitato al solo 2025 (c. 8).',
     },
     {
       voce: 'Detassazione degli incrementi da rinnovo contrattuale (2026)',
       norma:
-        'Art. 1 c. 7 della L. 199/2025 (comma non ancora letto in originale); commentata ' +
-        'dalla circolare AdE n. 2/E del 2026',
+        'Art. 1 c. 7 della L. 199/2025, letto in originale; commentata dalla circolare ' +
+        'AdE n. 2/E del 2026',
       motivo:
-        'Per il 2026 gli aumenti riconosciuti in attuazione di rinnovi dei contratti ' +
-        'collettivi nazionali sottoscritti fra il 2024 e il 2026 scontano un’imposta ' +
-        'sostitutiva del 5% al posto di IRPEF e addizionali, per chi nel 2025 ha percepito ' +
-        'un reddito di lavoro dipendente fino a 33.000 €. Dipende da quanta parte della ' +
-        'retribuzione sia incremento da rinnovo, che una RAL non descrive: stessa natura dei ' +
-        'premi di risultato. Gli estremi vengono dalla prassi e dalla stampa specializzata, ' +
-        'non dal comma, ed è dichiarato.',
+        'Gli incrementi retributivi corrisposti nel 2026 in attuazione di rinnovi dei ' +
+        'contratti collettivi nazionali sottoscritti dal 1° gennaio 2024 al 31 dicembre 2026 ' +
+        'scontano un’imposta sostitutiva del 5% al posto di IRPEF e addizionali regionali e ' +
+        'comunali, «salva espressa rinuncia scritta del prestatore di lavoro». Vale per i ' +
+        'soli lavoratori del settore privato con reddito di lavoro dipendente 2025 non ' +
+        'superiore a 33.000 €. Dipende da quanta parte della retribuzione sia incremento da ' +
+        'rinnovo, che una RAL non descrive: stessa natura dei premi di risultato.',
     },
     {
       voce: 'Detassazione delle maggiorazioni per lavoro notturno e festivo (2026)',
       norma:
-        'Art. 1 cc. 10-11 della L. 199/2025 (commi non ancora letti in originale); ' +
-        'commentata dalla circolare AdE n. 2/E del 2026',
+        'Art. 1 cc. 10-12 della L. 199/2025, letti in originale; commentata dalla ' +
+        'circolare AdE n. 2/E del 2026',
       motivo:
-        'Imposta sostitutiva del 15% su maggiorazioni e indennità per lavoro notturno, ' +
-        'festivo e per i turni, entro limiti di reddito e di importo fissati dai commi. Sono ' +
-        'voci del cedolino legate all’organizzazione del lavoro, non alla RAL: fuori ' +
-        'perimetro come gli straordinari, ma da qui in poi con la loro norma accanto.',
+        'Per il solo 2026, imposta sostitutiva del 15% al posto di IRPEF e addizionali — ' +
+        'salva rinuncia scritta — sulle somme corrisposte entro il limite annuo di 1.500 € ' +
+        'per maggiorazioni e indennità di lavoro notturno (art. 1 c. 2 D.Lgs. 66/2003 e ' +
+        'CCNL), di lavoro festivo e nei giorni di riposo settimanale, e di turno. La ' +
+        'applicano i sostituti del settore privato, escluse le attività del c. 18, ai ' +
+        'titolari di reddito di lavoro dipendente 2025 fino a 40.000 €; sono esclusi i ' +
+        'compensi che sostituiscono la retribuzione ordinaria, e i premi di risultato non ' +
+        'erodono il limite. Voci del cedolino legate all’organizzazione del lavoro, non ' +
+        'alla RAL: fuori perimetro come gli straordinari, ma con la loro norma accanto.',
     },
     {
       voce: 'Mensilizzazione dell’aliquota aggiuntiva dell’1% (cassa infrannuale)',
@@ -1030,18 +999,24 @@ export const PARAMETRI_2026 = {
     {
       voce: 'Esonero contributivo delle lavoratrici madri, e bonus mamme',
       norma:
-        'Art. 1 c. 180 della L. 213/2023, per i periodi di paga dal 2024 al 2026; ' +
-        'integrazione erogata dall’INPS ex art. 6 del D.L. 95/2025, rifinanziata dalla ' +
-        'legge di bilancio 2026 (misura da riscontrare sull’atto)',
+        'Art. 1 c. 180 della L. 213/2023, letto in originale (periodi di paga dal ' +
+        '1° gennaio 2024 al 31 dicembre 2026, «fermo restando quanto previsto al comma ' +
+        '15»); art. 6 del D.L. 95/2025, letto in originale; art. 1 cc. 219-220 della ' +
+        'L. 207/2024, come modificati dal medesimo art. 6, non ancora letti',
       motivo:
-        'La madre di tre o più figli con rapporto a tempo indeterminato versa zero ' +
-        'contributi IVS fino a 3.000 € l’anno, in busta paga, fino ai diciotto anni del ' +
-        'figlio più piccolo: tocca il primo blocco della catena — il 9,19% che il modello ' +
-        'tratta come invariante — con lo stesso rimbalzo dell’apprendistato, meno contributi ' +
-        'e quindi più imponibile. L’integrazione mensile per le madri di due o più figli è ' +
-        'invece erogata direttamente dall’INPS e non transita dalla busta: fuori perimetro ' +
-        'con la stessa ragione dell’assegno unico. È la voce che mancava al catalogo come ' +
-        'categoria: gli esoneri contributivi a carico del lavoratore.',
+        'La madre di tre o più figli con rapporto a tempo indeterminato (escluso il ' +
+        'lavoro domestico) versa zero contributi IVS fino al mese dei diciotto anni del ' +
+        'figlio più piccolo, «nel limite massimo annuo di 3.000 euro riparametrato su base ' +
+        'mensile»: è in busta paga e tocca il primo blocco della catena — il 9,19% che il ' +
+        'modello tratta come invariante — con lo stesso rimbalzo dell’apprendistato, meno ' +
+        'contributi e quindi più imponibile. Per le altre madri l’art. 6 del D.L. 95/2025 ' +
+        'dà per il 2025 una somma di 40 € mensili erogata dall’INPS a dicembre, non ' +
+        'imponibile e irrilevante per l’ISEE: fuori busta, come l’assegno unico. Lo stesso ' +
+        'articolo rinvia al 2026 il parziale esonero IVS del c. 219 della L. 207/2024: come ' +
+        'la misura si presenti nel 2026 — esonero in busta o integrazione elevata — resta da ' +
+        'leggere su quel comma e sull’eventuale intervento della legge di bilancio 2026. È ' +
+        'la voce che mancava al catalogo come categoria: gli esoneri contributivi a carico ' +
+        'del lavoratore.',
     },
     {
       voce: 'Un solo rapporto, per l’intero anno, con domicilio fiscale stabile',
@@ -1052,11 +1027,12 @@ export const PARAMETRI_2026 = {
         'in dichiarazione o con il conguaglio da parte dell’ultimo sostituto. L’addizionale ' +
         'comunale poi segue il domicilio fiscale al 1° gennaio, non la residenza durante ' +
         'l’anno: chi si trasferisce a Milano a febbraio paga per quell’anno l’addizionale del ' +
-        'comune di provenienza. Anche la regionale segue il domicilio fiscale, ma con una ' +
-        'data di riferimento propria (art. 50 del D.Lgs. 446/1997) che le fonti secondarie ' +
-        'riportano in modo discorde — 1° gennaio o 31 dicembre — e che resta da leggere ' +
-        'sull’articolo: per un domicilio stabile le due letture coincidono, ed è il caso ' +
-        'modellato.',
+        'comune di provenienza. Anche la regionale segue il domicilio fiscale al ' +
+        '1° gennaio: lo dispone l’art. 50 c. 5 del D.Lgs. 446/1997, letto in originale — ' +
+        '«alla regione in cui il contribuente ha il domicilio fiscale alla data del ' +
+        '1° gennaio dell’anno cui si riferisce l’addizionale». Il «31 dicembre» che alcune ' +
+        'pagine regionali riportano ancora è il testo previgente, riscritto dal ' +
+        'D.Lgs. 506/1999: le due addizionali guardano la stessa data.',
     },
     {
       voce: 'Apprendistato: aliquota contributiva ridotta a carico dell’apprendista',
@@ -1129,6 +1105,24 @@ export const PARAMETRI_2026 = {
         'però interamente a carico del datore di lavoro: non tocca il netto del dipendente, ' +
         'esattamente come gli sgravi per le assunzioni agevolate. È la stessa distinzione fra ' +
         'costo azienda e busta paga che separa i due mondi.',
+    },
+    {
+      voce: 'Aliquote regionali agevolate per carichi di famiglia — ABROGATE',
+      norma:
+        'Art. 72 cc. 1-bis e 1-ter della l.r. Lombardia 10/2003, abrogati dall’art. 12 ' +
+        'c. 1 lett. c) della l.r. 28 dicembre 2020, n. 26; c. 2 abrogato dall’art. 1 c. 1 ' +
+        'lett. b) della l.r. 31 marzo 2022, n. 5. Letto sul testo consolidato',
+      motivo:
+        'Molte guide e schede riportano ancora due aliquote agevolate lombarde — 0,90% con ' +
+        'almeno tre figli a carico e 1,23% con un figlio con disabilità, entro 50.000 € di ' +
+        'imponibile — e questo prototipo le aveva implementate su quel consenso, dichiarando ' +
+        'la fonte non verificata. La lettura dell’articolo per intero le ha smentite: il ' +
+        'testo vigente si esaurisce nella tabella delle aliquote, i commi successivi sono ' +
+        'abrogati, e nessuna delle fonti aperte indica un’altra disposizione regionale che ' +
+        'le contenga. Il modello le ha quindi RIMOSSE, e un test impedisce che rientrino da ' +
+        'una guida invece che da una legge. È il secondo consenso di fonti secondarie ' +
+        'compatto e sbagliato incontrato dal progetto, dopo quello sull’aliquota ' +
+        'dell’apprendista.',
     },
     {
       voce: 'Addizionali per cassa',

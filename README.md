@@ -43,7 +43,7 @@ Il cuore dell'esercizio non è la pagina, è la sequenza. In busta paga si scend
 +  detrazione lavoro dipendente      art. 13 c. 1, rapportata ai giorni, +65 € (c. 1.1)
 +  ulteriore detrazione cuneo        1.000 € tra 20k e 32k, décalage fino a 40k
 =  IRPEF netta                       mai negativa: l'eccedenza si perde
-−  addizionale regionale Lombardia   per scaglioni, 1,23% → 1,73%; 0,90% con 3+ figli a carico
+−  addizionale regionale Lombardia   per scaglioni, 1,23% → 1,73%
 −  addizionale comunale Milano       0,80%, esente sotto 23.000 € di imponibile
                                      nessuna delle due è dovuta se l'IRPEF netta è zero
 +  somma esente cuneo                7,1% / 5,3% / 4,8% fino a 20.000 €
@@ -112,20 +112,21 @@ prassi, fonte dell'ente, non verificata — e, se incompleta, un campo `lacuna` 
 manca più il documento da aprire per chiuderla. Un test impedisce alla prosa di dirsi
 «VERIFICATO» quando lo stato non lo consente: è la correzione di un difetto reale, sei fonti si
 erano autopromosse citando il testo unico riordinato al posto di quello vigente. Oggi **sedici
-delle diciotto fonti hanno avuto il proprio atto aperto**; le altre due sono dichiarate per
-quello che sono — l'aliquota dell'apprendista letta in circolare, le aliquote regionali
-agevolate non ancora verificate. Tre delle fonti lette conservano una lacuna
-dichiarata e circoscritta, e nessuna di esse tocca un numero del caso modellato;
+delle diciassette fonti hanno avuto il proprio atto aperto**; la diciassettesima — l'aliquota
+dell'apprendista — è letta in circolare, per una ragione dichiarata. Tre delle fonti lette
+conservano una lacuna dichiarata e circoscritta, e nessuna di esse tocca un numero del caso
+modellato;
 `node scripts/verifica-fonti.mjs` stampa cosa resta e dove trovarlo. Un secondo test legge il
 sorgente del registro e cade se una fonte dichiara due volte la stessa chiave: anche quello è la
 correzione di un difetto reale, sei note di verifica aggiornate che l'object literal cancellava
 in silenzio.
 
-Una fonte fa eccezione ed è dichiarata per quello che è: le **aliquote regionali agevolate per
-carichi di famiglia** (0,90% con tre o più figli, 1,23% con un figlio con disabilità) sono
-implementate su fonti concordi ma **non ancora lette in originale**, perché il proxy
-dell'ambiente di sviluppo blocca le pagine da aprire. Il registro le marca `non-verificata`, la
-pagina mostra la lacuna in rosso, e un avviso compare quando l'agevolazione viene applicata.
+La disciplina ha già dato il suo primo frutto. Le **aliquote regionali agevolate per carichi
+di famiglia** che guide e schede riportano ancora (0,90% con tre o più figli, 1,23% con
+disabilità) erano state implementate su quel consenso, con stato `non-verificata`; la lettura
+dell'art. 72 per intero ha mostrato che i commi che le contenevano sono **abrogati** dal 2021,
+e la regola è stata rimossa. La voce dedicata del perimetro escluso racconta la trappola, e un
+test impedisce che rientri da una guida invece che da una legge.
 
 **6. Lettura del testo normativo.** Gli artt. 11 e 13 sono stati letti sul testo unico
 pubblicato in Gazzetta Ufficiale. Hanno confermato le aliquote, la formula della capienza e la
@@ -225,8 +226,9 @@ Le fonti complete, con norma primaria, prassi e nota di verifica, sono nel regis
   122.295 € da INPS circ. 6 del 30/01/2026.
 - **Addizionali**: art. 50 D.Lgs. 446/1997 e art. 1 D.Lgs. 360/1998; aliquote deliberate da
   Regione Lombardia e Comune di Milano.
-- **Aliquote regionali agevolate** per carichi di famiglia: art. 72 l.r. 10/2003 — l'unica
-  fonte del registro non ancora letta in originale, dichiarata come tale.
+- **Aliquote regionali agevolate** per carichi di famiglia: **abrogate** — stavano nei
+  cc. 1-bis e 1-ter dell'art. 72 l.r. 10/2003, soppressi dalla l.r. 26/2020. Le guide le
+  riportano ancora; la voce del perimetro escluso spiega perché qui non ci sono.
 - **Prassi**: circolare Agenzia delle Entrate 4/E del 16/05/2025, letta integralmente.
 
 > Il parametro più volatile è la **soglia di esenzione dell'addizionale comunale di Milano**:
