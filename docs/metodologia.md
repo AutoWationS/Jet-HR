@@ -1383,13 +1383,19 @@ e festivo (cc. 10-11), e l'esonero contributivo delle lavoratrici madri di tre o
 (art. 1 c. 180 della L. 213/2023) con il bonus mamme erogato dall'INPS. La terza è quella che
 insegna di più: tocca il **primo blocco della catena** — il 9,19% che il modello tratta come
 invariante per tutti — ed è la categoria che mancava al catalogo, gli esoneri contributivi a
-carico del lavoratore. I commi sono stati poi **letti in originale** — cc. 4, 7, 8-9, 10-12 e
-14 della L. 199/2025, il c. 180 della L. 213/2023, l'art. 6 del D.L. 95/2025 — e hanno
-confermato percentuali e soglie (5% fino a 33.000 € di reddito 2025; 15% entro 1.500 € l'anno
-fino a 40.000 €), aggiungendo ciò che le sintesi non davano: la rinuncia scritta del
-lavoratore, l'aliquota dei premi di risultato all'1% per il 2026-2027, il tetto dei buoni pasto
-elettronici portato da 8 a 10 €. Resta da leggere il c. 219 della L. 207/2024 come modificato
-dal D.L. 95/2025, per la forma 2026 della misura destinata alle madri di due figli.
+carico del lavoratore. I commi sono stati poi **letti in originale** — cc. 4, 7, 8-9, 10-12,
+14 e 18 della L. 199/2025, i cc. 180 e 15 della L. 213/2023, l'art. 6 del D.L. 95/2025, i
+cc. 219-221 della L. 207/2024 nel testo vigente — insieme alla **circolare 2/E del 24 febbraio
+2026, letta integralmente**. Hanno confermato percentuali e soglie (5% fino a 33.000 € di
+reddito 2025; 15% entro 1.500 € l'anno, che è una franchigia, fino a 40.000 €) e aggiunto ciò
+che le sintesi non davano: la rinuncia scritta del lavoratore, il perimetro della retribuzione
+diretta, l'esclusione del turismo che ha invece il trattamento integrativo speciale del c. 18,
+l'aliquota dei premi di risultato all'1% per il 2026-2027, il tetto dei buoni pasto elettronici
+portato da 8 a 10 €, e il fatto che il parziale esonero delle madri di due figli (c. 219)
+**decorre dal 2027**, rinviato due volte. C'è anche un dettaglio che tocca le soglie di questo
+modello: gli importi detassati escono dal reddito complessivo (art. 3 c. 3 lett. a TUIR) ma si
+ricomputano per la capienza del trattamento integrativo. Un solo punto resta aperto e
+dichiarato: quale comma della legge di bilancio 2026 copra il 2026 per le madri di due figli.
 
 ### 5.5-bis Il tipo di contratto: tre risposte diverse
 

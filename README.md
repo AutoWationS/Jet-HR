@@ -229,7 +229,8 @@ Le fonti complete, con norma primaria, prassi e nota di verifica, sono nel regis
 - **Aliquote regionali agevolate** per carichi di famiglia: **abrogate** — stavano nei
   cc. 1-bis e 1-ter dell'art. 72 l.r. 10/2003, soppressi dalla l.r. 26/2020. Le guide le
   riportano ancora; la voce del perimetro escluso spiega perché qui non ci sono.
-- **Prassi**: circolare Agenzia delle Entrate 4/E del 16/05/2025, letta integralmente.
+- **Prassi**: circolari Agenzia delle Entrate 4/E del 16/05/2025 e 2/E del 24/02/2026
+  (detassazioni della legge di bilancio 2026), lette integralmente.
 
 > Il parametro più volatile è la **soglia di esenzione dell'addizionale comunale di Milano**:
 > è deliberata ogni anno dal Comune, ed è l'unico valore del modello che può cambiare senza un

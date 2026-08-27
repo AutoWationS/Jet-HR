@@ -543,7 +543,14 @@ export const FONTI = {
       'quattro cifre decimali, come l’art. 13 c. 6: il motore riusa la stessa funzione. Il ' +
       'c. 2-bis esclude i familiari residenti all’estero per i contribuenti extra UE/SEE, ' +
       'circostanza fuori perimetro. Il c. 4-bis conferma che anche qui il reddito è assunto ' +
-      'al netto dell’abitazione principale',
+      'al netto dell’abitazione principale. Una seconda lettura, sul testo vigente 2026 ' +
+      'selezionato con la multivigenza di Normattiva, ha riscontrato anche i tre punti che ' +
+      'il perimetro dichiarava come assunzioni: il “pro quota” degli ascendenti nella ' +
+      'lett. d), il rapporto ai mesi del c. 3, e l’ultimo periodo della lett. c) — la ' +
+      'detrazione del coniuge per il primo figlio quando l’altro genitore manca — tuttora ' +
+      'vigente. Trovato anche un c. 4-ter nuovo, sostituito dal D.Lgs. 192/2025 con ' +
+      'decorrenza dal periodo d’imposta 2025: definisce in via generale i familiari ' +
+      'fiscalmente a carico e non tocca i numeri del modello',
   },
 
   oneriDeducibili: {
@@ -820,19 +827,22 @@ export const PARAMETRI_2026 = {
     {
       voce: 'Riduzione forfettaria delle detrazioni per oneri',
       norma:
-        'L. 207/2024 art. 1 c. 10 (260 € oltre 50.000); art. 1 c. 4 della L. 199/2025, ' +
-        'letto in originale, che inserisce il c. 5-bis nell’art. 16-ter TUIR (440 € oltre ' +
-        '200.000); art. 16-ter cc. 1-5 TUIR per il plafond oltre 75.000 €',
+        'L. 207/2024 art. 1 c. 10 (260 € oltre 50.000); art. 16-ter TUIR, letto in ' +
+        'originale sul testo vigente 2026, compreso il c. 5-bis inserito dall’art. 1 c. 4 ' +
+        'della L. 199/2025 (440 € oltre 200.000)',
       motivo:
         'Incidono sulle detrazioni per oneri dell’art. 15 TUIR, che il modello non ' +
         'rappresenta perché non ci sono oneri detraibili: applicarle gonfierebbe ' +
         'l’imposta di un contribuente che non ha detrazioni da ridurre. I 440 € del ' +
         'c. 5-bis riducono le detrazioni al 19% (escluse le spese sanitarie), le erogazioni ' +
         'ai partiti e i premi per rischio calamità di chi supera 200.000 € di reddito. ' +
-        'Della stessa famiglia è il plafond dell’art. 16-ter, che sopra i 75.000 € limita ' +
-        'l’ammontare complessivo delle detrazioni per oneri con coefficienti legati ai ' +
-        'figli a carico: anch’esso inerte finché il modello non rappresenta oneri ' +
-        'detraibili, e per la stessa ragione dichiarato e non applicato.',
+        'Della stessa famiglia è il plafond dell’art. 16-ter: sopra i 75.000 € le detrazioni ' +
+        'complessive si fermano a un importo base — 14.000 € fino a 100.000 di reddito, ' +
+        '8.000 € oltre — moltiplicato per un coefficiente che cresce con i figli a carico, ' +
+        'da 0,50 senza figli a 1 con più di due figli o un figlio con disabilità; fuori dal ' +
+        'computo le spese sanitarie, gli investimenti in start-up e PMI innovative, e mutui, ' +
+        'premi e rate di spese ante 2025. Tutto inerte finché il modello non rappresenta ' +
+        'oneri detraibili, e per la stessa ragione dichiarato e non applicato.',
     },
     {
       voce: 'TFR',
@@ -869,7 +879,9 @@ export const PARAMETRI_2026 = {
         'condizione familiare è assunta per l’intero anno, mentre il c. 3 la rapporta ai mesi ' +
         'in cui sussiste; e non è modellata la sostituzione, se più conveniente, della ' +
         'detrazione del primo figlio con quella del coniuge quando l’altro genitore manca ' +
-        '(art. 12 c. 1 lett. c, ultimo periodo).',
+        '(art. 12 c. 1 lett. c, ultimo periodo). Tutte e tre le clausole sono state ' +
+        'riscontrate sull’art. 12 nel testo vigente 2026, ultimo periodo della lett. c) ' +
+        'compreso.',
     },
     {
       voce: 'Fringe benefit e welfare aziendale',
@@ -907,37 +919,55 @@ export const PARAMETRI_2026 = {
         'di reddito. Richiede un contratto collettivo di secondo livello: fuori dal caso ' +
         'standard. Per i premi erogati nel 2026 e nel 2027 l’aliquota è ridotta all’1% entro ' +
         '5.000 € complessivi (c. 9), mentre il 5% disposto dal c. 385 della L. 207/2024 per il ' +
-        'triennio è stato limitato al solo 2025 (c. 8).',
+        'triennio è stato limitato al solo 2025 (c. 8). Della stessa famiglia: i dividendi ' +
+        'delle azioni attribuite in sostituzione dei premi sono esenti al 50% fino a 1.500 € ' +
+        'l’anno (art. 6 c. 1 della L. 76/2025 sulla partecipazione dei lavoratori, esteso al ' +
+        '2026 dall’art. 1 c. 13 della L. 199/2025, entrambi letti in originale).',
     },
     {
       voce: 'Detassazione degli incrementi da rinnovo contrattuale (2026)',
       norma:
-        'Art. 1 c. 7 della L. 199/2025, letto in originale; commentata dalla circolare ' +
-        'AdE n. 2/E del 2026',
+        'Art. 1 c. 7 della L. 199/2025, letto in originale; circolare AdE n. 2/E del ' +
+        '24 febbraio 2026, letta integralmente',
       motivo:
         'Gli incrementi retributivi corrisposti nel 2026 in attuazione di rinnovi dei ' +
         'contratti collettivi nazionali sottoscritti dal 1° gennaio 2024 al 31 dicembre 2026 ' +
         'scontano un’imposta sostitutiva del 5% al posto di IRPEF e addizionali regionali e ' +
         'comunali, «salva espressa rinuncia scritta del prestatore di lavoro». Vale per i ' +
         'soli lavoratori del settore privato con reddito di lavoro dipendente 2025 non ' +
-        'superiore a 33.000 €. Dipende da quanta parte della retribuzione sia incremento da ' +
-        'rinnovo, che una RAL non descrive: stessa natura dei premi di risultato.',
+        'superiore a 33.000 €. La circolare delimita: dentro la retribuzione diretta ' +
+        '(tredicesima e quattordicesima comprese) e le assenze integrate dal datore; fuori ' +
+        'scatti di anzianità, una tantum di carenza, straordinari e TFR. E aggiunge il ' +
+        'dettaglio sistemico che tocca questo modello: gli importi detassati NON concorrono ' +
+        'al reddito complessivo (art. 3 c. 3 lett. a TUIR), quindi per chi ne beneficia le ' +
+        'soglie di detrazioni e cuneo si leggono su un reddito più basso — mentre per la ' +
+        'capienza del trattamento integrativo il reddito detassato va ricomputato. Dipende ' +
+        'da quanta parte della retribuzione sia incremento da rinnovo, che una RAL non ' +
+        'descrive: stessa natura dei premi di risultato.',
     },
     {
       voce: 'Detassazione delle maggiorazioni per lavoro notturno e festivo (2026)',
       norma:
-        'Art. 1 cc. 10-12 della L. 199/2025, letti in originale; commentata dalla ' +
-        'circolare AdE n. 2/E del 2026',
+        'Art. 1 cc. 10-12 e 18 della L. 199/2025, letti in originale; circolare AdE ' +
+        'n. 2/E del 24 febbraio 2026, letta integralmente',
       motivo:
         'Per il solo 2026, imposta sostitutiva del 15% al posto di IRPEF e addizionali — ' +
         'salva rinuncia scritta — sulle somme corrisposte entro il limite annuo di 1.500 € ' +
         'per maggiorazioni e indennità di lavoro notturno (art. 1 c. 2 D.Lgs. 66/2003 e ' +
-        'CCNL), di lavoro festivo e nei giorni di riposo settimanale, e di turno. La ' +
-        'applicano i sostituti del settore privato, escluse le attività del c. 18, ai ' +
-        'titolari di reddito di lavoro dipendente 2025 fino a 40.000 €; sono esclusi i ' +
-        'compensi che sostituiscono la retribuzione ordinaria, e i premi di risultato non ' +
-        'erodono il limite. Voci del cedolino legate all’organizzazione del lavoro, non ' +
-        'alla RAL: fuori perimetro come gli straordinari, ma con la loro norma accanto.',
+        'CCNL), di lavoro festivo e nei giorni di riposo settimanale, e di turno; la ' +
+        'circolare vi include le indennità di reperibilità collegate. Il limite è una ' +
+        'FRANCHIGIA — l’eccedenza torna a tassazione ordinaria — al contrario della soglia ' +
+        'comunale milanese, che superata si porta via tutto. La applicano i sostituti del ' +
+        'settore privato ai titolari di reddito di lavoro dipendente 2025 fino a 40.000 €; ' +
+        'esclusi i compensi che sostituiscono la retribuzione ordinaria, lo straordinario ' +
+        'non notturno né festivo e le somme da accordi territoriali o aziendali; i premi di ' +
+        'risultato non erodono il limite. Esclusi anche turismo, somministrazione e terme ' +
+        '(c. 18): lì opera invece un trattamento integrativo speciale ESENTE del 15% delle ' +
+        'retribuzioni lorde da lavoro notturno e straordinario festivo, dal 1° gennaio al ' +
+        '30 settembre 2026. Come per i rinnovi, gli importi detassati escono dal reddito ' +
+        'complessivo ma si ricomputano per la capienza del trattamento integrativo. Voci ' +
+        'del cedolino legate all’organizzazione del lavoro, non alla RAL: fuori perimetro ' +
+        'come gli straordinari, ma con la loro norma accanto.',
     },
     {
       voce: 'Mensilizzazione dell’aliquota aggiuntiva dell’1% (cassa infrannuale)',
@@ -999,22 +1029,27 @@ export const PARAMETRI_2026 = {
     {
       voce: 'Esonero contributivo delle lavoratrici madri, e bonus mamme',
       norma:
-        'Art. 1 c. 180 della L. 213/2023, letto in originale (periodi di paga dal ' +
-        '1° gennaio 2024 al 31 dicembre 2026, «fermo restando quanto previsto al comma ' +
-        '15»); art. 6 del D.L. 95/2025, letto in originale; art. 1 cc. 219-220 della ' +
-        'L. 207/2024, come modificati dal medesimo art. 6, non ancora letti',
+        'Art. 1 c. 180 della L. 213/2023 (periodi di paga dal 1° gennaio 2024 al ' +
+        '31 dicembre 2026); art. 6 del D.L. 95/2025; art. 1 cc. 219-220 della L. 207/2024 ' +
+        'nel testo vigente. Tutti letti in originale',
       motivo:
         'La madre di tre o più figli con rapporto a tempo indeterminato (escluso il ' +
         'lavoro domestico) versa zero contributi IVS fino al mese dei diciotto anni del ' +
         'figlio più piccolo, «nel limite massimo annuo di 3.000 euro riparametrato su base ' +
         'mensile»: è in busta paga e tocca il primo blocco della catena — il 9,19% che il ' +
         'modello tratta come invariante — con lo stesso rimbalzo dell’apprendistato, meno ' +
-        'contributi e quindi più imponibile. Per le altre madri l’art. 6 del D.L. 95/2025 ' +
-        'dà per il 2025 una somma di 40 € mensili erogata dall’INPS a dicembre, non ' +
-        'imponibile e irrilevante per l’ISEE: fuori busta, come l’assegno unico. Lo stesso ' +
-        'articolo rinvia al 2026 il parziale esonero IVS del c. 219 della L. 207/2024: come ' +
-        'la misura si presenti nel 2026 — esonero in busta o integrazione elevata — resta da ' +
-        'leggere su quel comma e sull’eventuale intervento della legge di bilancio 2026. È ' +
+        'contributi e quindi più imponibile. Il «fermo restando il comma 15» che apre il ' +
+        'c. 180 richiama l’esonero generale di 6-7 punti del solo 2024, esaurito: dal 2025 ' +
+        'il taglio del cuneo è fiscale, ed è il motivo per cui il 9,19% pieno è tornato ' +
+        'l’ipotesi giusta per il caso ordinario. Per le altre madri l’art. 6 del ' +
+        'D.L. 95/2025 dà per il 2025 una somma di 40 € mensili erogata dall’INPS a ' +
+        'dicembre, non imponibile e irrilevante per l’ISEE: fuori busta, come l’assegno ' +
+        'unico. Il parziale esonero IVS del c. 219 della L. 207/2024, letto nel testo ' +
+        'vigente, DECORRE DAL 2027: rinviato due volte, al 2026 dal D.L. 95/2025 e al 2027 ' +
+        'dalla L. 199/2025, con condizione di 40.000 € di imponibile previdenziale e misura ' +
+        'demandata a un decreto attuativo. Resta un punto aperto e dichiarato: quale comma ' +
+        'della legge di bilancio 2026 copra il 2026 per le madri di due figli — le sintesi ' +
+        'di stampa indicano un’integrazione INPS elevata, l’atto non è stato individuato. È ' +
         'la voce che mancava al catalogo come categoria: gli esoneri contributivi a carico ' +
         'del lavoratore.',
     },
