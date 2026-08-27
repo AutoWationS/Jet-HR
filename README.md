@@ -82,7 +82,7 @@ dirlo**. Ogni riga qui sotto è una scelta consapevole, con l'alternativa che ho
 
 ## Come è verificato
 
-Tre livelli, dal più debole al più forte.
+Sette livelli, dal più debole al più forte.
 
 **1. Ricalcolo manuale.** Il caso RAL 35.000 è rifatto a mano passaggio per passaggio in
 [`docs/metodologia.md`](docs/metodologia.md) §3.1, e lo stesso ricalcolo è codificato riga per
