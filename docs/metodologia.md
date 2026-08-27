@@ -250,6 +250,24 @@ per cui la marginale effettiva in quella fascia supera il 60% (§4).
 Nota: gli scaglioni regionali sono ancora quelli **ante riforma** (quattro fasce, agganciate
 alle soglie 15.000 / 28.000 / 50.000), non allineati ai tre scaglioni IRPEF. È un disallineamento reale della norma, non un errore del modello.
 
+**Aliquote agevolate per carichi di famiglia.** La Lombardia sostituisce la scala per scaglioni
+con un'aliquota unica sull'intero imponibile in due casi: **0,90%** per chi ha almeno **tre
+figli fiscalmente a carico** e un imponibile fino a 50.000 €, con la soglia innalzata di
+10.000 € per ogni figlio oltre il terzo; **1,23%** per chi ha a carico almeno un **figlio con
+disabilità**, entro la stessa soglia. Se spettano entrambe vale la più favorevole. Due cose da
+non sbagliare: contano i figli fiscalmente a carico **di ogni età** — compresi gli under 21 con
+assegno unico, che per le detrazioni dell'art. 12 non contano più — quindi il modulo chiede
+questo numero separatamente; e in no tax area resta tutto non dovuto, l'agevolazione non
+riaccende nulla. Su un imponibile di 40.864,50 € (RAL 45.000) l'addizionale scende da 611,17 a
+367,78 €.
+
+**Il limite va detto subito**: è l'unico blocco del modello la cui fonte non è ancora stata
+letta in originale — dall'ambiente di sviluppo la ricerca web funziona ma le pagine di Regione,
+MEF e Agenzia delle Entrate sono bloccate dal proxy (§3.11). I valori risultano concordi su più
+fonti indipendenti, ma questo progetto ha già visto un consenso compatto e sbagliato
+(§5.5-bis): il registro dichiara lo stato `non-verificata` con la lacuna in rosso, e la pagina
+mostra un avviso ogni volta che l'agevolazione viene applicata davvero.
+
 **Nessuna delle due è dovuta se l'IRPEF netta è zero.** L'art. 50 c. 2 del D.Lgs. 446/1997
 (regionale) e l'art. 1 c. 4 del D.Lgs. 360/1998 (comunale) subordinano l'addizionale al fatto
 che l'IRPEF, al netto delle detrazioni, risulti dovuta. È la *no tax area*: fino a 8.500 € di
@@ -305,7 +323,7 @@ passaggio si rompe, il test dice **quale**.
 
 ### 3.2 Suite di test
 
-`npm test` esegue 45 test. Trenta sul motore, in quattro famiglie:
+`npm test` esegue 48 test. Trentatré sul motore, in quattro famiglie:
 
 1. **Casi di riferimento** (15k / 25k / 35k / 60k): ogni voce intermedia verificata, non solo
    il totale. Un test che controlla solo il netto finale non dice dove si è rotto il calcolo.
@@ -314,8 +332,11 @@ passaggio si rompe, il test dice **quale**.
    percentuali della somma esente, massimale e aliquota aggiuntiva INPS.
 3. **Regole lette e implementate di recente**: i confini del cuneo estremo per estremo, le tre
    lettere dell'art. 12 con gli esiti secchi del comma 4, il fatto che le detrazioni per
-   famiglia non seguano il periodo di lavoro, i tre tipi di contratto, e il guardiano che ferma
-   il motore quando manca un'aliquota.
+   famiglia non seguano il periodo di lavoro, i tre tipi di contratto, il guardiano che ferma
+   il motore quando manca un'aliquota, le aliquote regionali agevolate per carichi di famiglia,
+   il vincolo dei giorni al calendario fiscale, e l'allineamento fra la catena del netto e
+   quella dell'aliquota marginale — che è una seconda implementazione, e senza un test che le
+   confronta potrebbe scollarsi dalla prima in silenzio.
 4. **Invarianti sull'intera curva**, da 1.000 a 200.000 €:
    - coerenza contabile `netto = RAL − trattenute + bonus` per ogni RAL;
    - l'IRPEF netta non è mai negativa;
@@ -691,20 +712,22 @@ livello:
 
 | Stato | Significato | Quante |
 |---|---|:--:|
-| `atto-letto` | il testo applicabile è stato letto | **16 su 17** |
+| `atto-letto` | il testo applicabile è stato letto | **16 su 18** |
 | `prassi-letta` | letto dentro una circolare che riporta la norma per esteso | 1 |
 | `fonte-istituzionale` | letto sul sito dell'ente che emana l'atto, non sull'atto | — |
-| `non-verificata` | nessuna lettura diretta | — |
+| `non-verificata` | nessuna lettura diretta | 1 |
 
 Le sei fonti che erano `atto-corrispondente` sono state chiuse aprendo il **testo vigente del
-D.P.R. 917/1986** (§3.10.1): non ce ne sono più in quello stato. Nessuna delle dieci
-**Sedici fonti su diciassette hanno avuto il proprio atto aperto**, e la diciassettesima —
-l'aliquota dell'apprendista — è `prassi-letta` per una ragione dichiarata: quel numero non sta in
-una legge singola, esattamente come il 9,19%. Nessun parametro poggia
-più su una circolare che riporta la norma, né sulla pagina di un ente al posto dell'atto
+D.P.R. 917/1986** (§3.10.1): non ce ne sono più in quello stato.
+**Sedici fonti su diciotto hanno avuto il proprio atto aperto.** Le due che restano sono
+dichiarate per quello che sono: l'aliquota dell'apprendista è `prassi-letta` per una ragione
+dichiarata — quel numero non sta in una legge singola, esattamente come il 9,19% — e le
+aliquote regionali agevolate per carichi di famiglia sono `non-verificata`, perché dal
+nuovo ambiente di sviluppo le pagine da aprire sono bloccate dal proxy (§3.11): è la prima
+fonte del registro a nascere in quello stato, e la pagina la mostra così
 (§3.7.1, §3.10.2, §3.10.3, §3.12).
 
-Tre fonti conservano una **lacuna dichiarata**, e nessuna delle tre tocca un numero del caso
+Tre fonti lette conservano una **lacuna dichiarata**, e nessuna delle tre tocca un numero del caso
 modellato: il 9,19% è letto su una circolare del 2011 e non riconfermato su un documento del
 2026; del conteggio dei giorni è confermata la convenzione dei 365 ma non le due regole
 accessorie; e i massimali degli oneri deducibili stanno fuori dal TUIR e non sono stati letti,
@@ -1339,6 +1362,16 @@ aziendale; premi di risultato a tassazione sostitutiva; regimi agevolati (impatr
 ricercatori, frontalieri); contratti a termine; trattenute a carico del lavoratore previste dal
 CCNL oltre l'IVS; addizionali di comuni diversi da Milano; più rapporti nello stesso anno e
 conguaglio del sostituto; lavoro straordinario e indennità.
+
+Tre misure del 2026, emerse da una revisione successiva, sono ora **dichiarate con la loro
+norma** nel perimetro escluso: la detassazione al 5% degli incrementi da rinnovo contrattuale
+(art. 1 c. 7 della L. 199/2025), la detassazione al 15% delle maggiorazioni per lavoro notturno
+e festivo (cc. 10-11), e l'esonero contributivo delle lavoratrici madri di tre o più figli
+(art. 1 c. 180 della L. 213/2023) con il bonus mamme erogato dall'INPS. La terza è quella che
+insegna di più: tocca il **primo blocco della catena** — il 9,19% che il modello tratta come
+invariante per tutti — ed è la categoria che mancava al catalogo, gli esoneri contributivi a
+carico del lavoratore. I commi della L. 199/2025 non sono stati letti in originale, e le voci
+lo dicono.
 
 ### 5.5-bis Il tipo di contratto: tre risposte diverse
 

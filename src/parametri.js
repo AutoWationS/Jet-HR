@@ -390,6 +390,47 @@ export const FONTI = {
       'confronto sarebbe fallito di 91,70 €',
   },
 
+  addizionaleRegionaleAgevolata: {
+    livello: 2,
+    statoVerifica: 'non-verificata',
+    dove:
+      'Scheda della Lombardia nel portale del Federalismo Fiscale del MEF e istruzioni al ' +
+      'quadro RV dei modelli Redditi PF e 730, casi particolari delle addizionali regionali; ' +
+      'poi l’art. 72 della l.r. 10/2003 oltre la tabella delle aliquote',
+    canale: 'burl',
+    lacuna:
+      'l’art. 72 oltre la tabella delle aliquote, la scheda MEF e le istruzioni al quadro RV ' +
+      'non sono stati aperti: il comma esatto, la decorrenza e il conteggio del figlio a ' +
+      'carico ripartito fra i genitori restano da leggere',
+    etichetta: 'Addizionale regionale — aliquote agevolate per carichi di famiglia',
+    norma:
+      'Art. 72 della l.r. 14 luglio 2003, n. 10, disposizioni successive alla tabella delle ' +
+      'aliquote (numerazione del comma da riscontrare sull’atto)',
+    dettaglio:
+      'Due aliquote che sostituiscono la scala per scaglioni, entrambe applicate all’intero ' +
+      'imponibile e legate ai carichi di famiglia: 0,90% per chi ha almeno tre figli ' +
+      'fiscalmente a carico e un imponibile non superiore a 50.000 €, con la soglia innalzata ' +
+      'di 10.000 € per ogni figlio a carico oltre il terzo; 1,23% per chi ha fiscalmente a ' +
+      'carico almeno un figlio con disabilità, entro la stessa soglia. Contano i figli ' +
+      'fiscalmente a carico di ogni età, compresi quelli sotto i 21 anni per cui la detrazione ' +
+      'dell’art. 12 non spetta più: la platea è più larga di quella del campo usato per le ' +
+      'detrazioni, ed è il motivo per cui il modulo chiede i due numeri separatamente.',
+    prassi:
+      'Istruzioni ai modelli 730 e Redditi PF, quadro RV, casi particolari delle addizionali ' +
+      'regionali; scheda della Lombardia sul portale del Federalismo Fiscale del MEF.',
+    url: 'https://www.finanze.gov.it/it/fiscalita/fiscalita-regionale-e-locale/Addizionale-regionale-allIRPEF/disciplina-del-tributo/',
+    verifica:
+      'Non ancora letta in originale, ed è dichiarato: dall’ambiente di sviluppo la ricerca ' +
+      'web funziona ma il prelievo delle pagine di Regione, MEF e Agenzia delle Entrate è ' +
+      'bloccato dal proxy (metodologia §3.11). Le due aliquote, la soglia e l’innalzamento ' +
+      'per figlio risultano concordi su più fonti secondarie indipendenti e sulla sintesi ' +
+      'della scheda MEF restituita dalla ricerca; ma questo progetto ha già incontrato un ' +
+      'consenso di fonti secondarie compatto e sbagliato — l’aliquota dell’apprendista, ' +
+      'metodologia §5.5-bis — quindi finché l’atto o le istruzioni RV non sono aperti lo ' +
+      'stato resta questo, la pagina lo mostra in rosso e un avviso compare quando ' +
+      'l’agevolazione viene applicata davvero',
+  },
+
   addizionaleComunale: {
     livello: 2,
     statoVerifica: 'atto-letto',
@@ -790,6 +831,23 @@ export const PARAMETRI_2026 = {
       { fino: 50000, aliquota: 0.0172 },
       { fino: Infinity, aliquota: 0.0173 },
     ],
+    /**
+     * Aliquote agevolate per carichi di famiglia: sostituiscono la scala per
+     * scaglioni e si applicano all'intero imponibile. Contano i figli
+     * fiscalmente a carico DI OGNI ETA', non i soli 21-29enni delle detrazioni
+     * dell'art. 12: per questo il motore riceve un conteggio separato.
+     * La fonte non e' ancora stata letta in originale, e il registro lo dichiara.
+     */
+    agevolazioni: {
+      fonte: 'addizionaleRegionaleAgevolata',
+      treFigli: {
+        figliMinimi: 3,
+        aliquota: 0.009,
+        sogliaImponibile: 50000,
+        incrementoSogliaPerFiglio: 10000,
+      },
+      figliConDisabilita: { aliquota: 0.0123, sogliaImponibile: 50000 },
+    },
   },
 
   /** 7. Addizionale comunale, aliquota unica con soglia di esenzione. */
@@ -808,11 +866,18 @@ export const PARAMETRI_2026 = {
   fuoriPerimetro: [
     {
       voce: 'Riduzione forfettaria delle detrazioni per oneri',
-      norma: 'L. 207/2024 art. 1 c. 10 (260 € oltre 50.000); L. 199/2025 (440 € oltre 200.000)',
+      norma:
+        'L. 207/2024 art. 1 c. 10 (260 € oltre 50.000); L. 199/2025 (440 € oltre 200.000); ' +
+        'art. 16-ter TUIR per il plafond oltre 75.000 €',
       motivo:
         'Incidono sulle detrazioni per oneri dell’art. 15 TUIR, che il modello non ' +
         'rappresenta perché non ci sono oneri detraibili: applicarle gonfierebbe ' +
-        'l’imposta di un contribuente che non ha detrazioni da ridurre.',
+        'l’imposta di un contribuente che non ha detrazioni da ridurre. Della stessa ' +
+        'famiglia è il plafond dell’art. 16-ter TUIR, introdotto dalla L. 207/2024, che ' +
+        'sopra i 75.000 € di reddito limita l’ammontare complessivo delle detrazioni per ' +
+        'oneri con coefficienti legati ai figli a carico: anch’esso inerte finché il ' +
+        'modello non rappresenta oneri detraibili, e per la stessa ragione dichiarato e ' +
+        'non applicato.',
     },
     {
       voce: 'TFR',
@@ -843,7 +908,13 @@ export const PARAMETRI_2026 = {
         'dell’art. 433 c.c. che convivono con il contribuente non danno più diritto a nulla. ' +
         'Il c. 2-bis esclude inoltre i familiari residenti all’estero per i contribuenti che ' +
         'non siano cittadini italiani, UE o SEE. Il prototipo non chiede la cittadinanza e ' +
-        'assume che la condizione sia soddisfatta.',
+        'assume che la condizione sia soddisfatta. Tre assunzioni ulteriori sono implicite e ' +
+        'vanno dette: la detrazione per gli ascendenti, che la lett. d) vuole «ripartita pro ' +
+        'quota tra coloro che hanno diritto», è attribuita per intero al contribuente; la ' +
+        'condizione familiare è assunta per l’intero anno, mentre il c. 3 la rapporta ai mesi ' +
+        'in cui sussiste; e non è modellata la sostituzione, se più conveniente, della ' +
+        'detrazione del primo figlio con quella del coniuge quando l’altro genitore manca ' +
+        '(art. 12 c. 1 lett. c, ultimo periodo).',
     },
     {
       voce: 'Fringe benefit e welfare aziendale',
@@ -873,6 +944,31 @@ export const PARAMETRI_2026 = {
       motivo:
         'Imposta sostitutiva agevolata in luogo dell’IRPEF ordinaria, entro limiti di importo e ' +
         'di reddito. Richiede un contratto collettivo di secondo livello: fuori dal caso standard.',
+    },
+    {
+      voce: 'Detassazione degli incrementi da rinnovo contrattuale (2026)',
+      norma:
+        'Art. 1 c. 7 della L. 199/2025 (comma non ancora letto in originale); commentata ' +
+        'dalla circolare AdE n. 2/E del 2026',
+      motivo:
+        'Per il 2026 gli aumenti riconosciuti in attuazione di rinnovi dei contratti ' +
+        'collettivi nazionali sottoscritti fra il 2024 e il 2026 scontano un’imposta ' +
+        'sostitutiva del 5% al posto di IRPEF e addizionali, per chi nel 2025 ha percepito ' +
+        'un reddito di lavoro dipendente fino a 33.000 €. Dipende da quanta parte della ' +
+        'retribuzione sia incremento da rinnovo, che una RAL non descrive: stessa natura dei ' +
+        'premi di risultato. Gli estremi vengono dalla prassi e dalla stampa specializzata, ' +
+        'non dal comma, ed è dichiarato.',
+    },
+    {
+      voce: 'Detassazione delle maggiorazioni per lavoro notturno e festivo (2026)',
+      norma:
+        'Art. 1 cc. 10-11 della L. 199/2025 (commi non ancora letti in originale); ' +
+        'commentata dalla circolare AdE n. 2/E del 2026',
+      motivo:
+        'Imposta sostitutiva del 15% su maggiorazioni e indennità per lavoro notturno, ' +
+        'festivo e per i turni, entro limiti di reddito e di importo fissati dai commi. Sono ' +
+        'voci del cedolino legate all’organizzazione del lavoro, non alla RAL: fuori ' +
+        'perimetro come gli straordinari, ma da qui in poi con la loro norma accanto.',
     },
     {
       voce: 'Mensilizzazione dell’aliquota aggiuntiva dell’1% (cassa infrannuale)',
@@ -932,6 +1028,22 @@ export const PARAMETRI_2026 = {
         'contratto applicato, che la RAL non dichiara.',
     },
     {
+      voce: 'Esonero contributivo delle lavoratrici madri, e bonus mamme',
+      norma:
+        'Art. 1 c. 180 della L. 213/2023, per i periodi di paga dal 2024 al 2026; ' +
+        'integrazione erogata dall’INPS ex art. 6 del D.L. 95/2025, rifinanziata dalla ' +
+        'legge di bilancio 2026 (misura da riscontrare sull’atto)',
+      motivo:
+        'La madre di tre o più figli con rapporto a tempo indeterminato versa zero ' +
+        'contributi IVS fino a 3.000 € l’anno, in busta paga, fino ai diciotto anni del ' +
+        'figlio più piccolo: tocca il primo blocco della catena — il 9,19% che il modello ' +
+        'tratta come invariante — con lo stesso rimbalzo dell’apprendistato, meno contributi ' +
+        'e quindi più imponibile. L’integrazione mensile per le madri di due o più figli è ' +
+        'invece erogata direttamente dall’INPS e non transita dalla busta: fuori perimetro ' +
+        'con la stessa ragione dell’assegno unico. È la voce che mancava al catalogo come ' +
+        'categoria: gli esoneri contributivi a carico del lavoratore.',
+    },
+    {
       voce: 'Un solo rapporto, per l’intero anno, con domicilio fiscale stabile',
       norma: 'Art. 1 c. 4 D.Lgs. 360/1998 (domicilio al 1° gennaio); art. 23 D.P.R. 600/1973',
       motivo:
@@ -940,7 +1052,11 @@ export const PARAMETRI_2026 = {
         'in dichiarazione o con il conguaglio da parte dell’ultimo sostituto. L’addizionale ' +
         'comunale poi segue il domicilio fiscale al 1° gennaio, non la residenza durante ' +
         'l’anno: chi si trasferisce a Milano a febbraio paga per quell’anno l’addizionale del ' +
-        'comune di provenienza.',
+        'comune di provenienza. Anche la regionale segue il domicilio fiscale, ma con una ' +
+        'data di riferimento propria (art. 50 del D.Lgs. 446/1997) che le fonti secondarie ' +
+        'riportano in modo discorde — 1° gennaio o 31 dicembre — e che resta da leggere ' +
+        'sull’articolo: per un domicilio stabile le due letture coincidono, ed è il caso ' +
+        'modellato.',
     },
     {
       voce: 'Apprendistato: aliquota contributiva ridotta a carico dell’apprendista',

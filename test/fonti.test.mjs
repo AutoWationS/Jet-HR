@@ -31,6 +31,17 @@ test('ogni blocco di parametri dichiara una fonte esistente', () => {
     assert.ok(FONTI[blocco.fonte], `il blocco ${nome} punta alla fonte inesistente "${blocco.fonte}"`);
     assert.equal(fonteDi(blocco), FONTI[blocco.fonte]);
   }
+
+  // Anche i sotto-blocchi con una fonte propria (es. le aliquote agevolate
+  // dell'addizionale regionale) devono puntare a una fonte che esiste.
+  const controlla = (nodo) => {
+    if (!nodo || typeof nodo !== 'object') return;
+    if (typeof nodo.fonte === 'string') {
+      assert.ok(FONTI[nodo.fonte], `un blocco punta alla fonte inesistente "${nodo.fonte}"`);
+    }
+    Object.values(nodo).forEach(controlla);
+  };
+  controlla(P);
 });
 
 test('ogni fonte e completa nei campi che la pagina mostra', () => {
@@ -57,7 +68,15 @@ test('nessuna fonte orfana: ognuna e citata da un parametro o dichiarata trasver
     'oneriDeducibili',
     'apprendistato',
   ];
-  const citate = new Set([...BLOCCHI.map((n) => P[n].fonte), ...TRASVERSALI]);
+  // Le fonti citate si raccolgono su TUTTO l'albero dei parametri, non solo
+  // sui blocchi di primo livello: anche un sotto-blocco puo' averne una.
+  const citate = new Set(TRASVERSALI);
+  const raccogli = (nodo) => {
+    if (!nodo || typeof nodo !== 'object') return;
+    if (typeof nodo.fonte === 'string') citate.add(nodo.fonte);
+    Object.values(nodo).forEach(raccogli);
+  };
+  raccogli(P);
 
   for (const chiave of Object.keys(FONTI)) {
     assert.ok(citate.has(chiave), `la fonte "${chiave}" non e' usata da nessun parametro`);
@@ -142,7 +161,11 @@ test('i numeri scritti nelle fonti coincidono con i parametri usati dal motore',
   const raccogli = (nodo) => {
     if (typeof nodo === 'number' && Number.isFinite(nodo)) {
       valori.add(nodo);
-      valori.add(nodo * 100); // le aliquote compaiono in prosa come percentuali
+      // Le aliquote compaiono in prosa come percentuali. Il x100 binario puo'
+      // sporcare l'ultima cifra (0,009 x 100 = 0,8999…): si ricompone a
+      // precisione piena, con la stessa ricetta di tronca() nel motore.
+      valori.add(nodo * 100);
+      valori.add(Number((nodo * 100).toPrecision(12)));
       return;
     }
     if (nodo && typeof nodo === 'object') Object.values(nodo).forEach(raccogli);

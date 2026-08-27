@@ -689,6 +689,103 @@ test('apprendistato: aliquota ridotta, e il netto sale di conseguenza', () => {
   assert.ok(guadagnoNetto > 0 && guadagnoNetto < risparmioContributi);
 });
 
+test('addizionale regionale: aliquote agevolate lombarde per carichi di famiglia', () => {
+  // La Lombardia sostituisce la scala per scaglioni con un'aliquota unica
+  // sull'intero imponibile in due casi legati ai figli fiscalmente a carico
+  // (di OGNI eta', non i soli 21-29enni delle detrazioni): 0,90% con almeno
+  // tre figli entro 50.000 di imponibile (+10.000 per figlio oltre il terzo),
+  // 1,23% con almeno un figlio con disabilita' entro la stessa soglia.
+  // Fonte dichiarata non ancora letta in originale: vedi il registro.
+  const base = calcolaNetto({ ral: 45000 }, P); // imponibile 40.864,50
+  vicino(base.addizionali.regionale, 611.17);
+  assert.equal(base.addizionali.regionaleAgevolata, false);
+
+  // Tre figli a carico: 0,90% piatto. La comunale non cambia.
+  const tre = calcolaNetto({ ral: 45000, figliACaricoTotali: 3 }, P);
+  vicino(tre.addizionali.regionale, 367.78); // 40.864,50 x 0,9%
+  assert.equal(tre.addizionali.regionaleAgevolata, true);
+  assert.equal(tre.addizionali.regionaleAliquota, 0.009);
+  vicino(tre.addizionali.comunale, base.addizionali.comunale);
+  vicino(tre.netto.annuo - base.netto.annuo, 611.17 - 367.78);
+
+  // Con due figli l'agevolazione non spetta.
+  const due = calcolaNetto({ ral: 45000, figliACaricoTotali: 2 }, P);
+  vicino(due.addizionali.regionale, 611.17);
+  assert.equal(due.addizionali.regionaleAgevolata, false);
+
+  // Figlio con disabilita': 1,23% piatto, anche senza tre figli.
+  const dis = calcolaNetto({ ral: 45000, figliConDisabilita: true }, P);
+  vicino(dis.addizionali.regionale, 502.63); // 40.864,50 x 1,23%
+  assert.equal(dis.addizionali.regionaleAliquota, 0.0123);
+
+  // Se spettano entrambe vale la piu' favorevole.
+  const entrambe = calcolaNetto({ ral: 45000, figliACaricoTotali: 3, figliConDisabilita: true }, P);
+  assert.equal(entrambe.addizionali.regionaleAliquota, 0.009);
+
+  // La soglia e' sull'imponibile e cresce di 10.000 per figlio oltre il terzo:
+  // a 54.448,24 di imponibile tre figli non bastano, quattro si'.
+  const sopra3 = calcolaNetto({ ral: 60000, figliACaricoTotali: 3 }, P);
+  assert.equal(sopra3.addizionali.regionaleAgevolata, false);
+  vicino(sopra3.addizionali.regionale, 845.25); // scaglioni ordinari
+  const sopra4 = calcolaNetto({ ral: 60000, figliACaricoTotali: 4 }, P);
+  assert.equal(sopra4.addizionali.regionaleAgevolata, true);
+  vicino(sopra4.addizionali.regionale, 490.03); // 54.448,24 x 0,9%
+
+  // I figli delle detrazioni contano anche qui senza doverli ripetere:
+  // il totale non puo' essere inferiore ai 21-29enni dichiarati.
+  const soloDetrazioni = calcolaNetto({ ral: 45000, figliACarico: 3 }, P);
+  assert.equal(soloDetrazioni.addizionali.regionaleAgevolata, true);
+
+  // In no tax area resta tutto non dovuto: l'agevolazione non "riaccende" nulla.
+  const nta = calcolaNetto({ ral: 9000, figliACaricoTotali: 3 }, P);
+  assert.equal(nta.addizionali.nonDovutePerImpostaZero, true);
+  assert.equal(nta.addizionali.regionale, 0);
+});
+
+test('il motore vincola i giorni al calendario fiscale, come la UI', () => {
+  // L'anno fiscale e' di 365 giorni per convenzione (circ. 326/E/1997). Il
+  // motore e' la parte riusabile del progetto: senza questo vincolo un
+  // chiamante con giorni=400 otterrebbe una detrazione rapportata SUPERIORE
+  // a quella teorica (2.142 invece di 1.955) e un reddito annuale teorico
+  // della somma esente sgonfiato — numeri sbagliati con l'aria di essere giusti.
+  const r400 = calcolaNetto({ ral: 40000, giorniLavorati: 400 }, P);
+  const r365 = calcolaNetto({ ral: 40000, giorniLavorati: 365 }, P);
+  assert.equal(r400.input.giorniLavorati, 365);
+  vicino(r400.netto.annuo, r365.netto.annuo);
+  vicino(r400.irpef.detrazioneLavoro, r365.irpef.detrazioneLavoro);
+
+  const negativi = calcolaNetto({ ral: 40000, giorniLavorati: -5 }, P);
+  const unGiorno = calcolaNetto({ ral: 40000, giorniLavorati: 1 }, P);
+  assert.equal(negativi.input.giorniLavorati, 1);
+  vicino(negativi.netto.annuo, unGiorno.netto.annuo);
+});
+
+test('l aliquota marginale e la derivata del netto: le due catene non possono divergere', () => {
+  // aliquotaMarginale usa una versione ridotta della catena (calcolaNettoSemplice)
+  // per evitare la ricorsione. E' una seconda implementazione, e una seconda
+  // implementazione puo' scollarsi dalla prima in silenzio: se una regola nuova
+  // entra in calcolaNetto e non li', la curva marginale mente. Questo test
+  // confronta la marginale con la derivata discreta del netto vero, su piu'
+  // combinazioni di opzioni e su RAL scelte LONTANO dalle soglie, dove gli
+  // arrotondamenti al centesimo non possono spostare un confine di fascia.
+  const casi = [
+    {},
+    { coniugeACarico: true, figliACarico: 1 },
+    { tipoContratto: 'apprendistato', giorniLavorati: 200 },
+    { figliACaricoTotali: 3 },
+    { oneriDeducibili: 2000 },
+  ];
+  const rals = [8000, 12000, 18000, 22000, 30000, 36000, 45000, 58000, 90000, 150000];
+  for (const opzioni of casi) {
+    for (const ral of rals) {
+      const qui = calcolaNetto({ ...opzioni, ral }, P);
+      const dopo = calcolaNetto({ ...opzioni, ral: ral + 100 }, P);
+      const derivata = 1 - (dopo.netto.annuo - qui.netto.annuo) / 100;
+      vicino(qui.indici.aliquotaMarginale, derivata, 0.002);
+    }
+  }
+});
+
 test('un contratto senza aliquota ferma il motore invece di farlo inventare', () => {
   // Il guardiano che ha tenuto il modello onesto finche' la fonte mancava, e che
   // resta come rete: se un domani si aggiunge un contratto con un regime proprio

@@ -241,7 +241,9 @@ function mostraRisultato(r) {
       voce: `Addizionale regionale ${P.addizionaleRegionale.regione}`,
       nota: r.addizionali.nonDovutePerImpostaZero
         ? 'non dovuta: l’IRPEF netta è zero'
-        : 'aliquote per scaglioni sull’imponibile IRPEF',
+        : r.addizionali.regionaleAgevolata
+          ? `aliquota agevolata ${pct(r.addizionali.regionaleAliquota)} sull’intero imponibile, per carichi di famiglia`
+          : 'aliquote per scaglioni sull’imponibile IRPEF',
       norma: 'art. 50 D.Lgs. 446/1997',
       importo: -r.addizionali.regionale,
       quota: su(-r.addizionali.regionale),
@@ -319,6 +321,8 @@ function mostraRisultato(r) {
     oneriDeducibili: r.input.oneriDeducibili,
     coniugeACarico: r.input.coniugeACarico,
     figliACarico: r.input.figliACarico,
+    figliACaricoTotali: r.input.figliACaricoTotali,
+    figliConDisabilita: r.input.figliConDisabilita,
     quotaFigli: r.input.quotaFigli,
     ascendentiConviventi: r.input.ascendentiConviventi,
   });
@@ -341,6 +345,8 @@ function avvisi(r) {
     oneriDeducibili: r.input.oneriDeducibili,
     coniugeACarico: r.input.coniugeACarico,
     figliACarico: r.input.figliACarico,
+    figliACaricoTotali: r.input.figliACaricoTotali,
+    figliConDisabilita: r.input.figliConDisabilita,
     quotaFigli: r.input.quotaFigli,
     ascendentiConviventi: r.input.ascendentiConviventi,
   };
@@ -383,6 +389,15 @@ function avvisi(r) {
     messaggi.push(
       `<strong>Incapienza.</strong> ${eur(r.irpef.detrazioniNonGodute)} di detrazioni non trovano ` +
         `capienza nell’IRPEF lorda e vanno perdute: l’imposta non può scendere sotto zero.`,
+    );
+  }
+
+  if (r.addizionali.regionaleAgevolata) {
+    messaggi.push(
+      `<strong>Aliquota regionale agevolata.</strong> Con i carichi di famiglia dichiarati ` +
+        `l’addizionale lombarda scende a ${pct(r.addizionali.regionaleAliquota)} sull’intero ` +
+        `imponibile. Attenzione: è l’unico valore del modello la cui fonte non è ancora stata ` +
+        `letta in originale — lo stato è dichiarato nel registro in fondo alla pagina.`,
     );
   }
 
@@ -455,9 +470,35 @@ function leggiModulo() {
     figliACarico: Number($('#figli').value),
     quotaFigli: Number($('#quota-figli').value),
     ascendentiConviventi: Number($('#ascendenti').value),
+    figliACaricoTotali: Number($('#figli-totali').value),
+    figliConDisabilita: $('#figli-disabili').checked,
     oneriDeducibili: Number($('#oneri').value),
   };
 }
+
+/**
+ * L'URL descrive l'INTERO caso, non solo la RAL: un link che tace meta'
+ * degli input riprodurrebbe in silenzio un caso diverso da quello condiviso
+ * — lo stesso difetto contestato al campo inerte di metodologia §3.4.1.
+ * I valori uguali al predefinito non compaiono, cosi' l'URL resta corto.
+ */
+const CAMPI_URL = [
+  // [parametro, selettore, predefinito]
+  ['ral', '#ral', null],
+  ['mensilita', '#mensilita', '13'],
+  ['giorni', '#giorni', '365'],
+  ['contratto', '#contratto', 'indeterminato'],
+  ['massimale', '#massimale', '1'],
+  ['coniuge', '#coniuge', '0'],
+  ['figli', '#figli', '0'],
+  ['quota', '#quota-figli', '0.5'],
+  ['ascendenti', '#ascendenti', '0'],
+  ['figlitotali', '#figli-totali', '0'],
+  ['disabilita', '#figli-disabili', '0'],
+  ['oneri', '#oneri', '0'],
+];
+
+const valoreCampo = (el) => (el.type === 'checkbox' ? (el.checked ? '1' : '0') : el.value);
 
 function esegui(evento) {
   evento?.preventDefault();
@@ -471,6 +512,7 @@ function esegui(evento) {
   if (!(input.giorniLavorati >= 1 && input.giorniLavorati <= 365)) {
     $('#avvisi').innerHTML =
       '<div class="avviso errore">I giorni di lavoro devono essere un numero tra 1 e 365.</div>';
+    $('#risultato').classList.add('nascosto');
     return;
   }
 
@@ -479,8 +521,11 @@ function esegui(evento) {
   // Il risultato resta nell'URL: e' condivisibile e riproducibile.
   try {
     const url = new URL(location.href);
-    url.searchParams.set('ral', input.ral);
-    url.searchParams.set('mensilita', input.mensilita);
+    for (const [nome, selettore, predefinito] of CAMPI_URL) {
+      const valore = valoreCampo($(selettore));
+      if (valore === predefinito) url.searchParams.delete(nome);
+      else url.searchParams.set(nome, valore);
+    }
     history.replaceState(null, '', url);
   } catch {
     /* contesti sandboxed: l'URL non e' aggiornabile, il calcolo resta valido */
@@ -489,8 +534,13 @@ function esegui(evento) {
 
 function inizializza() {
   const q = new URLSearchParams(location.search);
-  if (q.get('ral')) $('#ral').value = q.get('ral');
-  if (q.get('mensilita')) $('#mensilita').value = q.get('mensilita');
+  for (const [nome, selettore] of CAMPI_URL) {
+    const valore = q.get(nome);
+    if (valore === null) continue;
+    const el = $(selettore);
+    if (el.type === 'checkbox') el.checked = valore === '1';
+    else el.value = valore;
+  }
 
   $('#modulo').addEventListener('submit', esegui);
   document.querySelectorAll('[data-esempio]').forEach((b) =>

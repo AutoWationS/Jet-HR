@@ -342,6 +342,34 @@ export function calcolaTrattamentoIntegrativo(redditoComplessivo, irpefLorda, de
  * -------------------------------------------------------------------------- */
 
 /**
+ * Aliquota regionale agevolata per carichi di famiglia, se spettante.
+ * Sostituisce la scala per scaglioni e si applica all'intero imponibile.
+ * `figliACaricoTotali` conta i figli fiscalmente a carico DI OGNI ETA', non i
+ * soli 21-29enni delle detrazioni dell'art. 12: le due platee non coincidono.
+ * Se spettano entrambe le agevolazioni vale la piu' favorevole.
+ */
+function aliquotaRegionaleAgevolata(imponibile, parametri, opzioni) {
+  const a = parametri.addizionaleRegionale.agevolazioni;
+  if (!a) return null;
+
+  const figli = Math.max(0, Math.trunc(Number(opzioni.figliACaricoTotali) || 0));
+  const candidate = [];
+
+  const t = a.treFigli;
+  if (t && figli >= t.figliMinimi) {
+    const soglia = t.sogliaImponibile + t.incrementoSogliaPerFiglio * (figli - t.figliMinimi);
+    if (imponibile <= soglia) candidate.push(t.aliquota);
+  }
+
+  const d = a.figliConDisabilita;
+  if (d && opzioni.figliConDisabilita && imponibile <= d.sogliaImponibile) {
+    candidate.push(d.aliquota);
+  }
+
+  return candidate.length ? Math.min(...candidate) : null;
+}
+
+/**
  * Le addizionali non sono dovute quando l'IRPEF, al netto delle detrazioni,
  * risulta pari a zero: art. 50 c. 2 D.Lgs. 446/1997 per la regionale, art. 1
  * c. 4 D.Lgs. 360/1998 per la comunale. E' la cosiddetta "no tax area": chi
@@ -357,6 +385,8 @@ export function calcolaAddizionali(imponibile, parametri, opzioni = {}) {
     return {
       regionale: 0,
       regionaleDettaglio: [],
+      regionaleAgevolata: false,
+      regionaleAliquota: null,
       comunale: 0,
       comunaleEsente: true,
       totale: 0,
@@ -364,7 +394,11 @@ export function calcolaAddizionali(imponibile, parametri, opzioni = {}) {
     };
   }
 
-  const regionale = applicaScaglioni(imponibile, parametri.addizionaleRegionale.scaglioni);
+  const agevolata = aliquotaRegionaleAgevolata(imponibile, parametri, opzioni);
+  const regionale =
+    agevolata != null
+      ? { totale: imponibile * agevolata, dettaglio: [] }
+      : applicaScaglioni(imponibile, parametri.addizionaleRegionale.scaglioni);
 
   const c = parametri.addizionaleComunale;
   // Soglia di esenzione, non franchigia: superata la soglia l'addizionale e'
@@ -374,6 +408,8 @@ export function calcolaAddizionali(imponibile, parametri, opzioni = {}) {
   return {
     regionale: euro(regionale.totale),
     regionaleDettaglio: regionale.dettaglio,
+    regionaleAgevolata: agevolata != null,
+    regionaleAliquota: agevolata,
     comunale: euro(comunale),
     comunaleEsente: imponibile <= c.sogliaEsenzione,
     totale: euro(regionale.totale + comunale),
@@ -391,12 +427,22 @@ export function calcolaAddizionali(imponibile, parametri, opzioni = {}) {
  * @param {number} [input.mensilita=13]      12, 13 o 14 mensilita'
  * @param {number} [input.giorniLavorati=365]
  * @param {boolean} [input.applicaMassimale=true] Iscritto INPS post 31/12/1995
+ * @param {number} [input.figliACaricoTotali=0]  Figli fiscalmente a carico di
+ *   ogni eta', per le aliquote regionali agevolate; mai meno di figliACarico
+ * @param {boolean} [input.figliConDisabilita=false]
  * @param {object} [parametri=PARAMETRI_DEFAULT]
  */
 export function calcolaNetto(input, parametri = PARAMETRI_DEFAULT) {
   const ral = Math.max(0, Number(input.ral) || 0);
   const mensilita = Number(input.mensilita) || 13;
-  const giorniLavorati = Number(input.giorniLavorati) || parametri.detrazioneLavoroDipendente.giorniAnno;
+  // L'anno fiscale e' di 365 giorni per convenzione (circ. 326/E/1997): il
+  // motore vincola l'input a quel calendario invece di fidarsi del chiamante.
+  // Con 400 giorni la detrazione rapportata SUPEREREBBE quella teorica.
+  const giorniAnno = parametri.detrazioneLavoroDipendente.giorniAnno;
+  const giorniLavorati = Math.min(
+    giorniAnno,
+    Math.max(1, Number(input.giorniLavorati) || giorniAnno),
+  );
   const applicaMassimale = input.applicaMassimale ?? true;
   const oneriDeducibili = Math.max(0, Number(input.oneriDeducibili) || 0);
   const tipoContratto = CONTRATTI.includes(input.tipoContratto)
@@ -441,7 +487,19 @@ export function calcolaNetto(input, parametri = PARAMETRI_DEFAULT) {
 
   // --- Addizionali ---------------------------------------------------------
   // Vanno calcolate DOPO l'IRPEF netta: se questa e' zero non sono dovute.
-  const addizionali = calcolaAddizionali(imponibileFiscale, parametri, { irpefNetta });
+  // I figli per l'aliquota regionale agevolata sono quelli a carico di OGNI
+  // eta': mai meno di quelli dichiarati per le detrazioni dell'art. 12.
+  const figliACarico = Math.max(0, Math.trunc(Number(input.figliACarico) || 0));
+  const figliACaricoTotali = Math.max(
+    figliACarico,
+    Math.max(0, Math.trunc(Number(input.figliACaricoTotali) || 0)),
+  );
+  const figliConDisabilita = !!input.figliConDisabilita;
+  const addizionali = calcolaAddizionali(imponibileFiscale, parametri, {
+    irpefNetta,
+    figliACaricoTotali,
+    figliConDisabilita,
+  });
 
   // --- Somme non imponibili in busta paga ----------------------------------
   const sommaEsente = calcolaSommaEsente(
@@ -481,7 +539,9 @@ export function calcolaNetto(input, parametri = PARAMETRI_DEFAULT) {
       tempoDeterminato,
       oneriDeducibili,
       coniugeACarico: !!input.coniugeACarico,
-      figliACarico: Math.max(0, Math.trunc(Number(input.figliACarico) || 0)),
+      figliACarico,
+      figliACaricoTotali,
+      figliConDisabilita,
       ascendentiConviventi: Math.max(0, Math.trunc(Number(input.ascendentiConviventi) || 0)),
       quotaFigli: input.quotaFigli ?? parametri.detrazioniFamiliari.figli.quotaPredefinita,
     },
@@ -548,10 +608,14 @@ export function aliquotaMarginale(ral, parametri = PARAMETRI_DEFAULT, input = {}
   return 1 - (b - a) / delta;
 }
 
-/** Versione ridotta usata internamente per le derivate (evita ricorsione). */
+/** Versione ridotta usata internamente per le derivate (evita ricorsione).
+ *  Un test la tiene allineata a calcolaNetto confrontando l'aliquota marginale
+ *  con la derivata discreta del netto: se una regola entra in una sola delle
+ *  due catene, quel test cade. */
 function calcolaNettoSemplice(input, parametri) {
   const ral = Math.max(0, Number(input.ral) || 0);
-  const giorni = Number(input.giorniLavorati) || parametri.detrazioneLavoroDipendente.giorniAnno;
+  const giorniAnno = parametri.detrazioneLavoroDipendente.giorniAnno;
+  const giorni = Math.min(giorniAnno, Math.max(1, Number(input.giorniLavorati) || giorniAnno));
   const tipoContratto = CONTRATTI.includes(input.tipoContratto)
     ? input.tipoContratto
     : 'indeterminato';
@@ -572,7 +636,15 @@ function calcolaNettoSemplice(input, parametri) {
   const detrTotali =
     detrLavoro.totale + calcolaUlterioreDetrazione(imponibile, parametri, giorni) + familiari.totale;
   const irpefNetta = Math.max(0, irpefLorda - detrTotali);
-  const addizionali = calcolaAddizionali(imponibile, parametri, { irpefNetta });
+  const figliACarico = Math.max(0, Math.trunc(Number(input.figliACarico) || 0));
+  const addizionali = calcolaAddizionali(imponibile, parametri, {
+    irpefNetta,
+    figliACaricoTotali: Math.max(
+      figliACarico,
+      Math.max(0, Math.trunc(Number(input.figliACaricoTotali) || 0)),
+    ),
+    figliConDisabilita: !!input.figliConDisabilita,
+  });
   const sommaEsente = calcolaSommaEsente(imponibile, imponibile, parametri, giorni).importo;
   const ti = calcolaTrattamentoIntegrativo(
     imponibile,
