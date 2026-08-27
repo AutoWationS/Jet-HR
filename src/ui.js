@@ -459,6 +459,41 @@ function leggiModulo() {
   };
 }
 
+/**
+ * L'URL descrive l'INTERO caso, non solo la RAL: un link che tace meta'
+ * degli input riprodurrebbe in silenzio un caso diverso da quello condiviso
+ * — lo stesso difetto contestato al campo inerte di metodologia §3.4.1.
+ * I valori uguali al predefinito non compaiono, cosi' l'URL resta corto;
+ * la RAL compare sempre, perche' e' il cuore del caso condiviso.
+ */
+const CAMPI_URL = [
+  // [parametro, selettore, sempreNellUrl]
+  ['ral', '#ral', true],
+  ['mensilita', '#mensilita'],
+  ['giorni', '#giorni'],
+  ['contratto', '#contratto'],
+  ['massimale', '#massimale'],
+  ['coniuge', '#coniuge'],
+  ['figli', '#figli'],
+  ['quota', '#quota-figli'],
+  ['ascendenti', '#ascendenti'],
+  ['oneri', '#oneri'],
+];
+
+const valoreCampo = (el) => (el.type === 'checkbox' ? (el.checked ? '1' : '0') : el.value);
+
+// Il predefinito di ogni campo si legge dal DOM (defaultValue, defaultChecked,
+// defaultSelected), non da una tabella parallela: due elenchi degli stessi
+// valori divergerebbero in silenzio al primo ritocco dell'HTML.
+const predefinitoCampo = (el) => {
+  if (el.type === 'checkbox') return el.defaultChecked ? '1' : '0';
+  if (el.tagName === 'SELECT') {
+    const scelta = [...el.options].find((o) => o.defaultSelected) ?? el.options[0];
+    return scelta ? scelta.value : '';
+  }
+  return el.defaultValue;
+};
+
 function esegui(evento) {
   evento?.preventDefault();
   const input = leggiModulo();
@@ -471,6 +506,7 @@ function esegui(evento) {
   if (!(input.giorniLavorati >= 1 && input.giorniLavorati <= 365)) {
     $('#avvisi').innerHTML =
       '<div class="avviso errore">I giorni di lavoro devono essere un numero tra 1 e 365.</div>';
+    $('#risultato').classList.add('nascosto');
     return;
   }
 
@@ -479,8 +515,12 @@ function esegui(evento) {
   // Il risultato resta nell'URL: e' condivisibile e riproducibile.
   try {
     const url = new URL(location.href);
-    url.searchParams.set('ral', input.ral);
-    url.searchParams.set('mensilita', input.mensilita);
+    for (const [nome, selettore, sempre] of CAMPI_URL) {
+      const el = $(selettore);
+      const valore = valoreCampo(el);
+      if (!sempre && valore === predefinitoCampo(el)) url.searchParams.delete(nome);
+      else url.searchParams.set(nome, valore);
+    }
     history.replaceState(null, '', url);
   } catch {
     /* contesti sandboxed: l'URL non e' aggiornabile, il calcolo resta valido */
@@ -489,8 +529,25 @@ function esegui(evento) {
 
 function inizializza() {
   const q = new URLSearchParams(location.search);
-  if (q.get('ral')) $('#ral').value = q.get('ral');
-  if (q.get('mensilita')) $('#mensilita').value = q.get('mensilita');
+  for (const [nome, selettore] of CAMPI_URL) {
+    const valore = q.get(nome);
+    if (valore === null) continue;
+    const el = $(selettore);
+    if (el.type === 'checkbox') {
+      el.checked = valore === '1';
+      continue;
+    }
+    el.value = valore;
+    // Un parametro fuori dalle opzioni o dai limiti del campo non deve
+    // diventare in silenzio un caso diverso da quello condiviso: un select
+    // che non riconosce il valore si svuota (?quota=0.7 azzererebbe la
+    // detrazione figli), e un numero fuori range salterebbe la validazione
+    // nativa, che qui non viene mai eseguita. In entrambi i casi si torna
+    // al predefinito del campo.
+    if (el.value !== valore || (el.checkValidity && !el.checkValidity())) {
+      el.value = predefinitoCampo(el);
+    }
+  }
 
   $('#modulo').addEventListener('submit', esegui);
   document.querySelectorAll('[data-esempio]').forEach((b) =>
@@ -500,9 +557,14 @@ function inizializza() {
     }),
   );
   // Dopo il primo calcolo la pagina resta viva: cambiare un parametro
-  // aggiorna subito, senza dover ripremere "Calcola".
+  // aggiorna subito, senza dover ripremere "Calcola". Anche un avviso di
+  // errore conta come pagina viva: correggere il campo deve bastare a
+  // ricalcolare, altrimenti l'errore resterebbe accanto a un valore ormai
+  // valido.
   $('#modulo').addEventListener('change', () => {
-    if (!$('#risultato').classList.contains('nascosto')) esegui();
+    if (!$('#risultato').classList.contains('nascosto') || $('#avvisi').textContent.trim()) {
+      esegui();
+    }
   });
 
   $('#anno-parametri').textContent = P.anno;

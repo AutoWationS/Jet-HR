@@ -349,6 +349,12 @@ export function calcolaTrattamentoIntegrativo(redditoComplessivo, irpefLorda, de
  *
  * Per questo la funzione riceve l'IRPEF netta: senza, calcolerebbe addizionali
  * su un contribuente che non deve nulla.
+ *
+ * La regionale lombarda non ha aliquote agevolate per carichi di famiglia:
+ * quelle che le guide riportano ancora stavano nei commi 1-bis e 1-ter
+ * dell'art. 72 della l.r. 10/2003, ABROGATI dalla l.r. 26/2020. Il perimetro
+ * escluso le dichiara, e un test tiene fermo che i figli non toccano
+ * l'addizionale.
  */
 export function calcolaAddizionali(imponibile, parametri, opzioni = {}) {
   const irpefNetta = opzioni.irpefNetta ?? Infinity;
@@ -396,7 +402,17 @@ export function calcolaAddizionali(imponibile, parametri, opzioni = {}) {
 export function calcolaNetto(input, parametri = PARAMETRI_DEFAULT) {
   const ral = Math.max(0, Number(input.ral) || 0);
   const mensilita = Number(input.mensilita) || 13;
-  const giorniLavorati = Number(input.giorniLavorati) || parametri.detrazioneLavoroDipendente.giorniAnno;
+  // L'anno fiscale e' di 365 giorni per convenzione (circ. 326/E/1997): il
+  // motore vincola l'input a quel calendario invece di fidarsi del chiamante.
+  // Con 400 giorni la detrazione rapportata SUPEREREBBE quella teorica.
+  // Convenzione del parametro, deliberata: zero, assente o non numerico
+  // valgono "anno intero" (e' il default del JSDoc, non un giorno di
+  // calendario); ogni altro valore e' riportato dentro [1, 365].
+  const giorniAnno = parametri.detrazioneLavoroDipendente.giorniAnno;
+  const giorniLavorati = Math.min(
+    giorniAnno,
+    Math.max(1, Number(input.giorniLavorati) || giorniAnno),
+  );
   const applicaMassimale = input.applicaMassimale ?? true;
   const oneriDeducibili = Math.max(0, Number(input.oneriDeducibili) || 0);
   const tipoContratto = CONTRATTI.includes(input.tipoContratto)
@@ -548,10 +564,15 @@ export function aliquotaMarginale(ral, parametri = PARAMETRI_DEFAULT, input = {}
   return 1 - (b - a) / delta;
 }
 
-/** Versione ridotta usata internamente per le derivate (evita ricorsione). */
+/** Versione ridotta usata internamente per le derivate (evita ricorsione).
+ *  Un test la tiene allineata a calcolaNetto confrontando l'aliquota marginale
+ *  con la derivata discreta del netto: se una regola entra in una sola delle
+ *  due catene, quel test cade. */
 function calcolaNettoSemplice(input, parametri) {
   const ral = Math.max(0, Number(input.ral) || 0);
-  const giorni = Number(input.giorniLavorati) || parametri.detrazioneLavoroDipendente.giorniAnno;
+  const giorniAnno = parametri.detrazioneLavoroDipendente.giorniAnno;
+  // Stessa convenzione di calcolaNetto: 0 o assente = anno intero.
+  const giorni = Math.min(giorniAnno, Math.max(1, Number(input.giorniLavorati) || giorniAnno));
   const tipoContratto = CONTRATTI.includes(input.tipoContratto)
     ? input.tipoContratto
     : 'indeterminato';

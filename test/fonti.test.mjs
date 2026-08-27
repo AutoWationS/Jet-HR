@@ -23,6 +23,13 @@ const BLOCCHI = [
   'detrazioniFamiliari',
 ];
 
+/** Visita ogni nodo (oggetto o array) dell'albero dei parametri. */
+const perOgniNodo = (nodo, fn) => {
+  if (!nodo || typeof nodo !== 'object') return;
+  fn(nodo);
+  Object.values(nodo).forEach((figlio) => perOgniNodo(figlio, fn));
+};
+
 test('ogni blocco di parametri dichiara una fonte esistente', () => {
   for (const nome of BLOCCHI) {
     const blocco = P[nome];
@@ -31,6 +38,14 @@ test('ogni blocco di parametri dichiara una fonte esistente', () => {
     assert.ok(FONTI[blocco.fonte], `il blocco ${nome} punta alla fonte inesistente "${blocco.fonte}"`);
     assert.equal(fonteDi(blocco), FONTI[blocco.fonte]);
   }
+
+  // Anche i sotto-blocchi con una fonte propria devono puntare a una fonte
+  // che esiste: si visita l'intero albero, non solo il primo livello.
+  perOgniNodo(P, (nodo) => {
+    if (typeof nodo.fonte === 'string') {
+      assert.ok(FONTI[nodo.fonte], `un blocco punta alla fonte inesistente "${nodo.fonte}"`);
+    }
+  });
 });
 
 test('ogni fonte e completa nei campi che la pagina mostra', () => {
@@ -57,7 +72,12 @@ test('nessuna fonte orfana: ognuna e citata da un parametro o dichiarata trasver
     'oneriDeducibili',
     'apprendistato',
   ];
-  const citate = new Set([...BLOCCHI.map((n) => P[n].fonte), ...TRASVERSALI]);
+  // Le fonti citate si raccolgono su TUTTO l'albero dei parametri, non solo
+  // sui blocchi di primo livello: anche un sotto-blocco puo' averne una.
+  const citate = new Set(TRASVERSALI);
+  perOgniNodo(P, (nodo) => {
+    if (typeof nodo.fonte === 'string') citate.add(nodo.fonte);
+  });
 
   for (const chiave of Object.keys(FONTI)) {
     assert.ok(citate.has(chiave), `la fonte "${chiave}" non e' usata da nessun parametro`);
@@ -142,7 +162,11 @@ test('i numeri scritti nelle fonti coincidono con i parametri usati dal motore',
   const raccogli = (nodo) => {
     if (typeof nodo === 'number' && Number.isFinite(nodo)) {
       valori.add(nodo);
-      valori.add(nodo * 100); // le aliquote compaiono in prosa come percentuali
+      // Le aliquote compaiono in prosa come percentuali. Il x100 binario puo'
+      // sporcare l'ultima cifra (0,009 x 100 = 0,8999…): si ricompone a
+      // precisione piena, con la stessa ricetta di tronca() nel motore.
+      valori.add(nodo * 100);
+      valori.add(Number((nodo * 100).toPrecision(12)));
       return;
     }
     if (nodo && typeof nodo === 'object') Object.values(nodo).forEach(raccogli);

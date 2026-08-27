@@ -22,7 +22,7 @@ elencato voce per voce, con la norma che lo esclude.
 | il ragionamento per esteso | [`docs/metodologia.md`](docs/metodologia.md) — decisioni, verifiche, errori trovati, semplificazioni |
 
 ```bash
-npm test                               # 45 test, nessuna dipendenza da installare
+npm test                               # 48 test, nessuna dipendenza da installare
 node scripts/verifica-fonti.mjs        # stato di verifica di ogni fonte, e cosa resta da aprire
 node scripts/tabella-riferimento.mjs   # 11 RAL con tutte le voci intermedie
 ```
@@ -88,7 +88,7 @@ Tre livelli, dal più debole al più forte.
 [`docs/metodologia.md`](docs/metodologia.md) §3.1, e lo stesso ricalcolo è codificato riga per
 riga nel primo test: se un passaggio si rompe, il test dice **quale**.
 
-**2. Ventisei test** con `node --test`, in quattro famiglie:
+**2. Quarantotto test** con `node --test`, in quattro famiglie:
 casi di riferimento (ogni voce intermedia, non solo il totale), blocchi isolati (continuità
 delle formule sui confini di fascia, décalage, massimale), invarianti sull'intera curva da 1.000
 a 200.000 €, e coerenza del registro delle fonti.
@@ -111,14 +111,22 @@ quattro dettagli sul rapporto al periodo di lavoro. Gli esempi 1 e 2 sono due ca
 prassi, fonte dell'ente, non verificata — e, se incompleta, un campo `lacuna` che nomina ciò che
 manca più il documento da aprire per chiuderla. Un test impedisce alla prosa di dirsi
 «VERIFICATO» quando lo stato non lo consente: è la correzione di un difetto reale, sei fonti si
-erano autopromosse citando il testo unico riordinato al posto di quello vigente. Oggi **tutte e
-sedici le fonti hanno avuto il proprio atto aperto**: nessuna poggia su una circolare al
-posto della norma, né sulla pagina di un ente al posto dell'atto. Tre conservano una lacuna
-dichiarata e circoscritta, e nessuna delle tre tocca un numero del caso modellato;
+erano autopromosse citando il testo unico riordinato al posto di quello vigente. Oggi **sedici
+delle diciassette fonti hanno avuto il proprio atto aperto**; la diciassettesima — l'aliquota
+dell'apprendista — è letta in circolare, per una ragione dichiarata. Tre delle fonti lette
+conservano una lacuna dichiarata e circoscritta, e nessuna di esse tocca un numero del caso
+modellato;
 `node scripts/verifica-fonti.mjs` stampa cosa resta e dove trovarlo. Un secondo test legge il
 sorgente del registro e cade se una fonte dichiara due volte la stessa chiave: anche quello è la
 correzione di un difetto reale, sei note di verifica aggiornate che l'object literal cancellava
 in silenzio.
+
+La disciplina ha già dato il suo primo frutto. Le **aliquote regionali agevolate per carichi
+di famiglia** che guide e schede riportano ancora (0,90% con tre o più figli, 1,23% con
+disabilità) erano state implementate su quel consenso, con stato `non-verificata`; la lettura
+dell'art. 72 per intero ha mostrato che i commi che le contenevano sono **abrogati** dal 2021,
+e la regola è stata rimossa. La voce dedicata del perimetro escluso racconta la trappola, e un
+test impedisce che rientri da una guida invece che da una legge.
 
 **6. Lettura del testo normativo.** Gli artt. 11 e 13 sono stati letti sul testo unico
 pubblicato in Gazzetta Ufficiale. Hanno confermato le aliquote, la formula della capienza e la
@@ -151,7 +159,7 @@ descrizione no, la suite cade.
 | `src/ui.js` | L'unico modulo che tocca il DOM. Non conosce nessuna regola fiscale. |
 | `src/grafico.js` | Curva netto/RAL e aliquota marginale, SVG generato a mano. |
 | `src/formato.js` | Unico posto in cui i numeri diventano stringhe. |
-| `test/` | 30 test sul motore, 12 sulle fonti, 3 sul bundle. |
+| `test/` | 33 test sul motore, 12 sulle fonti, 3 sul bundle. |
 | `scripts/bundle.mjs` | Genera `dist/` dai sorgenti; un test verifica che non possa divergere. |
 | `docs/metodologia.md` | Decisioni, catena di calcolo, verifiche, semplificazioni, fonti. |
 
@@ -199,7 +207,9 @@ mostrato in fondo alla pagina: riduzioni forfettarie delle detrazioni per oneri,
 per carichi di famiglia, fringe benefit e premi di risultato, addizionali per cassa.
 
 Non modellati anche: regimi agevolati (impatriati, ricercatori, frontalieri), part-time e
-contratti a termine, comuni diversi da Milano, conguaglio di fine anno, straordinari.
+contratti a termine, comuni diversi da Milano, conguaglio di fine anno, straordinari, le
+detassazioni 2026 dei rinnovi contrattuali e del lavoro notturno e festivo (L. 199/2025),
+l'esonero contributivo delle lavoratrici madri e il bonus mamme.
 
 ---
 
@@ -216,7 +226,11 @@ Le fonti complete, con norma primaria, prassi e nota di verifica, sono nel regis
   122.295 € da INPS circ. 6 del 30/01/2026.
 - **Addizionali**: art. 50 D.Lgs. 446/1997 e art. 1 D.Lgs. 360/1998; aliquote deliberate da
   Regione Lombardia e Comune di Milano.
-- **Prassi**: circolare Agenzia delle Entrate 4/E del 16/05/2025, letta integralmente.
+- **Aliquote regionali agevolate** per carichi di famiglia: **abrogate** — stavano nei
+  cc. 1-bis e 1-ter dell'art. 72 l.r. 10/2003, soppressi dalla l.r. 26/2020. Le guide le
+  riportano ancora; la voce del perimetro escluso spiega perché qui non ci sono.
+- **Prassi**: circolari Agenzia delle Entrate 4/E del 16/05/2025 e 2/E del 24/02/2026
+  (detassazioni della legge di bilancio 2026), lette integralmente.
 
 > Il parametro più volatile è la **soglia di esenzione dell'addizionale comunale di Milano**:
 > è deliberata ogni anno dal Comune, ed è l'unico valore del modello che può cambiare senza un

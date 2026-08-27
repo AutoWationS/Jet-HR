@@ -250,6 +250,24 @@ per cui la marginale effettiva in quella fascia supera il 60% (§4).
 Nota: gli scaglioni regionali sono ancora quelli **ante riforma** (quattro fasce, agganciate
 alle soglie 15.000 / 28.000 / 50.000), non allineati ai tre scaglioni IRPEF. È un disallineamento reale della norma, non un errore del modello.
 
+**Aliquote agevolate per carichi di famiglia: implementate, e poi rimosse dall'atto.** Guide e
+schede fiscali riportano per la Lombardia due aliquote agevolate — 0,90% con almeno tre figli a
+carico e 1,23% con un figlio con disabilità, entro 50.000 € di imponibile — e una prima
+versione di questo modello le aveva implementate su quel consenso, dichiarando la fonte
+`non-verificata` perché dall'ambiente di sviluppo le pagine da aprire sono bloccate dal proxy
+(§3.11). La lettura dell'art. 72 per intero, sul testo consolidato, le ha smentite: **il testo
+vigente si esaurisce nella tabella delle aliquote** — i commi 1-bis e 1-ter sono stati abrogati
+dall'art. 12 c. 1 lett. c) della l.r. 26/2020, il c. 2 dall'art. 1 c. 1 lett. b) della
+l.r. 5/2022 — e le ricerche nelle istruzioni RV e nella scheda MEF non trovano più nulla, che è
+la controprova: una ricerca a vuoto che stavolta diceva il vero. Le aliquote sono state
+**rimosse** dal motore e dal modulo, la voce dedicata del perimetro escluso racconta la
+trappola, e un test tiene fermo che i figli cambiano le detrazioni e mai l'addizionale.
+
+È il secondo consenso di fonti secondarie compatto e sbagliato incontrato dal progetto, dopo
+quello sull'aliquota dell'apprendista (§5.5-bis) — con una differenza che è il punto di metodo:
+lo stato `non-verificata` dichiarato ha portato la regola alla revisione **con il cartello
+addosso**, e la revisione l'ha chiusa al primo documento aperto.
+
 **Nessuna delle due è dovuta se l'IRPEF netta è zero.** L'art. 50 c. 2 del D.Lgs. 446/1997
 (regionale) e l'art. 1 c. 4 del D.Lgs. 360/1998 (comunale) subordinano l'addizionale al fatto
 che l'IRPEF, al netto delle detrazioni, risulti dovuta. È la *no tax area*: fino a 8.500 € di
@@ -305,7 +323,7 @@ passaggio si rompe, il test dice **quale**.
 
 ### 3.2 Suite di test
 
-`npm test` esegue 45 test. Trenta sul motore, in quattro famiglie:
+`npm test` esegue 48 test. Trentatré sul motore, in quattro famiglie:
 
 1. **Casi di riferimento** (15k / 25k / 35k / 60k): ogni voce intermedia verificata, non solo
    il totale. Un test che controlla solo il netto finale non dice dove si è rotto il calcolo.
@@ -314,8 +332,12 @@ passaggio si rompe, il test dice **quale**.
    percentuali della somma esente, massimale e aliquota aggiuntiva INPS.
 3. **Regole lette e implementate di recente**: i confini del cuneo estremo per estremo, le tre
    lettere dell'art. 12 con gli esiti secchi del comma 4, il fatto che le detrazioni per
-   famiglia non seguano il periodo di lavoro, i tre tipi di contratto, e il guardiano che ferma
-   il motore quando manca un'aliquota.
+   famiglia non seguano il periodo di lavoro, i tre tipi di contratto, il guardiano che ferma
+   il motore quando manca un'aliquota, l'abrogazione delle aliquote regionali agevolate (i
+   figli non toccano l'addizionale), il vincolo dei giorni al calendario fiscale, e
+   l'allineamento fra la catena del netto e
+   quella dell'aliquota marginale — che è una seconda implementazione, e senza un test che le
+   confronta potrebbe scollarsi dalla prima in silenzio.
 4. **Invarianti sull'intera curva**, da 1.000 a 200.000 €:
    - coerenza contabile `netto = RAL − trattenute + bonus` per ogni RAL;
    - l'IRPEF netta non è mai negativa;
@@ -697,14 +719,19 @@ livello:
 | `non-verificata` | nessuna lettura diretta | — |
 
 Le sei fonti che erano `atto-corrispondente` sono state chiuse aprendo il **testo vigente del
-D.P.R. 917/1986** (§3.10.1): non ce ne sono più in quello stato. Nessuna delle dieci
+D.P.R. 917/1986** (§3.10.1): non ce ne sono più in quello stato.
 **Sedici fonti su diciassette hanno avuto il proprio atto aperto**, e la diciassettesima —
-l'aliquota dell'apprendista — è `prassi-letta` per una ragione dichiarata: quel numero non sta in
-una legge singola, esattamente come il 9,19%. Nessun parametro poggia
-più su una circolare che riporta la norma, né sulla pagina di un ente al posto dell'atto
-(§3.7.1, §3.10.2, §3.10.3, §3.12).
+l'aliquota dell'apprendista — è `prassi-letta` per una ragione dichiarata: quel numero non sta
+in una legge singola, esattamente come il 9,19% (§3.7.1, §3.10.2, §3.10.3, §3.12).
 
-Tre fonti conservano una **lacuna dichiarata**, e nessuna delle tre tocca un numero del caso
+Il registro ha avuto per un giro anche una **diciottesima fonte, nata `non-verificata`**: le
+aliquote regionali agevolate per carichi di famiglia, implementate dal consenso delle guide
+mentre il proxy dell'ambiente impediva di aprire gli atti. La verifica manuale l'ha chiusa **in
+negativo** — i commi che avrebbero dovuto contenerle sono abrogati (§2.7) — e la fonte è uscita
+dal registro insieme alla regola. Lo stato dichiarato ha fatto esattamente il suo mestiere:
+portare la regola alla revisione con il cartello addosso.
+
+Tre fonti lette conservano una **lacuna dichiarata**, e nessuna delle tre tocca un numero del caso
 modellato: il 9,19% è letto su una circolare del 2011 e non riconfermato su un documento del
 2026; del conteggio dei giorni è confermata la convenzione dei 365 ma non le due regole
 accessorie; e i massimali degli oneri deducibili stanno fuori dal TUIR e non sono stati letti,
@@ -723,10 +750,18 @@ la suite cade.
 ### 3.6 Verifica sul testo normativo
 
 Gli artt. 11 e 13 sono stati infine letti sul **testo unico pubblicato in Gazzetta Ufficiale**
-(S.O. n. 26/L alla G.U. n. 152 del 3 luglio 2026), che riporta per ogni articolo la nota di
-corrispondenza con il D.P.R. 917/1986. Quel testo si applica dal 2027; sulle disposizioni che
-qui interessano non diverge da quello vigente nel 2026, e le citazioni del registro restano
-ancorate al testo applicabile all'anno d'imposta modellato.
+(S.O. n. 26/L alla G.U. n. 152 del 3 luglio 2026: è il D.Lgs. 19 giugno 2026, n. 117), che
+riporta per ogni articolo la nota di corrispondenza con il D.P.R. 917/1986. Quel testo si
+applica dal 2027; sulle disposizioni che qui interessano non diverge da quello vigente nel
+2026, e le citazioni del registro restano ancorate al testo applicabile all'anno d'imposta
+modellato.
+
+Da qui una **trappola concreta per chi verifica**, incontrata davvero durante i controlli:
+aprendo oggi un articolo del D.P.R. 917/1986 su Normattiva, la versione proposta per prima può
+mostrare soltanto *«PROVVEDIMENTO ABROGATO DAL D.LGS. 19 GIUGNO 2026, N. 117»* — è
+l'abrogazione **dal 2027** ad opera del riordino, non la scomparsa della norma. Per l'anno
+d'imposta 2026 va selezionata la versione **vigente a una data del 2026** (la multivigenza di
+Normattiva), e l'articolo ricompare per intero.
 
 **Tre conferme.** Le aliquote 23% / 33% / 43% con le soglie 28.000 e 50.000. La formula della
 capienza, parola per parola: *«fino alla concorrenza del suo ammontare»*. E soprattutto la
@@ -1237,9 +1272,10 @@ Vale la pena tenerlo scritto, perché è il vero risultato del lavoro sulle font
 
 | | |
 |---|---|
-| errori di citazione | **3** — art. 13 c. 1-bis (§3.5), art. 14 c. 8 D.Lgs. 23/2011 (§3.7), par. 3 anziché 3.3 della 326/E |
+| errori di citazione | **4** — art. 13 c. 1-bis (§3.5), art. 14 c. 8 D.Lgs. 23/2011 (§3.7), par. 3 anziché 3.3 della 326/E, lett. b) anziché c) per i buoni pasto (corretta dalla lettura dell'art. 1 c. 14 della L. 199/2025) |
 | correzioni a loro volta sbagliate | **2** — la smentita dell'art. 14 c. 8, e questa ritrattazione |
 | errori di calcolo trovati | **2** — addizionali in no tax area, minimo di 690 € su tutte le fasce |
+| regole implementate da fonti secondarie e smentite dall'atto | **1** — le aliquote regionali agevolate (§2.7): dichiarate `non-verificata`, rimosse alla prima revisione manuale |
 | errori di calcolo sopravvissuti | **0** |
 
 Due lezioni.
@@ -1339,6 +1375,31 @@ aziendale; premi di risultato a tassazione sostitutiva; regimi agevolati (impatr
 ricercatori, frontalieri); contratti a termine; trattenute a carico del lavoratore previste dal
 CCNL oltre l'IVS; addizionali di comuni diversi da Milano; più rapporti nello stesso anno e
 conguaglio del sostituto; lavoro straordinario e indennità.
+
+Tre misure del 2026, emerse da una revisione successiva, sono ora **dichiarate con la loro
+norma** nel perimetro escluso: la detassazione al 5% degli incrementi da rinnovo contrattuale
+(art. 1 c. 7 della L. 199/2025), la detassazione al 15% delle maggiorazioni per lavoro notturno
+e festivo (cc. 10-11), e l'esonero contributivo delle lavoratrici madri di tre o più figli
+(art. 1 c. 180 della L. 213/2023) con il bonus mamme erogato dall'INPS. La terza è quella che
+insegna di più: tocca il **primo blocco della catena** — il 9,19% che il modello tratta come
+invariante per tutti — ed è la categoria che mancava al catalogo, gli esoneri contributivi a
+carico del lavoratore. I commi sono stati poi **letti in originale** — cc. 4, 7, 8-9, 10-12,
+14 e 18 della L. 199/2025, i cc. 180 e 15 della L. 213/2023, l'art. 6 del D.L. 95/2025, i
+cc. 219-221 della L. 207/2024 nel testo vigente — insieme alla **circolare 2/E del 24 febbraio
+2026, letta integralmente**. Hanno confermato percentuali e soglie (5% fino a 33.000 € di
+reddito 2025; 15% entro 1.500 € l'anno, che è una franchigia, fino a 40.000 €) e aggiunto ciò
+che le sintesi non davano: la rinuncia scritta del lavoratore, il perimetro della retribuzione
+diretta, l'esclusione del turismo che ha invece il trattamento integrativo speciale del c. 18,
+l'aliquota dei premi di risultato all'1% per il 2026-2027, il tetto dei buoni pasto elettronici
+portato da 8 a 10 €, e il fatto che il parziale esonero delle madri di due figli (c. 219)
+**decorre dal 2027**, rinviato due volte. C'è anche un dettaglio che tocca le soglie di questo
+modello: gli importi detassati escono dal reddito complessivo (art. 3 c. 3 lett. a TUIR) ma si
+ricomputano per la capienza del trattamento integrativo. L'ultimo punto si è chiuso con i
+cc. 206-207 della stessa legge, letti in originale: il rinvio del c. 219 al 2027 sta al c. 206,
+e il 2026 è coperto dal c. 207 — 60 € mensili erogati dall'INPS alle madri di due figli, estesi
+a quelle di tre o più **solo se prive di un rapporto a tempo indeterminato**, che hanno invece
+l'esonero in busta del c. 180. Le due norme si incastrano senza sovrapporsi, come le due misure
+del cuneo, e il capitolo degli esoneri per le madri è ora letto per intero.
 
 ### 5.5-bis Il tipo di contratto: tre risposte diverse
 

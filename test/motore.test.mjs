@@ -689,6 +689,73 @@ test('apprendistato: aliquota ridotta, e il netto sale di conseguenza', () => {
   assert.ok(guadagnoNetto > 0 && guadagnoNetto < risparmioContributi);
 });
 
+test('le agevolazioni regionali per carichi di famiglia sono abrogate: i figli non toccano l addizionale', () => {
+  // L'art. 72 della l.r. 10/2003, letto per intero sul testo consolidato, si
+  // esaurisce nella tabella delle aliquote: i commi 1-bis e 1-ter sono stati
+  // abrogati dall'art. 12 c. 1 lett. c) della l.r. 26/2020, il c. 2 dall'art. 1
+  // c. 1 lett. b) della l.r. 5/2022. Le aliquote agevolate per famiglie
+  // numerose o figli con disabilita' che guide e schede riportano ancora non
+  // hanno base nel testo vigente 2026: il modello le aveva implementate su quel
+  // consenso — dichiarando la fonte non verificata — e le ha RIMOSSE alla
+  // lettura dell'atto. Questo test impedisce che rientrino da una guida invece
+  // che da una legge: i figli cambiano le detrazioni, mai l'addizionale.
+  const base = calcolaNetto({ ral: 45000 }, P); // imponibile 40.864,50
+  const conFigli = calcolaNetto({ ral: 45000, figliACarico: 3 }, P);
+
+  vicino(base.addizionali.regionale, 611.17); // scaglioni ordinari
+  vicino(conFigli.addizionali.regionale, 611.17); // identica: nessuna agevolazione
+  vicino(conFigli.addizionali.comunale, base.addizionali.comunale);
+  assert.ok(conFigli.irpef.familiari.figli > 0, 'le detrazioni per figli restano');
+
+  // E il blocco dei parametri non deve riacquistare un ramo "agevolazioni"
+  // senza che una fonte letta lo giustifichi.
+  assert.equal(P.addizionaleRegionale.agevolazioni, undefined);
+});
+
+test('il motore vincola i giorni al calendario fiscale, come la UI', () => {
+  // L'anno fiscale e' di 365 giorni per convenzione (circ. 326/E/1997). Il
+  // motore e' la parte riusabile del progetto: senza questo vincolo un
+  // chiamante con giorni=400 otterrebbe una detrazione rapportata SUPERIORE
+  // a quella teorica (2.142 invece di 1.955) e un reddito annuale teorico
+  // della somma esente sgonfiato — numeri sbagliati con l'aria di essere giusti.
+  const r400 = calcolaNetto({ ral: 40000, giorniLavorati: 400 }, P);
+  const r365 = calcolaNetto({ ral: 40000, giorniLavorati: 365 }, P);
+  assert.equal(r400.input.giorniLavorati, 365);
+  vicino(r400.netto.annuo, r365.netto.annuo);
+  vicino(r400.irpef.detrazioneLavoro, r365.irpef.detrazioneLavoro);
+
+  const negativi = calcolaNetto({ ral: 40000, giorniLavorati: -5 }, P);
+  const unGiorno = calcolaNetto({ ral: 40000, giorniLavorati: 1 }, P);
+  assert.equal(negativi.input.giorniLavorati, 1);
+  vicino(negativi.netto.annuo, unGiorno.netto.annuo);
+});
+
+test('l aliquota marginale e la derivata del netto: le due catene non possono divergere', () => {
+  // aliquotaMarginale usa una versione ridotta della catena (calcolaNettoSemplice)
+  // per evitare la ricorsione. E' una seconda implementazione, e una seconda
+  // implementazione puo' scollarsi dalla prima in silenzio: se una regola nuova
+  // entra in calcolaNetto e non li', la curva marginale mente. Questo test
+  // confronta la marginale con la derivata discreta del netto vero, su piu'
+  // combinazioni di opzioni e su RAL scelte LONTANO dalle soglie, dove gli
+  // arrotondamenti al centesimo non possono spostare un confine di fascia.
+  const casi = [
+    {},
+    { coniugeACarico: true, figliACarico: 1 },
+    { tipoContratto: 'apprendistato', giorniLavorati: 200 },
+    { applicaMassimale: false },
+    { oneriDeducibili: 2000 },
+  ];
+  const rals = [8000, 12000, 18000, 22000, 30000, 36000, 45000, 58000, 90000, 150000];
+  for (const opzioni of casi) {
+    for (const ral of rals) {
+      const qui = calcolaNetto({ ...opzioni, ral }, P);
+      const dopo = calcolaNetto({ ...opzioni, ral: ral + 100 }, P);
+      const derivata = 1 - (dopo.netto.annuo - qui.netto.annuo) / 100;
+      vicino(qui.indici.aliquotaMarginale, derivata, 0.002);
+    }
+  }
+});
+
 test('un contratto senza aliquota ferma il motore invece di farlo inventare', () => {
   // Il guardiano che ha tenuto il modello onesto finche' la fonte mancava, e che
   // resta come rete: se un domani si aggiunge un contratto con un regime proprio
