@@ -1394,8 +1394,12 @@ l'aliquota dei premi di risultato all'1% per il 2026-2027, il tetto dei buoni pa
 portato da 8 a 10 €, e il fatto che il parziale esonero delle madri di due figli (c. 219)
 **decorre dal 2027**, rinviato due volte. C'è anche un dettaglio che tocca le soglie di questo
 modello: gli importi detassati escono dal reddito complessivo (art. 3 c. 3 lett. a TUIR) ma si
-ricomputano per la capienza del trattamento integrativo. Un solo punto resta aperto e
-dichiarato: quale comma della legge di bilancio 2026 copra il 2026 per le madri di due figli.
+ricomputano per la capienza del trattamento integrativo. L'ultimo punto si è chiuso con i
+cc. 206-207 della stessa legge, letti in originale: il rinvio del c. 219 al 2027 sta al c. 206,
+e il 2026 è coperto dal c. 207 — 60 € mensili erogati dall'INPS alle madri di due figli, estesi
+a quelle di tre o più **solo se prive di un rapporto a tempo indeterminato**, che hanno invece
+l'esonero in busta del c. 180. Le due norme si incastrano senza sovrapporsi, come le due misure
+del cuneo, e il capitolo degli esoneri per le madri è ora letto per intero.
 
 ### 5.5-bis Il tipo di contratto: tre risposte diverse
 
