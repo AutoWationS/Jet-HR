@@ -234,8 +234,21 @@ header.principale p { margin: 0; color: var(--su-testa-tenue); max-width: 60ch; 
 .colonna-esiti { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
 
 .pannello { position: sticky; top: 20px; }
+
+/* Con le tendine aperte la scheda puo' superare l'altezza della finestra:
+   essendo sticky resterebbe inchiodata in alto, con il fondo irraggiungibile
+   finche' non si e' scorsa tutta la colonna dei risultati. Oltre il limite
+   la scheda scorre quindi al proprio interno. */
+.pannello .scheda {
+  max-height: calc(100vh - 40px);
+  max-height: calc(100dvh - 40px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
 @media (max-width: 900px) {
   .pannello { position: static; }
+  .pannello .scheda { max-height: none; overflow-y: visible; }
 }
 
 /* ==========================================================================
