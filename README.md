@@ -44,7 +44,7 @@ Il cuore dell'esercizio non è la pagina, è la sequenza. In busta paga si scend
 +  ulteriore detrazione cuneo        1.000 € tra 20k e 32k, décalage fino a 40k
 =  IRPEF netta                       mai negativa: l'eccedenza si perde
 −  addizionale regionale Lombardia   per scaglioni, 1,23% → 1,73%
-−  addizionale comunale Milano       0,80%, esente sotto 23.000 € di imponibile
+−  addizionale comunale Milano       0,80%, esente fino a 23.000 € di imponibile
                                      nessuna delle due è dovuta se l'IRPEF netta è zero
 +  somma esente cuneo                7,1% / 5,3% / 4,8% fino a 20.000 €
 +  trattamento integrativo           1.200 € fino a 15.000 €, se c'è capienza
@@ -88,11 +88,12 @@ Sette livelli, dal più debole al più forte.
 [`docs/metodologia.md`](docs/metodologia.md) §3.1, e lo stesso ricalcolo è codificato riga per
 riga nel primo test: se un passaggio si rompe, il test dice **quale**.
 
-**2. Cinquantaquattro test** con `node --test`, in cinque famiglie:
+**2. Cinquantaquattro test** con `node --test`, in sei famiglie:
 casi di riferimento (ogni voce intermedia, non solo il totale), blocchi isolati (continuità
 delle formule sui confini di fascia, décalage, massimale), invarianti sull'intera curva da 1.000
-a 200.000 €, coerenza del registro delle fonti, e il disegno del grafico — l'SVG viene generato
-e riletto, e ogni soglia dichiarata deve avere il suo picco di marginale nel disegno.
+a 200.000 €, coerenza del registro delle fonti, il disegno del grafico — l'SVG viene generato
+e riletto, e ogni soglia dichiarata deve avere il suo picco di marginale nel disegno — e
+l'allineamento del bundle di `dist/` con i sorgenti.
 
 L'invariante più utile: **il netto può scendere solo attraversando una soglia dichiarata**, e
 ogni salto vale esattamente quanto l'agevolazione persa. Se una modifica introducesse una
@@ -172,7 +173,7 @@ descrizione no, la suite cade.
 |---:|---:|---:|---:|---:|---:|---:|---:|
 | 15.000 | 1.378,50 | 13.621,50 | 1.177,95 | 167,54 | 1.921,94 | **14.197,95** | 1.092,15 |
 | 25.000 | 2.297,50 | 22.702,50 | 1.826,65 | 306,20 | — | **20.569,65** | 1.582,28 |
-| 35.000 | 3.216,50 | 31.783,50 | 5.042,08 | 709,25 | — | **26.032,18** | 2.002,48 |
+| 35.000 | 3.216,50 | 31.783,50 | 5.042,08 | 709,24 | — | **26.032,18** | 2.002,48 |
 | 45.000 | 4.135,50 | 40.864,50 | 9.892,26 | 938,09 | — | **30.034,15** | 2.310,32 |
 | 60.000 | 5.551,76 | 54.448,24 | 15.612,74 | 1.280,84 | — | **37.554,66** | 2.888,82 |
 | 120.000 | 11.665,76 | 108.334,24 | 38.783,72 | 2.644,16 | — | **66.906,36** | 5.146,64 |
@@ -194,7 +195,7 @@ del netto proprio per rendere visibili questi punti.
 | reddito 35.000 € | 38.542,01 € | decade la maggiorazione di 65 € | −64,98 € |
 
 E il salto opposto: a **RAL 9.001,14 €** il netto fa **+1.200 €** di colpo, perché scatta la
-capienza del trattamento integrativo. In quel punto l'aliquota marginale vale **−1.196%**.
+capienza del trattamento integrativo. In quel punto l'aliquota marginale vale **−1.197%**.
 
 Nella fascia 32.000–40.000 di reddito la marginale effettiva è del **~61%**: più alta di quella
 di chi guadagna 100.000 €.
@@ -236,8 +237,9 @@ verifica che ogni citazione punti a una scheda esistente del registro. In sintes
   (detassazioni della legge di bilancio 2026), lette integralmente.
 
 > Il parametro più volatile è la **soglia di esenzione dell'addizionale comunale di Milano**:
-> è deliberata ogni anno dal Comune, ed è l'unico valore del modello che può cambiare senza un
-> intervento del legislatore nazionale.
+> è fissata con delibera del Comune — stabile dal 2020, ma un innalzamento è già stato
+> discusso — ed è l'unico valore del modello che può cambiare senza un intervento del
+> legislatore nazionale.
 
 ---
 

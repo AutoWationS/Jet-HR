@@ -172,8 +172,8 @@ fondo. Sul caso di riferimento il conto è questo:
 
 | | Senza oneri | Con 3.000 € di oneri |
 |---|---:|---:|
-| Imposte totali | 5.751,33 | 4.425,40 |
-| **Netto in busta** | 26.032,18 | **24.358,10** |
+| Imposte totali | 5.751,32 | 4.425,39 |
+| **Netto in busta** | 26.032,18 | **24.358,11** |
 
 Il vantaggio non è la deduzione ma il **risparmio d'imposta che genera: 1.325,93 €**. Il netto
 scende di 1.674,07, cioè di 3.000 meno il risparmio. Questa è la prima versione del modello ad
@@ -280,9 +280,9 @@ contribuente che non deve nulla — ed è esattamente l'errore che il modello co
 confronto descritto in §3.4.
 
 **Comunale — Milano**: aliquota unica **0,80%**, con **soglia di esenzione a 23.000 €**.
-Attenzione: è una *soglia*, non una *franchigia*. Sotto i 23.000 non si paga nulla; superati i
-23.000 si paga lo 0,80% **sull'intero imponibile**, non sulla sola eccedenza. Da qui il salto
-di ~184 € descritto in §4.
+Attenzione: è una *soglia*, non una *franchigia*. Fino a 23.000 compresi non si paga nulla;
+superati i 23.000 si paga lo 0,80% **sull'intero imponibile**, non sulla sola eccedenza. Da
+qui il salto di ~184 € descritto in §4.
 
 ### 2.8 Netto
 
@@ -313,10 +313,12 @@ Le mensilità (12, 13, 14) **non modificano il netto annuo**: cambiano solo la r
 | **IRPEF netta** | 7.688,56 − 2.646,48 | **−5.042,08** |
 | Add. regionale Lombardia | 15.000 × 1,23% = 184,50 <br> 13.000 × 1,58% = 205,40 <br> 3.783,50 × 1,72% = 65,08 | −454,98 |
 | Add. comunale Milano | 31.783,50 × 0,80% (sopra soglia 23.000) | −254,27 |
-| **Netto annuo** | 31.783,50 − 5.042,08 − 454,98 − 254,27 | **26.032,21** |
-| **Netto mensile** | ÷ 13 | **2.002,48** |
+| **Netto annuo** | 31.783,50 − 5.042,08 − 454,98 − 254,27 | **26.032,17** |
+| **Netto mensile** | ÷ 13 | **2.002,47** |
 
-(Il motore restituisce 26.032,18: la differenza di un centesimo è arrotondamento intermedio.)
+(Il motore restituisce 26.032,18, cioè 2.002,48 al mese: la differenza di un centesimo è
+arrotondamento intermedio — qui le due addizionali sono arrotondate riga per riga, il motore le
+somma prima di arrotondare.)
 
 Questo ricalcolo è codificato riga per riga nel primo test di `test/motore.test.mjs`: se un
 passaggio si rompe, il test dice **quale**.
@@ -346,7 +348,7 @@ passaggio si rompe, il test dice **quale**.
      di modellazione che i test sui singoli casi non intercetterebbero;
    - i **salti** alle soglie valgono esattamente quanto l'agevolazione persa (§4).
 
-I venti restanti: dodici sul registro delle fonti (§6), tre sull'allineamento del bundle in
+I ventuno restanti: tredici sul registro delle fonti (§3.5), tre sull'allineamento del bundle in
 `dist/`, e cinque sul **disegno del grafico** — l'SVG viene generato dentro il test e riletto
 come stringa, e ogni soglia della tabella di §4 deve avere il suo picco di marginale nel
 disegno. Sono nati da un difetto reale, raccontato in fondo a §4: quattro picchi su cinque
@@ -395,7 +397,7 @@ differenza di etichetta, non di modello, ma senza accorgersene il confronto semb
 | Voce | Modello | PMI.it | Δ |
 |---|---:|---:|---:|
 | Imposte lorde (IRPEF 7.688,56 + addizionali 709,24) | 8.397,80 | 8.398 | +0,20 |
-| Detrazioni art. 13 | 1.646,52 | 1.712 | **+65,52** |
+| Detrazioni art. 13 | 1.646,48 | 1.712 | **+65,52** |
 | Taglio del cuneo | 1.000,00 | 1.000 | 0 |
 | Imposte nette | 5.751,32 | 5.686 | −65,32 |
 | **Netto annuo** | **26.032,18** | **26.097** | **+64,82** |
@@ -562,9 +564,10 @@ sbaglia di oltre cinquemila euro l'anno.
 **Un dubbio da sciogliere: non è colpa del comune.** Il form dell'altro calcolatore non chiede
 il comune ma un'**aliquota comunale in percentuale**, impostata a 0,8 — la stessa del modello. Si
 potrebbe sospettare che le divergenze nascano da lì. Non è così, e lo dimostra la ricostruzione
-stessa: le loro *«imposte lorde»* coincidono con le nostre al centesimo in tutti i casi
-(8.398, 11.623, 16.911, 4.557, 8.814), e quel totale contiene le addizionali. Se la comunale o la
-regionale fossero diverse, non tornerebbe.
+stessa: le loro *«imposte lorde»* sono riprodotte al centesimo, in tutti i casi (8.398, 11.623,
+16.911, 4.557, 8.814), applicando le **nostre** aliquote — IRPEF, regionale e comunale — al
+loro imponibile. E quel totale contiene le addizionali: se la comunale o la regionale fossero
+diverse, non tornerebbe.
 
 Va però distinta una cosa che il paragrafo precedente accorpava, ed è una distinzione onesta:
 
@@ -617,8 +620,8 @@ cioè grosso modo una RAL fra 35.200 e 44.000 — una delle fasce più popolate 
 dipendente. L'errore cresce da zero a 1.000 € muovendosi dentro la fascia.
 
 **E questo è il punto di metodo.** Otto casi di confronto non l'avevano trovato, perché nessuno
-cadeva in quella fascia: il caso di riferimento sta a 31.783,50, quarantaquattro euro sotto la
-soglia. È stata l'aliquota dell'apprendista, abbassando i contributi, a spingere l'imponibile da
+cadeva in quella fascia: il caso di riferimento sta a 31.783,50, 216,50 € sotto la soglia. È
+stata l'aliquota dell'apprendista, abbassando i contributi, a spingere l'imponibile da
 31.783,50 a 32.956 e a farlo scavallare.
 
 Un test di regressione non l'avrebbe mai visto, perché i test verificano il modello contro sé
@@ -1332,11 +1335,12 @@ risultato è che **il netto non è una funzione monotona della RAL**.
 
 E il salto opposto, a **RAL 9.001,14 €**: **+1.200,01 €** di netto per un centesimo di lordo in
 più. È la condizione di capienza del trattamento integrativo (`IRPEF lorda > 1.955 − 75`).
-In quel punto l'aliquota marginale effettiva vale **−1.196%**.
+In quel punto l'aliquota marginale effettiva vale **−1.197%**.
 
 Nella fascia **32.000 – 40.000 €** di reddito non c'è un salto ma un'aliquota marginale
-effettiva del **~61%**: 33% di IRPEF + 12,5% di *décalage* dell'ulteriore detrazione + 9,19%
-di contributi + addizionali. È più alta della marginale di chi guadagna 100.000 €.
+effettiva del **~61%**: 33% di IRPEF + 12,5% di *décalage* dell'ulteriore detrazione + ~8,7%
+di detrazione art. 13 decrescente (1.910 / 22.000) + 9,19% di contributi + addizionali. È più
+alta della marginale di chi guadagna 100.000 €.
 
 Il grafico in pagina mostra la marginale accanto alla curva del netto proprio per questo: sulla
 curva del netto queste cose sono scalini invisibili, sulla marginale sono picchi.
@@ -1435,7 +1439,7 @@ detrazione rapportata al periodo scende sotto di loro.
 | 13.000 | 365 | 1.955,00 | 1.955,00 |
 | 13.000 | 180 | 964,11 | **1.380,00** |
 | 13.000 | 100 | 690,00 | **1.380,00** |
-| 25.000 | 100 | 723,89 | 723,89 |
+| 20.000 | 100 | 723,89 | 723,89 |
 
 Su un anno intero il contratto **non sposta un euro**. Si vede solo su un rapporto parziale con
 reddito basso — cioè esattamente la situazione di chi ha un contratto a termine breve, il che
@@ -1605,7 +1609,8 @@ contributiva, che è il criterio della norma — ed è esposta nel modulo.
 | Addizionale comunale IRPEF Milano (0,80%, esenzione 23.000 €) | Delibera comunale; da riverificare annualmente sul portale del Federalismo Fiscale, MEF |
 
 **Avvertenza sulle aliquote locali**: aliquota e soglia di esenzione dell'addizionale comunale
-sono deliberate ogni anno dal Comune. Il Comune di Milano ha discusso un innalzamento della
+sono fissate con delibera del Comune — per Milano sono stabili dal 2013 e dal 2020 (§3.7), ma
+una nuova delibera può cambiarle in ogni momento, e il Comune ha discusso un innalzamento della
 soglia di esenzione a decorrere dal 2026: prima di usare il calcolatore in produzione, il valore
 va riverificato sulla delibera vigente. È l'unico parametro del modello che può cambiare senza
 un intervento del legislatore nazionale.
