@@ -1843,9 +1843,10 @@ const PARAMETRI_2026 = {
     {
       voce: 'Riduzione forfettaria delle detrazioni per oneri',
       norma:
-        'L. 207/2024 art. 1 c. 10 (260 € oltre 50.000); art. 16-ter TUIR, letto in ' +
+        'Art. 16-ter TUIR, introdotto dall’art. 1 c. 10 della L. 207/2024 e letto in ' +
         'originale sul testo vigente 2026, compreso il c. 5-bis inserito dall’art. 1 c. 4 ' +
-        'della L. 199/2025 (440 € oltre 200.000)',
+        'della L. 199/2025 (440 € oltre 200.000); art. 2 del D.Lgs. 216/2023, letto in ' +
+        'originale (260 €, per il solo anno 2024)',
       motivo:
         'Incidono sulle detrazioni per oneri dell’art. 15 TUIR, che il modello non ' +
         'rappresenta perché non ci sono oneri detraibili: applicarle gonfierebbe ' +
@@ -1857,18 +1858,42 @@ const PARAMETRI_2026 = {
         '8.000 € oltre — moltiplicato per un coefficiente che cresce con i figli a carico, ' +
         'da 0,50 senza figli a 1 con più di due figli o un figlio con disabilità; fuori dal ' +
         'computo le spese sanitarie, gli investimenti in start-up e PMI innovative, e mutui, ' +
-        'premi e rate di spese ante 2025. Tutto inerte finché il modello non rappresenta ' +
-        'oneri detraibili, e per la stessa ragione dichiarato e non applicato.',
+        'premi e rate di spese ante 2025. I 260 € oltre 50.000 che guide e riassunti ' +
+        'affiancano ancora ai 440 stanno nell’art. 2 del D.Lgs. 216/2023, e il testo letto ' +
+        'in originale li limita «per l’anno 2024»: nel 2026 non esistono più. Tutto inerte ' +
+        'finché il modello non rappresenta oneri detraibili, e per la stessa ragione ' +
+        'dichiarato e non applicato.',
+    },
+    {
+      voce: 'Oneri detraibili dell’art. 15: mutuo, spese sanitarie, istruzione',
+      norma: 'Artt. 15, 16 e 16-bis TUIR',
+      motivo:
+        'Il modello accetta oneri DEDUCIBILI, che riducono il reddito (art. 10), ma nessun ' +
+        'onere DETRAIBILE, che riduce l’imposta: spese sanitarie oltre la franchigia di ' +
+        '129,11 €, interessi del mutuo sull’abitazione principale, spese di istruzione, ' +
+        'premi assicurativi, canoni di locazione (art. 16), rate dei recuperi edilizi ' +
+        '(art. 16-bis). Ogni voce ha massimale e condizioni proprie, che un campo unico ' +
+        'appiattirebbe; ed è la loro assenza a rendere inerti — quindi dichiarate e non ' +
+        'applicate — le riduzioni della voce precedente. Per chi le ha, il netto vero è ' +
+        'più alto di quello mostrato: la detrazione arriva in dichiarazione, non nella ' +
+        'proiezione di una RAL.',
     },
     {
       voce: 'TFR',
-      norma: 'Art. 2120 c.c.; art. 12 c. 4 lett. a) della L. 153/1969',
+      norma:
+        'Art. 2120 c.c.; artt. 2 e 3 della L. 297/1982, letti in originale; art. 12 c. 4 ' +
+        'lett. a) della L. 153/1969',
       motivo:
-        'Accantonato e non erogato: circa il 7,41% della retribuzione utile (1/13,5) ' +
-        'al netto del contributo dello 0,50% al Fondo di garanzia. Non transita nella ' +
-        'retribuzione corrente, quindi non entra nel netto in busta paga. È fuori anche ' +
-        'dalla base contributiva, che lo esclude espressamente: “sono esclusi dalla base ' +
-        'imponibile le somme corrisposte a titolo di trattamento di fine rapporto”.',
+        'Accantonato e non erogato: circa il 7,41% della retribuzione utile (1/13,5) al ' +
+        'netto della rivalsa dello 0,50% — due aumenti dell’aliquota IVS a carico del ' +
+        'DATORE, 0,30 punti dal luglio 1982 e 0,20 dal gennaio 1983, che l’ultimo comma ' +
+        'dell’art. 3 fa detrarre «dall’ammontare della quota del trattamento di fine ' +
+        'rapporto». Il Fondo di garanzia dell’art. 2, che paga il TFR se il datore è ' +
+        'insolvente, è invece alimentato da un contributo del solo datore — nella legge ' +
+        '0,03%, rivedibile per decreto — senza rivalsa. Non transita nella retribuzione ' +
+        'corrente, quindi non entra nel netto in busta paga. È fuori anche dalla base ' +
+        'contributiva, che lo esclude espressamente: “sono esclusi dalla base imponibile ' +
+        'le somme corrisposte a titolo di trattamento di fine rapporto”.',
     },
     {
       voce: 'Assegno unico e universale per i figli',
@@ -1986,6 +2011,31 @@ const PARAMETRI_2026 = {
         'come gli straordinari, ma con la loro norma accanto.',
     },
     {
+      voce: 'Regimi che abbattono l’imponibile: impatriati, ricercatori, frontalieri',
+      norma:
+        'Art. 5 del D.Lgs. 209/2023 e art. 44 del D.L. 78/2010, letti in originale sul ' +
+        'testo vigente; art. 1 c. 175 della L. 147/2013 e art. 4 della L. 83/2023, letti ' +
+        'in originale: il secondo fissa a 10.000 € la franchigia del primo',
+      motivo:
+        'Tre regimi personali riducono il reddito imponibile a monte dell’intera catena. ' +
+        'Chi trasferisce la residenza fiscale in Italia dal 2024 nei requisiti dell’art. 5 ' +
+        'conta il reddito di lavoro al 50% — al 40% con un figlio minore — entro 600.000 € ' +
+        'l’anno, per cinque periodi d’imposta, con decadenza e recupero se la residenza non ' +
+        'dura almeno quattro anni; docenti e ricercatori rientrati escludono il 90% degli ' +
+        'emolumenti per sei periodi d’imposta, estesi fino a tredici con figli o con ' +
+        'l’acquisto dell’abitazione (art. 44, cc. 3 e 3-ter); i frontalieri — chi da ' +
+        'residente lavora oltre confine in zona di frontiera «in via continuativa e come ' +
+        'oggetto esclusivo del rapporto» — contano quel reddito solo oltre una franchigia ' +
+        'di 10.000 €. Il c. 175 reca ancora «6.700 euro»: gli aumenti lo fissano ' +
+        'dall’esterno senza riscriverlo — da ultimo l’art. 4 della L. 83/2023, dal 2024 — ' +
+        'e chi legge il comma da solo esce con il numero sbagliato. ' +
+        'Non sono però solo sconti: l’art. 1 c. 9 della L. 207/2024 — letto per il registro ' +
+        'delle fonti — fa RIENTRARE la quota esente di impatriati e ricercatori nel reddito ' +
+        'che decide percentuale e soglie del taglio del cuneo, quindi per chi ne gode le ' +
+        'soglie della pagina si spostano due volte. Condizioni personali che una RAL non ' +
+        'descrive: fuori perimetro, e per chi vi rientra ogni numero della pagina cambia.',
+    },
+    {
       voce: 'Mensilizzazione dell’aliquota aggiuntiva dell’1% (cassa infrannuale)',
       norma:
         'Art. 3-ter D.L. 384/1992; INPS circ. n. 6 del 30/01/2026 e circ. n. 156 del ' +
@@ -2033,14 +2083,26 @@ const PARAMETRI_2026 = {
     },
     {
       voce: 'Contributi a carico del lavoratore diversi dall’IVS',
-      norma: 'Contrattazione collettiva; art. 51 c. 2 lett. h) TUIR per le trattenute deducibili',
+      norma:
+        'Artt. 20, 23 e 29 del D.Lgs. 148/2015, letti in originale; circ. INPS 176/2016 ' +
+        '§6.1 per il riparto del contributo FIS; contrattazione collettiva; art. 51 c. 2 ' +
+        'lett. h) TUIR per le trattenute deducibili',
       motivo:
         'Il modello trattiene il solo 9,19% IVS più l’eventuale 1% aggiuntivo, che è quanto ' +
-        'grava sul dipendente del settore privato non agricolo per la previdenza obbligatoria. ' +
-        'Molti CCNL prevedono però trattenute ulteriori a carico del lavoratore — quote ai ' +
-        'fondi sanitari integrativi, ai fondi di solidarietà bilaterali, contributi ' +
-        'associativi o sindacali — che riducono il netto e in parte l’imponibile. Dipendono dal ' +
-        'contratto applicato, che la RAL non dichiara.',
+        'grava sul dipendente del settore privato non agricolo per la PREVIDENZA ' +
+        'obbligatoria. L’integrazione salariale, però, è per legge in parte a carico del ' +
+        'lavoratore: il contributo ordinario CIGS vale lo 0,90% dell’imponibile, «di cui lo ' +
+        '0,30 per cento è a carico del lavoratore» (art. 23 cc. 1 e 1-bis), e dal 2022 la ' +
+        'riforma degli ammortizzatori estende la CIGS ai datori sopra i quindici dipendenti ' +
+        'non coperti da un fondo bilaterale, in ogni settore (art. 20 c. 3-bis): ' +
+        'l’impiegato di una media impresa milanese versa quindi il 9,49%, non il 9,19%. ' +
+        'Anche nel FIS — 0,50% fino a cinque dipendenti, 0,80% oltre (art. 29 c. 8) — un ' +
+        'terzo del contributo ordinario è dei lavoratori: «due terzi a carico del datore di ' +
+        'lavoro e un terzo a carico del lavoratore», scrive la circolare. A queste ' +
+        'trattenute di legge si sommano quelle da CCNL — quote ai fondi sanitari ' +
+        'integrativi, contributi associativi o sindacali — che riducono il netto e in parte ' +
+        'l’imponibile. Dipendono da settore, dimensione e contratto del datore, che una RAL ' +
+        'non dichiara.',
     },
     {
       voce: 'Esonero contributivo delle lavoratrici madri, e bonus mamme',

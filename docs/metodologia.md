@@ -1421,16 +1421,23 @@ nel tempo; nell'anno di assunzione, di forte aumento o di cessazione, no.
 
 ### 5.3 TFR escluso
 Il TFR è **accantonato**, non erogato: circa il 7,41% della retribuzione utile (1/13,5), al netto
-del contributo dello 0,50% al Fondo di garanzia, e non transita nella retribuzione corrente.
+della rivalsa dello 0,50% — due aumenti dell'aliquota IVS a carico del **datore** (0,30 punti dal
+luglio 1982, 0,20 dal gennaio 1983) che l'ultimo comma dell'art. 3 della L. 297/1982 fa detrarre
+dalla quota annua di TFR; il Fondo di garanzia dell'art. 2 è invece finanziato da un contributo
+del solo datore, senza rivalsa — e non transita nella retribuzione corrente.
 **Effetto**: nessuno sul netto in busta paga; è però la prima domanda che fa chi confronta due
 offerte, e va detto esplicitamente.
 
 ### 5.4 Riduzioni forfettarie delle detrazioni non applicate
-La L. 207/2024 (art. 1 c. 10) riduce di **260 €** le detrazioni per oneri di chi supera 50.000 €
-di reddito, e la L. 199/2025 aggiunge una riduzione di **440 €** oltre 200.000 € (esattamente il
+Sopra i 75.000 € di reddito le detrazioni per oneri incontrano dal 2025 i plafond
+dell'art. 16-ter TUIR (introdotto dall'art. 1 c. 10 della L. 207/2024), e dal 2026 il c. 5-bis
+aggiunto dalla L. 199/2025 le riduce di **440 €** per chi supera 200.000 € (esattamente il
 risparmio massimo generato dal passaggio della seconda aliquota dal 35% al 33%, così da
-neutralizzarlo per i redditi alti). Entrambe incidono sulle **detrazioni per oneri dell'art. 15
-TUIR**, che questo modello non rappresenta perché non ci sono oneri detraibili.
+neutralizzarlo per i redditi alti). I **260 €** oltre 50.000 € che molte guide citano ancora
+stanno nell'art. 2 del D.Lgs. 216/2023, e il testo — letto in originale — li limita «per
+l'anno 2024»: nel 2026 non esistono più. Le misure vigenti incidono sulle **detrazioni per
+oneri dell'art. 15 TUIR**, che questo modello non rappresenta perché non ci sono oneri
+detraibili.
 **Effetto**: applicarle qui gonfierebbe l'imposta di un contribuente che, nel modello, non ha
 detrazioni da ridurre. Sono quindi dichiarate e non applicate — scelta consapevole, non omissione.
 
@@ -1438,8 +1445,8 @@ detrazioni da ridurre. Sono quindi dichiarate e non applicate — scelta consape
 Assegno unico per i figli sotto i 21 anni; oneri **detraibili** dell'art. 15; massimali per tipo
 di onere deducibile (il campo è generico); fringe benefit e welfare
 aziendale; premi di risultato a tassazione sostitutiva; regimi agevolati (impatriati,
-ricercatori, frontalieri); contratti a termine; trattenute a carico del lavoratore previste dal
-CCNL oltre l'IVS; addizionali di comuni diversi da Milano; più rapporti nello stesso anno e
+ricercatori, frontalieri); trattenute a carico del lavoratore oltre l'IVS, di legge e da
+CCNL; addizionali di comuni diversi da Milano; più rapporti nello stesso anno e
 conguaglio del sostituto; lavoro straordinario e indennità.
 
 Tre misure del 2026, emerse da una revisione successiva, sono ora **dichiarate con la loro
@@ -1466,6 +1473,33 @@ e il 2026 è coperto dal c. 207 — 60 € mensili erogati dall'INPS alle madri 
 a quelle di tre o più **solo se prive di un rapporto a tempo indeterminato**, che hanno invece
 l'esonero in busta del c. 180. Le due norme si incastrano senza sovrapporsi, come le due misure
 del cuneo, e il capitolo degli esoneri per le madri è ora letto per intero.
+
+Una revisione dedicata del perimetro ha poi dato una voce con norma a tre di queste categorie:
+gli **oneri detraibili** dell'art. 15; i **regimi che abbattono l'imponibile** — impatriati,
+ricercatori, frontalieri (artt. 5 del D.Lgs. 209/2023 e 44 del D.L. 78/2010; art. 1 c. 175
+della L. 147/2013, la franchigia che l'art. 4 della L. 83/2023 fissa a 10.000 €); e i
+**contributi di integrazione salariale** a carico del lavoratore — lo 0,30% CIGS dell'art. 23
+del D.Lgs. 148/2015, che con il c. 3-bis dell'art. 20 (riforma del 2022) riguarda in generale
+chi lavora sopra i quindici dipendenti senza un fondo bilaterale (9,49% in busta, non 9,19%),
+più un terzo del contributo ordinario FIS (art. 29 c. 8; il riparto due terzi/un terzo è nella
+circ. INPS 176/2016, §6.1). La stessa revisione ha corretto tre difetti. I 260 € erano
+attribuiti al c. 10 della L. 207/2024, che invece introduce il 16-ter: la lettura in originale
+dell'art. 2 del D.Lgs. 216/2023 ha mostrato di più, cioè che valevano «per l'anno 2024»
+soltanto — nel 2026 le riduzioni vigenti sono i plafond del 16-ter e i 440 € del c. 5-bis. Lo
+0,50% trattenuto sul TFR era detto «al Fondo di garanzia»: è la rivalsa del contributo
+aggiuntivo IVS dell'art. 3 della L. 297/1982 (0,30 + 0,20 punti a carico del datore, detratti
+dalla quota di TFR), mentre il Fondo dell'art. 2 vive di un distinto contributo del solo
+datore. E la voce che dava per «non rappresentata» l'aliquota dell'apprendista è stata rimossa,
+superata dal §5.5-bis qui sotto: il perimetro non può dichiarare assente ciò che il motore
+calcola. Le norme delle voci nuove e corrette sono state lette in originale sul testo
+vigente — artt. 2 e 3 della L. 297/1982; 20, 23 e 29 del D.Lgs. 148/2015; 5 del
+D.Lgs. 209/2023; 44 del D.L. 78/2010; 1 c. 175 della L. 147/2013 e 4 della L. 83/2023; 2 del
+D.Lgs. 216/2023, dove «per l'anno 2024» sta senza segni di modifica — con la circolare INPS
+176/2016 e il comunicato della circolare AdE 6/E del 29/05/2025 a chiudere i punti di prassi.
+Il c. 175 ha regalato l'ultima trappola del capitolo: reca ancora «6.700 euro», perché gli
+aumenti della franchigia lo fissano dall'esterno senza riscriverlo — il numero vigente,
+10.000 €, sta nell'art. 4 della L. 83/2023, e chi legge il comma da solo esce con il numero
+sbagliato.
 
 ### 5.5-bis Il tipo di contratto: tre risposte diverse
 

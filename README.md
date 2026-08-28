@@ -74,7 +74,7 @@ dirlo**. Ogni riga qui sotto è una scelta consapevole, con l'alternativa che ho
 | Addizionali per competenza | Per cassa (saldo + acconto) come in busta | Su una carriera stabile si equivalgono; per cassa servirebbe l'anno precedente in input |
 | Calcolo a saldo d'anno | Simulazione busta per busta | Il brief chiede la proiezione annua; il cedolino mensile è un altro prodotto |
 | TFR escluso dal netto | Scorporarlo dalla RAL | È accantonato, non erogato: non transita nella retribuzione corrente |
-| Riduzioni forfettarie (260 € / 440 €) dichiarate ma non applicate | Applicarle per "completezza" | Incidono sulle detrazioni per oneri dell'art. 15, che il modello non ha: applicarle gonfierebbe l'imposta di chi non ha nulla da ridurre |
+| Riduzioni delle detrazioni per oneri (16-ter, 440 €) dichiarate ma non applicate | Applicarle per "completezza" | Incidono sulle detrazioni per oneri dell'art. 15, che il modello non ha: applicarle gonfierebbe l'imposta di chi non ha nulla da ridurre |
 | Massimale contributivo attivo di default | Ignorarlo | Un assunto di oggi è iscritto dopo il 1995; resta un interruttore nei parametri avanzati |
 | Effetti soglia **mostrati**, non nascosti | Curva liscia e rassicurante | Sono la parte del sistema che sorprende chi legge la busta paga: nasconderli è la scelta comoda |
 
@@ -206,13 +206,21 @@ di chi guadagna 100.000 €.
 ## Cosa resta fuori
 
 Dichiarato voce per voce, con norma e motivo, in `src/parametri.js` (`fuoriPerimetro`) e
-mostrato in fondo alla pagina: riduzioni forfettarie delle detrazioni per oneri, TFR, detrazioni
-per carichi di famiglia, fringe benefit e premi di risultato, addizionali per cassa.
+mostrato in fondo alla pagina. Le famiglie principali: oneri **detraibili** dell'art. 15 e le
+riduzioni che li colpiscono (i plafond dell'art. 16-ter e i 440 € oltre 200.000 — i 260 €
+valevano per il solo 2024); TFR; assegno unico — per i figli sotto i 21 anni la detrazione è
+soppressa, il modello calcola quella dai 21 anni in su; fringe benefit, welfare, buoni pasto,
+trasferte e auto aziendale; premi di risultato e le detassazioni 2026 di rinnovi contrattuali e
+lavoro notturno e festivo (L. 199/2025); i regimi che abbattono l'imponibile (impatriati,
+ricercatori, frontalieri); i contributi a carico del lavoratore oltre l'IVS — lo 0,30% CIGS di
+chi lavora sopra i quindici dipendenti, le quote da CCNL; l'esonero contributivo delle
+lavoratrici madri e il bonus mamme; le regole di cassa infrannuale (addizionali per cassa,
+mensilizzazione dell'1%, recupero di cuneo e trattamento integrativo, tassazione autonoma della
+tredicesima); dell'apprendistato, tutto ciò che non è l'aliquota dell'apprendista — aliquote
+del datore, durata del beneficio, ore di formazione — perché l'aliquota, 5,84%, è modellata;
+più rapporti nello stesso anno e domicilio fiscale mobile.
 
-Non modellati anche: regimi agevolati (impatriati, ricercatori, frontalieri), part-time e
-contratti a termine, comuni diversi da Milano, conguaglio di fine anno, straordinari, le
-detassazioni 2026 dei rinnovi contrattuali e del lavoro notturno e festivo (L. 199/2025),
-l'esonero contributivo delle lavoratrici madri e il bonus mamme.
+Senza voce dedicata restano fuori anche: part-time, straordinari, comuni diversi da Milano.
 
 ---
 
