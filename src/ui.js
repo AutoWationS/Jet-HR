@@ -7,7 +7,7 @@
  * diverso da quello che il motore calcola.
  */
 
-import { calcolaNetto } from './motore.js';
+import { calcolaNetto, aliquotaIvsDi } from './motore.js';
 import { PARAMETRI_DEFAULT as P, FONTI } from './parametri.js';
 import { eur, eurTondo, pct, etichettaScaglione } from './formato.js';
 import { disegnaGrafico } from './grafico.js';
@@ -19,11 +19,22 @@ const $ = (sel) => document.querySelector(sel);
  * ---------------------------------------------------------------- */
 
 /**
+ * Citazione normativa cliccabile: un collegamento alla scheda della fonte
+ * nella sezione "Fonti dei parametri", in fondo alla pagina. La chiave e'
+ * quella del registro FONTI, la stessa che mostraFonti() usa come ancora:
+ * un test legge questo sorgente e garantisce che ogni chiave citata esista.
+ */
+function cita(testo, chiave) {
+  return `<a class="norma" href="#fonte-${chiave}" title="Vai alla fonte: ${FONTI[chiave].etichetta}">${testo}</a>`;
+}
+
+/**
  * @param {number} [peso] frazione della RAL rappresentata dalla voce: disegna
  *   la barra proporzionale sotto la riga. Serve a far vedere il peso relativo
  *   delle voci senza costringere a confrontare cifre.
+ * @param {string[]} [norme] citazioni prodotte da cita(), una per norma.
  */
-function riga({ voce, nota, norma, importo, quota, classe = '', segno = '', peso }) {
+function riga({ voce, nota, norme = [], importo, quota, classe = '', segno = '', peso }) {
   const testo = segno && importo !== 0 ? `${segno} ${eur(Math.abs(importo))}` : eur(importo);
   const barra =
     peso === undefined
@@ -32,9 +43,7 @@ function riga({ voce, nota, norma, importo, quota, classe = '', segno = '', peso
 
   return `
     <div class="riga ${classe}">
-      <div class="voce">${voce}${nota ? `<small>${nota}</small>` : ''}${
-        norma ? `<span class="norma">${norma}</span>` : ''
-      }</div>
+      <div class="voce">${voce}${nota ? `<small>${nota}</small>` : ''}${norme.join(' ')}</div>
       <div class="importo">${testo}</div>
       <div class="quota">${quota ?? ''}</div>
       ${barra}
@@ -108,7 +117,10 @@ function mostraRisultato(r) {
       ? { voce: 'Maggiorazione art. 13 c. 1.1 (65 €)', importo: r.irpef.maggiorazione65 }
       : null,
     r.irpef.ulterioreDetrazione
-      ? { voce: 'Ulteriore detrazione taglio cuneo', importo: r.irpef.ulterioreDetrazione }
+      ? {
+          voce: 'Ulteriore detrazione taglio cuneo (L. 207/2024 art. 1 c. 6)',
+          importo: r.irpef.ulterioreDetrazione,
+        }
       : null,
     f.coniuge ? { voce: 'Coniuge a carico (art. 12 c. 1 lett. a)', importo: f.coniuge } : null,
     f.figli
@@ -123,6 +135,11 @@ function mostraRisultato(r) {
       ? { voce: 'Ascendenti conviventi (art. 12 c. 1 lett. d)', importo: f.ascendenti }
       : null,
   ].filter(Boolean);
+
+  // L'aliquota IVS effettiva (ridotta per l'apprendista) la conosce il motore:
+  // la UI la chiede a lui invece di riscrivere la regola.
+  const aliquotaIvs = aliquotaIvsDi(r.contributi.tipoContratto, P);
+  const apprendista = r.contributi.tipoContratto === 'apprendistato';
 
   const pezzi = [];
 
@@ -140,10 +157,21 @@ function mostraRisultato(r) {
   pezzi.push(
     gruppo({
       voce: 'Contributi INPS a carico dipendente',
-      nota: `IVS ${pct(P.inps.aliquotaIvs)}${
+      nota: `IVS ${pct(aliquotaIvs)}${
         r.contributi.aggiuntivo ? ` + 1% oltre ${eurTondo(P.inps.primaFasciaPensionabile)}` : ''
       }`,
-      norma: 'art. 3-ter D.L. 384/1992 · INPS circ. 6/2026',
+      // Ogni citazione copre la parte di operazione che le compete: la base al
+      // lordo e' l'art. 12 L. 153/1969; la MISURA dell'aliquota sta nella
+      // prassi INPS (40/2011, per l'apprendista 108/2018; 6/2026 per i limiti
+      // annui); l'art. 3-ter D.L. 384/1992 e' la norma del solo 1% aggiuntivo,
+      // quindi compare quando l'1% e' dovuto.
+      norme: [
+        cita('art. 12 L. 153/1969', 'baseContributiva'),
+        apprendista
+          ? cita('INPS circ. 108/2018', 'apprendistato')
+          : cita('INPS circ. 40/2011 e 6/2026', 'contributi'),
+        r.contributi.aggiuntivo ? cita('art. 3-ter D.L. 384/1992', 'contributi') : '',
+      ].filter(Boolean),
       importo: -r.contributi.totale,
       quota: su(-r.contributi.totale),
       classe: 'trattenuta',
@@ -151,7 +179,7 @@ function mostraRisultato(r) {
       peso: peso(r.contributi.totale),
       dettagli: [
         {
-          voce: `IVS ${pct(P.inps.aliquotaIvs)} su ${eurTondo(r.contributi.baseImponibile)}`,
+          voce: `IVS ${pct(aliquotaIvs)} su ${eurTondo(r.contributi.baseImponibile)}`,
           importo: -r.contributi.ivs,
         },
         r.contributi.aggiuntivo
@@ -172,7 +200,7 @@ function mostraRisultato(r) {
       riga({
         voce: 'Oneri deducibili',
         nota: 'si sottraggono dal reddito, non dall’imposta: abbassano anche le soglie',
-        norma: 'art. 10 TUIR',
+        norme: [cita('art. 10 TUIR', 'oneriDeducibili')],
         importo: -r.input.oneriDeducibili,
         quota: su(-r.input.oneriDeducibili),
         classe: 'trattenuta',
@@ -186,7 +214,7 @@ function mostraRisultato(r) {
     riga({
       voce: 'Imponibile fiscale IRPEF',
       nota: 'RAL al netto dei contributi previdenziali, che non concorrono a formare reddito',
-      norma: 'art. 51 c. 2 lett. a TUIR',
+      norme: [cita('art. 51 c. 2 lett. a TUIR', 'nonConcorrenzaContributi')],
       importo: r.imponibileFiscale,
       quota: su(r.imponibileFiscale),
       classe: 'parziale',
@@ -198,7 +226,7 @@ function mostraRisultato(r) {
     gruppo({
       voce: 'IRPEF lorda',
       nota: 'scaglioni 23% / 33% / 43%',
-      norma: 'art. 11 TUIR · L. 199/2025',
+      norme: [cita('art. 11 c. 1 TUIR · L. 199/2025', 'irpef')],
       importo: -r.irpef.lorda,
       quota: su(-r.irpef.lorda),
       classe: 'trattenuta',
@@ -214,7 +242,14 @@ function mostraRisultato(r) {
       nota: r.irpef.detrazioniNonGodute
         ? `di cui ${eur(r.irpef.detrazioniNonGodute)} non godute per incapienza`
         : 'abbattono l’IRPEF lorda',
-      norma: 'art. 13 TUIR · L. 207/2024',
+      // Una citazione per ciascuna detrazione presente nella somma; il limite
+      // di capienza (art. 11 c. 3) si cita quando morde davvero.
+      norme: [
+        cita('art. 13 TUIR', 'detrazioneLavoro'),
+        r.irpef.ulterioreDetrazione ? cita('L. 207/2024 art. 1 c. 6', 'cuneoFiscale') : '',
+        f.totale ? cita('art. 12 TUIR', 'carichiFamiglia') : '',
+        r.irpef.detrazioniNonGodute ? cita('art. 11 c. 3 TUIR', 'imposta') : '',
+      ].filter(Boolean),
       importo: Math.min(r.irpef.detrazioniTotali, r.irpef.lorda),
       quota: su(Math.min(r.irpef.detrazioniTotali, r.irpef.lorda)),
       classe: 'bonus',
@@ -228,6 +263,7 @@ function mostraRisultato(r) {
     riga({
       voce: 'IRPEF netta',
       nota: `aliquota effettiva ${pct(r.indici.aliquotaIrpefEffettiva)} sull’imponibile`,
+      norme: [cita('art. 11 c. 3 TUIR', 'imposta')],
       importo: -r.irpef.netta,
       quota: su(-r.irpef.netta),
       classe: 'trattenuta',
@@ -242,7 +278,11 @@ function mostraRisultato(r) {
       nota: r.addizionali.nonDovutePerImpostaZero
         ? 'non dovuta: l’IRPEF netta è zero'
         : 'aliquote per scaglioni sull’imponibile IRPEF',
-      norma: 'art. 50 D.Lgs. 446/1997',
+      // Le aliquote lombarde stanno nella legge regionale, non nel decreto
+      // istitutivo; in no tax area la norma pertinente e' il solo c. 2.
+      norme: r.addizionali.nonDovutePerImpostaZero
+        ? [cita('art. 50 c. 2 D.Lgs. 446/1997', 'addizionaliNoTaxArea')]
+        : [cita('art. 50 D.Lgs. 446/1997 · art. 72 l.r. 10/2003', 'addizionaleRegionale')],
       importo: -r.addizionali.regionale,
       quota: su(-r.addizionali.regionale),
       classe: 'trattenuta',
@@ -260,7 +300,14 @@ function mostraRisultato(r) {
         : r.addizionali.comunaleEsente
           ? `esente: imponibile sotto la soglia di ${eurTondo(P.addizionaleComunale.sogliaEsenzione)}`
           : `${pct(P.addizionaleComunale.aliquota)} sull’intero imponibile`,
-      norma: 'art. 1 D.Lgs. 360/1998',
+      // Aliquota e soglia sono atti del Comune: l'aliquota unica 0,80% e' la
+      // delibera 36/2013, la soglia di esenzione la 46/2020; la no tax area
+      // sta nel c. 4 del decreto istitutivo.
+      norme: r.addizionali.nonDovutePerImpostaZero
+        ? [cita('art. 1 c. 4 D.Lgs. 360/1998', 'addizionaliNoTaxArea')]
+        : r.addizionali.comunaleEsente
+          ? [cita('art. 1 c. 3-bis D.Lgs. 360/1998 · delib. C.C. 46/2020', 'addizionaleComunale')]
+          : [cita('art. 1 D.Lgs. 360/1998 · delib. C.C. 36/2013 e 46/2020', 'addizionaleComunale')],
       importo: -r.addizionali.comunale,
       quota: su(-r.addizionali.comunale),
       classe: 'trattenuta',
@@ -274,7 +321,7 @@ function mostraRisultato(r) {
       riga({
         voce: 'Somma esente taglio cuneo',
         nota: `${pct(r.bonus.sommaEsentePercentuale)} del reddito di lavoro dipendente, non imponibile`,
-        norma: 'L. 207/2024 art. 1 c. 4',
+        norme: [cita('L. 207/2024 art. 1 c. 4', 'cuneoFiscale')],
         importo: r.bonus.sommaEsente,
         quota: su(r.bonus.sommaEsente),
         classe: 'bonus',
@@ -289,7 +336,7 @@ function mostraRisultato(r) {
       riga({
         voce: 'Trattamento integrativo',
         nota: 'credito erogato in busta paga, non imponibile',
-        norma: 'art. 1 D.L. 3/2020',
+        norme: [cita('art. 1 D.L. 3/2020', 'trattamentoIntegrativo')],
         importo: r.bonus.trattamentoIntegrativo,
         quota: su(r.bonus.trattamentoIntegrativo),
         classe: 'bonus',
@@ -409,10 +456,12 @@ const STATO_VERIFICA = {
 };
 
 function mostraFonti() {
-  $('#fonti').innerHTML = Object.values(FONTI)
+  // L'id di ogni scheda e' l'ancora a cui puntano le citazioni della cascata:
+  // stessa chiave del registro, cosi' i due lati non possono scollarsi.
+  $('#fonti').innerHTML = Object.entries(FONTI)
     .map(
-      (f) => `
-      <article class="fonte">
+      ([chiave, f]) => `
+      <article class="fonte" id="fonte-${chiave}">
         <h3>${f.etichetta}<span class="livello liv-${f.livello}">${
           f.livello === 1 ? 'norma primaria' : 'prassi e atti locali'
         }</span><span class="stato ${STATO_VERIFICA[f.statoVerifica].classe}">${
@@ -568,6 +617,15 @@ function inizializza() {
   $('#modulo').addEventListener('change', () => {
     if (!$('#risultato').classList.contains('nascosto') || $('#avvisi').textContent.trim()) {
       esegui();
+    }
+  });
+
+  // Se l'hash e' gia' quello della scheda, un secondo clic sulla stessa
+  // citazione non muoverebbe la pagina (l'URL non cambia): si scorre a mano.
+  $('#cascata').addEventListener('click', (evento) => {
+    const citazione = evento.target.closest('a.norma');
+    if (citazione && citazione.hash === location.hash) {
+      document.querySelector(citazione.hash)?.scrollIntoView();
     }
   });
 

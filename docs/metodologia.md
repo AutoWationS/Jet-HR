@@ -323,7 +323,7 @@ passaggio si rompe, il test dice **quale**.
 
 ### 3.2 Suite di test
 
-`npm test` esegue 53 test. Trentatré sul motore, in quattro famiglie:
+`npm test` esegue 54 test. Trentatré sul motore, in quattro famiglie:
 
 1. **Casi di riferimento** (15k / 25k / 35k / 60k): ogni voce intermedia verificata, non solo
    il totale. Un test che controlla solo il netto finale non dice dove si è rotto il calcolo.
@@ -1584,7 +1584,10 @@ contributiva, che è il criterio della norma — ed è esposta nel modulo.
 > `src/parametri.js`. La pagina **genera** la propria sezione "Fonti dei parametri" da quel
 > registro, quindi ciò che l'utente legge non può divergere da ciò che il motore calcola. Quattro
 > test garantiscono che ogni parametro dichiari una fonte esistente e completa, che nessuna fonte
-> resti orfana e che il perimetro escluso sia dichiarato voce per voce.
+> resti orfana e che il perimetro escluso sia dichiarato voce per voce. Le citazioni accanto
+> alle voci della cascata sono collegamenti alle schede di quel registro — ogni riga cita la
+> norma della propria operazione — e un ulteriore test verifica che ogni citazione punti a una
+> scheda esistente.
 
 | Argomento | Riferimento |
 |---|---|
