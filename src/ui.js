@@ -498,7 +498,11 @@ function esegui(evento) {
   evento?.preventDefault();
   const input = leggiModulo();
 
-  if (!(input.ral > 0)) {
+  // isFinite oltre a > 0: «1e999» e' una stringa numerica valida per un campo
+  // number, diventa Infinity e supererebbe il solo confronto con zero — e una
+  // RAL infinita manda in loop il campionamento della curva del grafico,
+  // congelando la pagina.
+  if (!(Number.isFinite(input.ral) && input.ral > 0)) {
     $('#avvisi').innerHTML = '<div class="avviso errore">Inserisci una RAL maggiore di zero.</div>';
     $('#risultato').classList.add('nascosto');
     return;

@@ -617,5 +617,18 @@ export function curvaNetto(da, a, passo, parametri = PARAMETRI_DEFAULT, input = 
       marginale: r.indici.aliquotaMarginale,
     });
   }
+  // La marginale di ogni punto e' la pendenza del tratto verso il punto
+  // successivo, cioe' e' misurata SUL PASSO della curva, non sulla finestra
+  // fissa di aliquotaMarginale. Non e' un dettaglio: la finestra di 100 euro
+  // vede una soglia solo se le cade dentro, e con un passo piu' largo
+  // (200 euro nel grafico in pagina) meta' dell'asse resta cieco — quattro
+  // soglie su cinque non lasciavano alcun picco. I tratti consecutivi invece
+  // coprono l'asse senza buchi: nessuna discontinuita' puo' cadere tra due
+  // campioni senza segnare la pendenza. L'ultimo punto, senza un tratto
+  // successivo, tiene la marginale puntuale calcolata sopra.
+  for (let i = 0; i + 1 < punti.length; i++) {
+    punti[i].marginale =
+      1 - (punti[i + 1].netto - punti[i].netto) / (punti[i + 1].ral - punti[i].ral);
+  }
   return punti;
 }

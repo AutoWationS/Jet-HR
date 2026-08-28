@@ -5,7 +5,7 @@
  * scalini piccoli, sull'aliquota marginale sono picchi verticali evidenti.
  */
 
-import { curvaNetto } from './motore.js';
+import { calcolaNetto, curvaNetto } from './motore.js';
 import { eurTondo } from './formato.js';
 
 const L = 56, R = 46, T = 16, B = 34; // margini
@@ -18,7 +18,13 @@ export function disegnaGrafico(contenitore, ralCorrente, opzioni = {}) {
   const punti = curvaNetto(1000, max, Math.max(100, Math.round(max / 400)), undefined, opzioni);
 
   const dominioX = [0, max];
-  const dominioY = [0, Math.max(...punti.map((p) => p.netto)) * 1.05];
+  // Il netto puo' scendere sotto zero (oneri deducibili oltre la RAL): il
+  // dominio deve includere il minimo, altrimenti la scala si ribalta e la
+  // curva negativa comparirebbe in alto, come un netto positivo. Il tetto ha
+  // un pavimento a 1 per lo stesso caso: con tutta la curva sotto zero il
+  // massimo resterebbe negativo.
+  const netti = punti.map((p) => p.netto);
+  const dominioY = [Math.min(0, ...netti), Math.max(1, Math.max(...netti) * 1.05)];
   // L'aliquota marginale esplode sui punti di soglia (perdere 1.200 euro di
   // trattamento integrativo per 100 euro di aumento vale -1.200%): l'asse e'
   // limitato e i valori fuori scala vengono tagliati dal clipPath, cosi' il
@@ -33,8 +39,12 @@ export function disegnaGrafico(contenitore, ralCorrente, opzioni = {}) {
   const linea = (dati, fy, chiave = 'netto') =>
     dati.map((p, i) => `${i ? 'L' : 'M'}${x(p.ral).toFixed(1)},${fy(p[chiave]).toFixed(1)}`).join('');
 
-  // Griglia e assi
-  const passoX = max > 120000 ? 40000 : max > 60000 ? 20000 : 10000;
+  // Griglia e assi. I passi raddoppiano finche' le etichette non stanno:
+  // sui casi tipici (fino a RAL ~200.000) i valori restano quelli della
+  // scaletta, ma un asse esteso — RAL 1.000.000 vale un asse da 1,6 milioni —
+  // non deve produrre quaranta etichette sovrapposte e illeggibili.
+  let passoX = max > 120000 ? 40000 : max > 60000 ? 20000 : 10000;
+  while (max / passoX > 10) passoX *= 2;
   const tacche = [];
   for (let v = 0; v <= max; v += passoX) {
     tacche.push(`<line x1="${x(v)}" y1="${T}" x2="${x(v)}" y2="${H - B}" class="griglia"/>
@@ -42,7 +52,8 @@ export function disegnaGrafico(contenitore, ralCorrente, opzioni = {}) {
         v === 0 ? '0' : `${v / 1000}k`
       }</text>`);
   }
-  const passoY = dominioY[1] > 80000 ? 25000 : 20000;
+  let passoY = dominioY[1] > 80000 ? 25000 : 20000;
+  while (dominioY[1] / passoY > 8) passoY *= 2;
   for (let v = 0; v <= dominioY[1]; v += passoY) {
     tacche.push(`<line x1="${L}" y1="${y(v)}" x2="${W - R}" y2="${y(v)}" class="griglia"/>
       <text x="${L - 8}" y="${y(v) + 3}" text-anchor="end" font-size="10" class="tacca">${
@@ -55,8 +66,12 @@ export function disegnaGrafico(contenitore, ralCorrente, opzioni = {}) {
     )}%</text>`);
   }
 
-  // Punto corrente
-  const corrente = punti.reduce((a, p) => (Math.abs(p.ral - ralCorrente) < Math.abs(a.ral - ralCorrente) ? p : a));
+  // Punto corrente: calcolato esatto sul caso corrente, NON agganciato al
+  // campione piu' vicino della curva. L'etichetta sul grafico deve dire lo
+  // stesso numero dell'indicatore "Netto annuo" in testa alla pagina: con
+  // l'aggancio divergeva fino a mezzo passo di campionamento (~40 euro gia'
+  // a RAL 42.500, che non cade sulla griglia dei campioni).
+  const corrente = { ral: ralCorrente, netto: calcolaNetto({ ...opzioni, ral: ralCorrente }).netto.annuo };
 
   contenitore.innerHTML = `
     <svg viewBox="0 0 ${W} ${H}" role="img"
