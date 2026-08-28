@@ -747,15 +747,15 @@ negativo** — i commi che avrebbero dovuto contenerle sono abrogati (§2.7) —
 dal registro insieme alla regola. Lo stato dichiarato ha fatto esattamente il suo mestiere:
 portare la regola alla revisione con il cartello addosso.
 
-Due fonti conservano una **lacuna dichiarata**, e nessuna delle due tocca un numero del caso
-modellato: il 9,19% è letto su una circolare del 2011 e non riconfermato su un documento del
-2026; e il 5,84% dell'apprendista poggia su una norma parametrica più la prassi che lo
-enuncia, senza un atto che dichiari la base della riduzione (§5.5-bis). Le altre due lacune si
-sono chiuse con i documenti aperti dal committente: i massimali degli oneri deducibili con
-l'art. 8 del D.Lgs. 252/2005 (§2.4-ter), e le regole accessorie del conteggio dei giorni con
-le istruzioni al modello 730/2026, rigo C5 (§3.12) — dopo che la lettura integrale della 326/E
-aveva mostrato che lì non stavano. Una lacuna nominata è un compito; il registro non ne ha più
-di anonime.
+Una sola fonte conserva una **lacuna dichiarata**, e non tocca un numero del caso modellato:
+il 5,84% dell'apprendista poggia su una norma parametrica più la prassi che lo enuncia, senza
+un atto che dichiari la base della riduzione (§5.5-bis). Le altre tre si sono chiuse con i
+documenti aperti dal committente: i massimali degli oneri deducibili con l'art. 8 del
+D.Lgs. 252/2005 (§2.4-ter); le regole accessorie del conteggio dei giorni con le istruzioni al
+modello 730/2026, rigo C5 (§3.12) — dopo che la lettura integrale della 326/E aveva mostrato
+che lì non stavano; e la riconferma del 9,19% con la circolare INPS n. 27/2024, che lo usa in
+un atto che disciplina i periodi di paga fino al 31/12/2026 (§3.12). Una lacuna nominata è un
+compito; il registro non ne ha più di anonime.
 
 Ogni fonte incompleta — non `atto-letto`, oppure letta ma con un punto ancora aperto —
 dichiara inoltre un campo **`lacuna`** che nomina esattamente ciò che manca — *«l'art. 51 del
@@ -1231,7 +1231,7 @@ Sul caso di RAL 45.000 il netto del modello coincide **al centesimo** con quello
 esterno di §3.4. Con la lettura piatta il confronto sarebbe fallito di 91,70 €. La progressività
 non è quindi un'assunzione: è ciò che rende vero un riscontro esterno già eseguito.
 
-#### Il 9,19%, e un limite che resta
+#### Il 9,19%, e un limite che restava
 
 La circolare INPS n. 40 del 22/02/2011 è il documento che *spiega* il numero, dove le circolari
 annuali lo danno per scontato. La tabella del settore privato non agricolo riporta «Totale
@@ -1246,9 +1246,20 @@ La progressione annuale di 0,20 punti prevista dall'art. 3 c. 23 della L. 335/19
 cercarne la «legge istitutiva» era un vicolo cieco: è un'aliquota di computo del Fondo,
 risultato di una stratificazione, non di una norma unica.
 
-**Il limite va detto**: è un documento del 2011. Prova che l'aliquota era assestata allora, non
-che sia identica oggi. La lacuna resta quindi aperta, ma è di un tipo diverso da prima — non più
-«nessuna fonte», ma «nessuna conferma sull'anno in corso».
+**Il limite andava detto**: è un documento del 2011. Prova che l'aliquota era assestata allora,
+non che sia identica oggi. La lacuna era quindi rimasta aperta, ma di un tipo diverso da prima —
+non più «nessuna fonte», ma «nessuna conferma sull'anno in corso».
+
+**La conferma è poi arrivata, nella forma in cui poteva esistere.** La circolare INPS n. 27 del
+31 gennaio 2024 — quella dell'esonero delle lavoratrici madri, fornita dal committente —
+disciplina i periodi di paga dal 1° gennaio 2024 al 31 dicembre 2026 e, coordinando la misura
+con l'esonero del comma 15 della stessa legge (par. 6), calcola l'onere contributivo massimo
+della lavoratrice *«ipotizzando un'aliquota contributiva pari a 9,19%»*: su 2.692 euro mensili
+fa 247,39 euro, e l'aritmetica torna al centesimo. Non è la tabella annuale delle aliquote —
+quel documento non esiste, ed era il motivo per cui la lacuna era nata — ma è l'INPS che usa il
+9,19% come aliquota a carico del lavoratore in un atto che governa anche i periodi di paga del
+2026. La lacuna più vecchia del registro si chiude così: non con il documento ideale, che non
+c'è, ma con quello reale che dice la stessa cosa.
 
 #### I giorni: una citazione ritirata, rimessa e infine verificata
 

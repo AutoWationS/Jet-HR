@@ -180,11 +180,8 @@ export const FONTI = {
   contributi: {
     livello: 2,
     statoVerifica: 'atto-letto',
-    dove: 'Un documento INPS che riporti l’aliquota a carico del lavoratore per i periodi di paga 2026 — candidato concreto: circolare n. 27 del 31/01/2024 (esonero lavoratrici madri, disciplina i periodi 2024-2026), cercare “9,19” nel PDF',
+    dove: 'Circolari INPS n. 40/2011, n. 6/2026 e n. 27/2024, tutte lette',
     canale: 'inps',
-    lacuna:
-      'la misura del 9,19% è letta su una circolare del 2011, che la dà per assestata ' +
-      'dal 2002; per l’anno 2026 non è stata riconfermata su un documento dell’anno',
     etichetta: 'Aliquote e limiti contributivi a carico del dipendente',
     norma:
       'Aliquota IVS 9,19% (quota lavoratore, FPLD settore privato non agricolo: aliquota ' +
@@ -208,7 +205,9 @@ export const FONTI = {
       'INPS, circolare n. 6 del 30 gennaio 2026, per la prima fascia di retribuzione ' +
       'pensionabile e il massimale contributivo, entrambi rivalutati ogni anno. INPS, ' +
       'circolare n. 40 del 22 febbraio 2011, per la misura e la composizione ' +
-      'dell’aliquota a carico del lavoratore.',
+      'dell’aliquota a carico del lavoratore. INPS, circolare n. 27 del 31 gennaio 2024, ' +
+      'che usa il 9,19% come aliquota a carico della lavoratrice in un atto che disciplina ' +
+      'i periodi di paga dal 2024 al 2026.',
     url: 'https://www.inps.it/it/it/inps-comunica/atti/circolari-messaggi-e-normativa.html',
     verifica:
       'VERIFICATO su due circolari INPS. La n. 6 del 30/01/2026, per prima fascia di ' +
@@ -222,10 +221,20 @@ export const FONTI = {
       'lavoratore in quanto, per effetto dell’incremento di 0,50 punti percentuali ' +
       'operato, da ultimo, alla data del 1.1.2002, la stessa aliquota ha già raggiunto ' +
       'la misura piena (8,89% + 0,30 = totale 9,19%)”. La progressione annuale ' +
-      'riguardava il datore di lavoro, non il dipendente. IL LIMITE VA DETTO: è un ' +
-      'documento del 2011, e prova che l’aliquota era assestata allora, non che sia ' +
-      'identica oggi. La prima fascia e il massimale sono invece da riverificare a ogni ' +
-      'circolare annuale, perché rivalutati',
+      'riguardava il datore di lavoro, non il dipendente. IL LIMITE ANDAVA DETTO — un ' +
+      'documento del 2011 prova che l’aliquota era assestata allora, non che sia identica ' +
+      'oggi — ED È STATO CHIUSO da una terza circolare, la n. 27 del 31/01/2024 ' +
+      'sull’esonero delle lavoratrici madri, fornita dal committente: disciplina i ' +
+      'periodi di paga dal 1° gennaio 2024 al 31 dicembre 2026 e, coordinando la misura ' +
+      'con l’esonero del c. 15 della stessa legge (par. 6), calcola l’onere contributivo ' +
+      'massimo della lavoratrice “ipotizzando un’aliquota contributiva pari a 9,19%”: su ' +
+      '2.692 euro mensili fa 247,39 euro, e l’aritmetica torna al centesimo. Non è una ' +
+      'tabella delle aliquote e porta la data del 2024, ma è l’INPS che usa il 9,19% come ' +
+      'aliquota a carico del lavoratore in un atto che governa anche i periodi di paga ' +
+      'del 2026: la riconferma che mancava, nella forma in cui esiste. La stessa ' +
+      'circolare include espressamente i rapporti di apprendistato nella misura, in ' +
+      'coerenza con la loro natura a tempo indeterminato. La prima fascia e il massimale ' +
+      'restano da riverificare a ogni circolare annuale, perché rivalutati',
   },
 
   nonConcorrenzaContributi: {

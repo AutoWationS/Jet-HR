@@ -116,8 +116,9 @@ manca più il documento da aprire per chiuderla. Un test impedisce alla prosa di
 erano autopromosse citando il testo unico riordinato al posto di quello vigente. Oggi **tutte
 e diciassette le fonti hanno avuto il proprio atto aperto** — l'ultimo, l'art. 21 della
 L. 41/1986 sull'aliquota dell'apprendista, su documento fornito dal committente, che aprendo
-l'atto ne ha anche corretto la data (28 febbraio, non 13). Due fonti conservano una lacuna
-dichiarata e circoscritta, e nessuna delle due tocca un numero del caso modellato;
+l'atto ne ha anche corretto la data (28 febbraio, non 13). Una sola fonte conserva una lacuna
+dichiarata e circoscritta — la base storica da cui i tre punti dell'apprendista producono il
+5,84% — e non tocca un numero del caso modellato;
 `node scripts/verifica-fonti.mjs` stampa cosa resta e dove trovarlo. Un secondo test legge il
 sorgente del registro e cade se una fonte dichiara due volte la stessa chiave: anche quello è la
 correzione di un difetto reale, sei note di verifica aggiornate che l'object literal cancellava
