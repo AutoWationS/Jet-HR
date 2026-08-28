@@ -22,7 +22,7 @@ elencato voce per voce, con la norma che lo esclude.
 | il ragionamento per esteso | [`docs/metodologia.md`](docs/metodologia.md) — decisioni, verifiche, errori trovati, semplificazioni |
 
 ```bash
-npm test                               # 49 test, nessuna dipendenza da installare
+npm test                               # 54 test, nessuna dipendenza da installare
 node scripts/verifica-fonti.mjs        # stato di verifica di ogni fonte, e cosa resta da aprire
 node scripts/tabella-riferimento.mjs   # 11 RAL con tutte le voci intermedie
 ```
@@ -88,10 +88,11 @@ Sette livelli, dal più debole al più forte.
 [`docs/metodologia.md`](docs/metodologia.md) §3.1, e lo stesso ricalcolo è codificato riga per
 riga nel primo test: se un passaggio si rompe, il test dice **quale**.
 
-**2. Quarantanove test** con `node --test`, in quattro famiglie:
+**2. Cinquantaquattro test** con `node --test`, in cinque famiglie:
 casi di riferimento (ogni voce intermedia, non solo il totale), blocchi isolati (continuità
 delle formule sui confini di fascia, décalage, massimale), invarianti sull'intera curva da 1.000
-a 200.000 €, e coerenza del registro delle fonti.
+a 200.000 €, coerenza del registro delle fonti, e il disegno del grafico — l'SVG viene generato
+e riletto, e ogni soglia dichiarata deve avere il suo picco di marginale nel disegno.
 
 L'invariante più utile: **il netto può scendere solo attraversando una soglia dichiarata**, e
 ogni salto vale esattamente quanto l'agevolazione persa. Se una modifica introducesse una
@@ -159,7 +160,7 @@ descrizione no, la suite cade.
 | `src/ui.js` | L'unico modulo che tocca il DOM. Non conosce nessuna regola fiscale. |
 | `src/grafico.js` | Curva netto/RAL e aliquota marginale, SVG generato a mano. |
 | `src/formato.js` | Unico posto in cui i numeri diventano stringhe. |
-| `test/` | 33 test sul motore, 13 sulle fonti, 3 sul bundle. |
+| `test/` | 33 test sul motore, 13 sulle fonti, 5 sul grafico, 3 sul bundle. |
 | `scripts/bundle.mjs` | Genera `dist/` dai sorgenti; un test verifica che non possa divergere. |
 | `docs/metodologia.md` | Decisioni, catena di calcolo, verifiche, semplificazioni, fonti. |
 

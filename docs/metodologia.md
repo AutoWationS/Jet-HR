@@ -323,7 +323,7 @@ passaggio si rompe, il test dice **quale**.
 
 ### 3.2 Suite di test
 
-`npm test` esegue 49 test. Trentatré sul motore, in quattro famiglie:
+`npm test` esegue 54 test. Trentatré sul motore, in quattro famiglie:
 
 1. **Casi di riferimento** (15k / 25k / 35k / 60k): ogni voce intermedia verificata, non solo
    il totale. Un test che controlla solo il netto finale non dice dove si è rotto il calcolo.
@@ -345,6 +345,12 @@ passaggio si rompe, il test dice **quale**.
      discontinuità non prevista, il test fallisce. È il controllo che rende visibile un errore
      di modellazione che i test sui singoli casi non intercetterebbero;
    - i **salti** alle soglie valgono esattamente quanto l'agevolazione persa (§4).
+
+I venti restanti: dodici sul registro delle fonti (§6), tre sull'allineamento del bundle in
+`dist/`, e cinque sul **disegno del grafico** — l'SVG viene generato dentro il test e riletto
+come stringa, e ogni soglia della tabella di §4 deve avere il suo picco di marginale nel
+disegno. Sono nati da un difetto reale, raccontato in fondo a §4: quattro picchi su cinque
+non venivano disegnati.
 
 ### 3.3 Confronto con calcolatori pubblici
 
@@ -1334,6 +1340,19 @@ di contributi + addizionali. È più alta della marginale di chi guadagna 100.00
 
 Il grafico in pagina mostra la marginale accanto alla curva del netto proprio per questo: sulla
 curva del netto queste cose sono scalini invisibili, sulla marginale sono picchi.
+
+Quella frase è stata a lungo più vera nelle intenzioni che sullo schermo. La marginale di ogni
+punto era calcolata su una finestra fissa di 100 €, ma la curva campiona la RAL ogni 200 €: una
+soglia lascia un picco solo se cade dentro la finestra di un campione, e con la finestra larga
+metà del passo, metà dell'asse era cieca. Delle cinque soglie della tabella qui sopra **quattro
+non producevano alcun picco** — nel grafico che esiste per mostrarle; sopravviveva solo il salto
+della capienza, per la coincidenza che 9.001,14 dista un euro da un campione. La correzione
+misura la marginale del grafico come **pendenza fra un campione e il successivo**: i tratti
+consecutivi coprono l'asse senza buchi, e nessuna discontinuità può più cadere fra due campioni
+senza segnare la pendenza. Un test genera l'SVG e verifica che ogni soglia della tabella abbia
+il suo picco schiacciato sul bordo dell'asse. L'indicatore «aliquota marginale» sopra il
+grafico resta invece sulla finestra di 100 €: la sua didascalia parla proprio di 100 € di
+aumento, ed è la definizione che il test di §3.2 tiene allineata alla catena del netto.
 
 ---
 
