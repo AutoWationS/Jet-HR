@@ -2779,6 +2779,19 @@ function curvaNetto(da, a, passo, parametri = PARAMETRI_DEFAULT, input = {}) {
       marginale: r.indici.aliquotaMarginale,
     });
   }
+  // La marginale di ogni punto e' la pendenza del tratto verso il punto
+  // successivo, cioe' e' misurata SUL PASSO della curva, non sulla finestra
+  // fissa di aliquotaMarginale. Non e' un dettaglio: la finestra di 100 euro
+  // vede una soglia solo se le cade dentro, e con un passo piu' largo
+  // (200 euro nel grafico in pagina) meta' dell'asse resta cieco — quattro
+  // soglie su cinque non lasciavano alcun picco. I tratti consecutivi invece
+  // coprono l'asse senza buchi: nessuna discontinuita' puo' cadere tra due
+  // campioni senza segnare la pendenza. L'ultimo punto, senza un tratto
+  // successivo, tiene la marginale puntuale calcolata sopra.
+  for (let i = 0; i + 1 < punti.length; i++) {
+    punti[i].marginale =
+      1 - (punti[i + 1].netto - punti[i].netto) / (punti[i + 1].ral - punti[i].ral);
+  }
   return punti;
 }
 
@@ -2804,7 +2817,13 @@ function disegnaGrafico(contenitore, ralCorrente, opzioni = {}) {
   const punti = curvaNetto(1000, max, Math.max(100, Math.round(max / 400)), undefined, opzioni);
 
   const dominioX = [0, max];
-  const dominioY = [0, Math.max(...punti.map((p) => p.netto)) * 1.05];
+  // Il netto puo' scendere sotto zero (oneri deducibili oltre la RAL): il
+  // dominio deve includere il minimo, altrimenti la scala si ribalta e la
+  // curva negativa comparirebbe in alto, come un netto positivo. Il tetto ha
+  // un pavimento a 1 per lo stesso caso: con tutta la curva sotto zero il
+  // massimo resterebbe negativo.
+  const netti = punti.map((p) => p.netto);
+  const dominioY = [Math.min(0, ...netti), Math.max(1, Math.max(...netti) * 1.05)];
   // L'aliquota marginale esplode sui punti di soglia (perdere 1.200 euro di
   // trattamento integrativo per 100 euro di aumento vale -1.200%): l'asse e'
   // limitato e i valori fuori scala vengono tagliati dal clipPath, cosi' il
@@ -2819,8 +2838,12 @@ function disegnaGrafico(contenitore, ralCorrente, opzioni = {}) {
   const linea = (dati, fy, chiave = 'netto') =>
     dati.map((p, i) => `${i ? 'L' : 'M'}${x(p.ral).toFixed(1)},${fy(p[chiave]).toFixed(1)}`).join('');
 
-  // Griglia e assi
-  const passoX = max > 120000 ? 40000 : max > 60000 ? 20000 : 10000;
+  // Griglia e assi. I passi raddoppiano finche' le etichette non stanno:
+  // sui casi tipici (fino a RAL ~200.000) i valori restano quelli della
+  // scaletta, ma un asse esteso — RAL 1.000.000 vale un asse da 1,6 milioni —
+  // non deve produrre quaranta etichette sovrapposte e illeggibili.
+  let passoX = max > 120000 ? 40000 : max > 60000 ? 20000 : 10000;
+  while (max / passoX > 10) passoX *= 2;
   const tacche = [];
   for (let v = 0; v <= max; v += passoX) {
     tacche.push(`<line x1="${x(v)}" y1="${T}" x2="${x(v)}" y2="${H - B}" class="griglia"/>
@@ -2828,7 +2851,8 @@ function disegnaGrafico(contenitore, ralCorrente, opzioni = {}) {
         v === 0 ? '0' : `${v / 1000}k`
       }</text>`);
   }
-  const passoY = dominioY[1] > 80000 ? 25000 : 20000;
+  let passoY = dominioY[1] > 80000 ? 25000 : 20000;
+  while (dominioY[1] / passoY > 8) passoY *= 2;
   for (let v = 0; v <= dominioY[1]; v += passoY) {
     tacche.push(`<line x1="${L}" y1="${y(v)}" x2="${W - R}" y2="${y(v)}" class="griglia"/>
       <text x="${L - 8}" y="${y(v) + 3}" text-anchor="end" font-size="10" class="tacca">${
@@ -2841,8 +2865,12 @@ function disegnaGrafico(contenitore, ralCorrente, opzioni = {}) {
     )}%</text>`);
   }
 
-  // Punto corrente
-  const corrente = punti.reduce((a, p) => (Math.abs(p.ral - ralCorrente) < Math.abs(a.ral - ralCorrente) ? p : a));
+  // Punto corrente: calcolato esatto sul caso corrente, NON agganciato al
+  // campione piu' vicino della curva. L'etichetta sul grafico deve dire lo
+  // stesso numero dell'indicatore "Netto annuo" in testa alla pagina: con
+  // l'aggancio divergeva fino a mezzo passo di campionamento (~40 euro gia'
+  // a RAL 42.500, che non cade sulla griglia dei campioni).
+  const corrente = { ral: ralCorrente, netto: calcolaNetto({ ...opzioni, ral: ralCorrente }).netto.annuo };
 
   contenitore.innerHTML = `
     <svg viewBox="0 0 ${W} ${H}" role="img"
@@ -3374,7 +3402,11 @@ function esegui(evento) {
   evento?.preventDefault();
   const input = leggiModulo();
 
-  if (!(input.ral > 0)) {
+  // isFinite oltre a > 0: «1e999» e' una stringa numerica valida per un campo
+  // number, diventa Infinity e supererebbe il solo confronto con zero — e una
+  // RAL infinita manda in loop il campionamento della curva del grafico,
+  // congelando la pagina.
+  if (!(Number.isFinite(input.ral) && input.ral > 0)) {
     $('#avvisi').innerHTML = '<div class="avviso errore">Inserisci una RAL maggiore di zero.</div>';
     $('#risultato').classList.add('nascosto');
     return;
