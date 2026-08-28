@@ -1628,22 +1628,18 @@ const FONTI = {
   ragguaglioGiorni: {
     livello: 2,
     statoVerifica: 'atto-letto',
-    dove: 'Istruzioni ai modelli dichiarativi (CU e 730, quadro C — giorni di lavoro dipendente), per le due regole accessorie: quali giorni si contano e il computo unico dei periodi contemporanei',
+    dove: 'Circolare 326/E/1997, letta per intero; istruzioni al modello 730/2026, rigo C5, lette per le due regole del conteggio',
     canale: 'def',
-    lacuna:
-      'la circolare 326/E, ora letta per intero, conferma la convenzione dei 365 giorni ma ' +
-      'NON contiene le altre due regole del dettaglio — quali giorni si contano e come si ' +
-      'trattano più rapporti contemporanei: la loro sede è nelle istruzioni ai modelli ' +
-      'dichiarativi, non ancora aperte',
     etichetta: 'Come si contano i giorni di lavoro nell’anno',
     norma:
       'Circolare Ministero delle Finanze n. 326/E del 23/12/1997, par. 3.3 (periodo di ' +
-      'paga) e par. 3.4 (effettuazione della ritenuta)',
+      'paga) e par. 3.4 (effettuazione della ritenuta); istruzioni al modello 730/2026, ' +
+      'rigo C5 del quadro C, per il conteggio dei giorni',
     dettaglio:
-      'L’anno va sempre assunto di 365 giorni, anche se bisestile. I giorni da considerare sono ' +
-      'quelli che hanno dato diritto a retribuzione assoggettata a ritenuta, comprese festività ' +
-      'e riposi settimanali; vanno esclusi i giorni non retribuiti. In caso di più rapporti, i ' +
-      'periodi contemporanei si contano una volta sola.',
+      'L’anno va sempre assunto di 365 giorni, anche se bisestile. Nel conteggio vanno in ogni ' +
+      'caso compresi le festività, i riposi settimanali e gli altri giorni non lavorativi; ' +
+      'vanno sottratti i giorni per cui non spetta alcuna retribuzione, neanche differita. In ' +
+      'caso di più rapporti, i giorni dei periodi contemporanei si contano una volta sola.',
     url: 'https://def.finanze.it/DocTribFrontend/RicercaLibera.jsp',
     verifica:
       'VERIFICATO sul par. 3.3 della circolare, che dispone testualmente: “per ' +
@@ -1662,9 +1658,21 @@ const FONTI = {
       'conferma le detrazioni “rapportate al periodo stesso” e il trattamento autonomo ' +
       'delle mensilità aggiuntive, e la ricerca sull’intero testo — festività, riposi, ' +
       'contemporaneità, ogni occorrenza di “giorni” — dà esito negativo: le due regole ' +
-      'accessorie NON stanno in questa circolare. La ricerca a vuoto stavolta è ' +
-      'un’informazione, non un dubbio: la lacuna cambia indirizzo, dalla 326/E alle ' +
-      'istruzioni ai modelli dichiarativi',
+      'accessorie NON stanno in questa circolare: la loro sede è nelle istruzioni ai modelli ' +
+      'dichiarativi. LE ISTRUZIONI SONO STATE POI APERTE — modello 730/2026, agg. 28/05/2026, ' +
+      'rigo C5 “Periodo di lavoro”, pagg. 41-42, lette sulle pagine trasmesse dal ' +
+      'committente — e contengono entrambe le regole alla lettera: i giorni si determinano ' +
+      '“tenendo conto che vanno in ogni caso compresi le festività, i riposi settimanali e ' +
+      'gli altri giorni non lavorativi e che vanno sottratti i giorni per cui non spetta ' +
+      'alcuna retribuzione, neanche differita (ad esempio, in caso di assenza per aspettativa ' +
+      'senza corresponsione di assegni)”, e con più redditi di lavoro dipendente va indicato ' +
+      'il totale “tenendo conto che quelli compresi in periodi contemporanei devono essere ' +
+      'considerati una volta sola” — regola ripetuta per la colonna della pensione e per il ' +
+      'tetto complessivo dei 365. Un dettaglio di collocazione va detto: la regola del ' +
+      'conteggio sta nel punto dedicato a chi non ha una Certificazione Unica, cioè a chi i ' +
+      'giorni deve contarli da sé — che è esattamente ciò che fa il motore. E una conferma ' +
+      'non cercata: nel part-time “i giorni possono essere considerati per l’intero periodo ' +
+      'di lavoro”. La fonte non ha più lacune',
   },
 };
 

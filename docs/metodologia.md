@@ -747,15 +747,15 @@ negativo** — i commi che avrebbero dovuto contenerle sono abrogati (§2.7) —
 dal registro insieme alla regola. Lo stato dichiarato ha fatto esattamente il suo mestiere:
 portare la regola alla revisione con il cartello addosso.
 
-Tre fonti conservano una **lacuna dichiarata**, e nessuna delle tre tocca un numero del caso
+Due fonti conservano una **lacuna dichiarata**, e nessuna delle due tocca un numero del caso
 modellato: il 9,19% è letto su una circolare del 2011 e non riconfermato su un documento del
-2026; le due regole accessorie del conteggio dei giorni non stanno nella circolare 326/E — ora
-letta per intero — ma nelle istruzioni ai modelli dichiarativi, non ancora aperte; e il 5,84%
-dell'apprendista poggia su una norma parametrica più la prassi che lo enuncia, senza un atto
-che dichiari la base della riduzione (§5.5-bis). La quarta lacuna — i massimali degli oneri
-deducibili — si è chiusa con la lettura dell'art. 8 del D.Lgs. 252/2005 (§2.4-ter): il campo
-resta generico per scelta dichiarata, non più per lacuna. Una lacuna nominata è un compito; il
-registro non ne ha più di anonime.
+2026; e il 5,84% dell'apprendista poggia su una norma parametrica più la prassi che lo
+enuncia, senza un atto che dichiari la base della riduzione (§5.5-bis). Le altre due lacune si
+sono chiuse con i documenti aperti dal committente: i massimali degli oneri deducibili con
+l'art. 8 del D.Lgs. 252/2005 (§2.4-ter), e le regole accessorie del conteggio dei giorni con
+le istruzioni al modello 730/2026, rigo C5 (§3.12) — dopo che la lettura integrale della 326/E
+aveva mostrato che lì non stavano. Una lacuna nominata è un compito; il registro non ne ha più
+di anonime.
 
 Ogni fonte incompleta — non `atto-letto`, oppure letta ma con un punto ancora aperto —
 dichiara inoltre un campo **`lacuna`** che nomina esattamente ciò che manca — *«l'art. 51 del
@@ -1283,6 +1283,19 @@ affatto**. Il passaggio dei 365 giorni è confermato alla lettera, ma la sede de
 altrove: le istruzioni ai modelli dichiarativi (CU e 730, quadro C). La lacuna ha cambiato
 indirizzo — non più «cercare meglio nella 326/E», ma «aprire le istruzioni» — e una ricerca a
 vuoto condotta stavolta sull'intero documento è di nuovo un'informazione, non un dubbio.
+
+**E le istruzioni sono state aperte** (modello 730/2026, agg. 28/05/2026, rigo C5 «Periodo di
+lavoro», pagg. 41-42): contengono entrambe le regole, alla lettera. I giorni si determinano
+*«tenendo conto che vanno in ogni caso compresi le festività, i riposi settimanali e gli altri
+giorni non lavorativi e che vanno sottratti i giorni per cui non spetta alcuna retribuzione,
+neanche differita (ad esempio, in caso di assenza per aspettativa senza corresponsione di
+assegni)»*; e con più redditi di lavoro dipendente va indicato il totale *«tenendo conto che
+quelli compresi in periodi contemporanei devono essere considerati una volta sola»* — regola
+ripetuta per la colonna della pensione e per il tetto complessivo dei 365. Due note dalla
+lettura: la regola del conteggio sta nel punto dedicato a chi **non** ha una Certificazione
+Unica, cioè a chi i giorni deve contarli da sé — che è esattamente ciò che fa il motore; e nel
+part-time *«i giorni possono essere considerati per l'intero periodo di lavoro»*, una conferma
+che nessuno stava cercando. La riga più faticosa del registro si chiude senza lacuna.
 
 **Il par. 3.4 ha poi restituito qualcosa che non stavo cercando.** Le mensilità aggiuntive hanno
 *«un trattamento autonomo»*: la tredicesima non si somma alla retribuzione del mese, si tassa
