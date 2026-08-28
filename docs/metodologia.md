@@ -162,9 +162,14 @@ sottraggono dalla **base**, non dall'imposta. L'effetto meno ovvio è che abbass
 soglie — cuneo, detrazioni, addizionale comunale — quindi possono far guadagnare due volte.
 
 Il campo del prototipo è **generico e senza massimale**, ed è una scelta dichiarata: l'art. 10
-non contiene i tetti, li delega alle norme di settore (per i fondi pensione all'art. 8 del
-D.Lgs. 252/2005), che non sono state lette. Mettere un tetto a memoria sarebbe esattamente il
-genere di numero che questo progetto rifiuta di scrivere.
+non contiene i tetti, li delega alle norme di settore. L'art. 8 del D.Lgs. 252/2005 è stato poi
+letto in originale, sul testo consolidato fornito dal committente: per la previdenza
+complementare il limite è di 5.164,57 €, **innalzato a 5.300 € dal periodo d'imposta 2026**
+dalla L. 199/2025 — che dallo stesso 2026 introduce anche l'adesione automatica dei neoassunti
+privati, a monte della RAL e quindi fuori da questo calcolo. Il campo resta comunque senza
+tetto, perché quel limite vale per un solo tipo di onere: applicarlo a tutto ciò che passa dal
+campo generico sbaglierebbe nella direzione opposta. La scelta è dichiarata nel registro, non
+più come lacuna ma come perimetro.
 
 **Gli oneri escono anche dal netto**, non solo dall'imponibile. Il contributo al fondo pensione
 lo trattiene il datore in busta paga: chi versa 3.000 € ha meno soldi sul conto e più soldi nel
@@ -722,16 +727,18 @@ livello:
 
 | Stato | Significato | Quante |
 |---|---|:--:|
-| `atto-letto` | il testo applicabile è stato letto | **16 su 17** |
-| `prassi-letta` | letto dentro una circolare che riporta la norma per esteso | 1 |
+| `atto-letto` | il testo applicabile è stato letto | **17 su 17** |
+| `prassi-letta` | letto dentro una circolare che riporta la norma per esteso | — |
 | `fonte-istituzionale` | letto sul sito dell'ente che emana l'atto, non sull'atto | — |
 | `non-verificata` | nessuna lettura diretta | — |
 
 Le sei fonti che erano `atto-corrispondente` sono state chiuse aprendo il **testo vigente del
 D.P.R. 917/1986** (§3.10.1): non ce ne sono più in quello stato.
-**Sedici fonti su diciassette hanno avuto il proprio atto aperto**, e la diciassettesima —
-l'aliquota dell'apprendista — è `prassi-letta` per una ragione dichiarata: quel numero non sta
-in una legge singola, esattamente come il 9,19% (§3.7.1, §3.10.2, §3.10.3, §3.12).
+**Tutte e diciassette le fonti hanno ora avuto il proprio atto aperto.** L'ultima era
+l'aliquota dell'apprendista: l'art. 21 della L. 41/1986 è stato aperto sul testo consolidato
+fornito dal committente — correggendo di passaggio la data della legge, che è del 28 febbraio
+e non del 13 — e ha mostrato una regola **parametrica** che il numero non lo contiene: il 5,84%
+resta enunciato dalla prassi, esattamente come il 9,19% (§5.5-bis, §3.12).
 
 Il registro ha avuto per un giro anche una **diciottesima fonte, nata `non-verificata`**: le
 aliquote regionali agevolate per carichi di famiglia, implementate dal consenso delle guide
@@ -740,16 +747,21 @@ negativo** — i commi che avrebbero dovuto contenerle sono abrogati (§2.7) —
 dal registro insieme alla regola. Lo stato dichiarato ha fatto esattamente il suo mestiere:
 portare la regola alla revisione con il cartello addosso.
 
-Tre fonti lette conservano una **lacuna dichiarata**, e nessuna delle tre tocca un numero del caso
+Tre fonti conservano una **lacuna dichiarata**, e nessuna delle tre tocca un numero del caso
 modellato: il 9,19% è letto su una circolare del 2011 e non riconfermato su un documento del
-2026; del conteggio dei giorni è confermata la convenzione dei 365 ma non le due regole
-accessorie; e i massimali degli oneri deducibili stanno fuori dal TUIR e non sono stati letti,
-per cui quel campo non ne applica nessuno. Una lacuna nominata è un compito; il registro non ne ha più di anonime.
+2026; le due regole accessorie del conteggio dei giorni non stanno nella circolare 326/E — ora
+letta per intero — ma nelle istruzioni ai modelli dichiarativi, non ancora aperte; e il 5,84%
+dell'apprendista poggia su una norma parametrica più la prassi che lo enuncia, senza un atto
+che dichiari la base della riduzione (§5.5-bis). La quarta lacuna — i massimali degli oneri
+deducibili — si è chiusa con la lettura dell'art. 8 del D.Lgs. 252/2005 (§2.4-ter): il campo
+resta generico per scelta dichiarata, non più per lacuna. Una lacuna nominata è un compito; il
+registro non ne ha più di anonime.
 
-Ogni fonte che non sia `atto-letto` dichiara inoltre un campo **`lacuna`** che nomina
-esattamente ciò che manca — *«l'art. 51 del D.P.R. 917/1986, applicabile al 2026, non è stato
-aperto»*, *«le delibere n. 36/2013 e n. 46/2020 non sono state aperte»* — e la pagina lo stampa
-sotto la verifica, in rosso.
+Ogni fonte incompleta — non `atto-letto`, oppure letta ma con un punto ancora aperto —
+dichiara inoltre un campo **`lacuna`** che nomina esattamente ciò che manca — *«l'art. 51 del
+D.P.R. 917/1986, applicabile al 2026, non è stato aperto»*, *«le delibere n. 36/2013 e
+n. 46/2020 non sono state aperte»* erano le formule delle lacune ormai chiuse — e la pagina lo
+stampa sotto la verifica, in rosso.
 
 Tre test lo presidiano. Lo stato dev'essere uno dei cinque previsti; **la parola VERIFICATO può
 comparire nella prosa solo se lo stato è `atto-letto`**; e nessuna fonte incompleta può restare
@@ -1262,8 +1274,15 @@ detrazioni previste negli articoli 12 e 13 dello stesso TUIR, rapportate al peri
 applicando *«le aliquote progressive per scaglioni di reddito»*. Denominatore e ragguaglio delle
 detrazioni stanno in due paragrafi consecutivi della stessa circolare.
 
-Restano fuori dal passaggio letto le altre due regole che il registro descrive — quali giorni si
-contano e come si trattano più rapporti contemporanei — ed è quello che la lacuna ora dichiara.
+Restavano fuori dal passaggio letto le altre due regole che il registro descrive — quali giorni
+si contano e come si trattano più rapporti contemporanei — ed era quello che la lacuna
+dichiarava. **Un giro successivo ha chiuso la domanda sulla circolare**: il PDF integrale
+(52 pagine), fornito dal committente, è stato scandito per intero — festività, riposi,
+contemporaneità, ogni occorrenza di «giorni» — e le due regole accessorie **non vi compaiono
+affatto**. Il passaggio dei 365 giorni è confermato alla lettera, ma la sede delle due regole è
+altrove: le istruzioni ai modelli dichiarativi (CU e 730, quadro C). La lacuna ha cambiato
+indirizzo — non più «cercare meglio nella 326/E», ma «aprire le istruzioni» — e una ricerca a
+vuoto condotta stavolta sull'intero documento è di nuovo un'informazione, non un dubbio.
 
 **Il par. 3.4 ha poi restituito qualcosa che non stavo cercando.** Le mensilità aggiuntive hanno
 *«un trattamento autonomo»*: la tredicesima non si somma alla retribuzione del mese, si tassa
@@ -1281,7 +1300,7 @@ Vale la pena tenerlo scritto, perché è il vero risultato del lavoro sulle font
 
 | | |
 |---|---|
-| errori di citazione | **4** — art. 13 c. 1-bis (§3.5), art. 14 c. 8 D.Lgs. 23/2011 (§3.7), par. 3 anziché 3.3 della 326/E, lett. b) anziché c) per i buoni pasto (corretta dalla lettura dell'art. 1 c. 14 della L. 199/2025) |
+| errori di citazione | **5** — art. 13 c. 1-bis (§3.5), art. 14 c. 8 D.Lgs. 23/2011 (§3.7), par. 3 anziché 3.3 della 326/E, lett. b) anziché c) per i buoni pasto (corretta dalla lettura dell'art. 1 c. 14 della L. 199/2025), e la data della L. 41/1986: 13 febbraio anziché 28, trovata dal committente aprendo l'atto (§5.5-bis) |
 | correzioni a loro volta sbagliate | **2** — la smentita dell'art. 14 c. 8, e questa ritrattazione |
 | errori di calcolo trovati | **2** — addizionali in no tax area, minimo di 690 € su tutte le fasce |
 | regole implementate da fonti secondarie e smentite dall'atto | **1** — le aliquote regionali agevolate (§2.7): dichiarate `non-verificata`, rimosse alla prima revisione manuale |
@@ -1490,11 +1509,23 @@ successivi, ogni volta come addendo di un totale diverso: 15,84 = 10 + 5,84; 17,
 5,84; 8,95 = 3,11 + 5,84; 10,45 = 4,61 + 5,84. Quattro conferme interne allo stesso documento
 valgono più di una citazione ripetuta da quattro documenti diversi.
 
-**Due punti restano aperti e sono dichiarati.** L'art. 21 della L. 41/1986 non è stato aperto. E
-la riduzione *«di tre punti»* non si riconcilia con il 9,19% che il modello usa per il regime
-ordinario: 9,19 − 3 farebbe 6,19, non 5,84. La base da cui la circolare toglie i tre punti è
-un'aliquota diversa, che non esplicita. Il modello usa il **numero enunciato**, non quello
-ricostruito — che è la scelta giusta quando i due non coincidono.
+**L'art. 21 è stato poi aperto, e un punto resta aperto dei due che lo erano.** Il testo
+consolidato, fornito dal committente, ha corretto per prima cosa la citazione: la legge è del
+**28 febbraio 1986**, non del 13 che il registro riportava — quinto errore di citazione del
+progetto, e il primo trovato da chi apre un atto su richiesta del registro stesso. Poi ha dato
+la norma primaria della regola:
+
+> *«è estesa a carico degli apprendisti la disciplina degli obblighi contributivi a carico
+> della generalità dei lavoratori dipendenti relativamente: a) all'assicurazione generale
+> obbligatoria per l'invalidità, la vecchiaia ed i superstiti, con una riduzione di tre punti
+> della relativa aliquota contributiva»*
+
+La formula della circolare INPS è la norma quasi alla lettera. Ma la norma è **parametrica**:
+il 5,84 non c'è scritto, e «la relativa aliquota contributiva» applicata all'aliquota vigente
+darebbe 9,19 − 3 = 6,19. Il 5,84 enunciato dall'INPS presuppone una base dell'**8,84%**, che
+nessun documento aperto dichiara: la lacuna si è ristretta dalla norma mancante alla base non
+dichiarata. Il modello usa il **numero enunciato**, non quello ricostruito — che è la scelta
+giusta quando i due non coincidono.
 
 #### Una lacuna che sarebbe diventata un errore: come è stata fermata
 

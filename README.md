@@ -113,11 +113,11 @@ quattro dettagli sul rapporto al periodo di lavoro. Gli esempi 1 e 2 sono due ca
 prassi, fonte dell'ente, non verificata — e, se incompleta, un campo `lacuna` che nomina ciò che
 manca più il documento da aprire per chiuderla. Un test impedisce alla prosa di dirsi
 «VERIFICATO» quando lo stato non lo consente: è la correzione di un difetto reale, sei fonti si
-erano autopromosse citando il testo unico riordinato al posto di quello vigente. Oggi **sedici
-delle diciassette fonti hanno avuto il proprio atto aperto**; la diciassettesima — l'aliquota
-dell'apprendista — è letta in circolare, per una ragione dichiarata. Tre delle fonti lette
-conservano una lacuna dichiarata e circoscritta, e nessuna di esse tocca un numero del caso
-modellato;
+erano autopromosse citando il testo unico riordinato al posto di quello vigente. Oggi **tutte
+e diciassette le fonti hanno avuto il proprio atto aperto** — l'ultimo, l'art. 21 della
+L. 41/1986 sull'aliquota dell'apprendista, su documento fornito dal committente, che aprendo
+l'atto ne ha anche corretto la data (28 febbraio, non 13). Tre fonti conservano una lacuna
+dichiarata e circoscritta, e nessuna di esse tocca un numero del caso modellato;
 `node scripts/verifica-fonti.mjs` stampa cosa resta e dove trovarlo. Un secondo test legge il
 sorgente del registro e cade se una fonte dichiara due volte la stessa chiave: anche quello è la
 correzione di un difetto reale, sei note di verifica aggiornate che l'object literal cancellava

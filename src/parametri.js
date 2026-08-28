@@ -556,12 +556,8 @@ export const FONTI = {
   oneriDeducibili: {
     livello: 1,
     statoVerifica: 'atto-letto',
-    dove: 'Art. 8 del D.Lgs. 252/2005, per il tetto della previdenza complementare',
+    dove: 'Art. 8 del D.Lgs. 252/2005, testo consolidato, letto in originale per il tetto della previdenza complementare',
     canale: 'normattiva',
-    lacuna:
-      'l’art. 10 rinvia per i massimali ad altre norme (l’art. 8 del D.Lgs. 252/2005 per i ' +
-      'fondi pensione), che non sono state lette: il campo del prototipo è generico e non ' +
-      'applica alcun tetto',
     etichetta: 'Oneri deducibili dal reddito complessivo',
     norma: 'Art. 10 TUIR',
     dettaglio:
@@ -583,24 +579,37 @@ export const FONTI = {
       'sarebbero deducibili, ma per il dipendente non arrivano mai al reddito complessivo ' +
       'perché l’art. 51 c. 2 lett. a) li esclude prima. Il c. 3-bis, infine, dà la deduzione ' +
       'della rendita dell’abitazione principale, che è la ragione per cui possedere la casa ' +
-      'in cui si vive non sposta questo calcolo',
+      'in cui si vive non sposta questo calcolo. L’ART. 8 DEL D.LGS. 252/2005 È STATO POI ' +
+      'LETTO sul testo consolidato, fornito dal committente: il c. 4 rende deducibili i ' +
+      'contributi alla previdenza complementare, ex art. 10 TUIR, “per un importo non ' +
+      'superiore ad euro 5.164,57”, e un periodo aggiunto dalla L. 199/2025 innalza il ' +
+      'limite a 5.300 € “a decorrere dal periodo d’imposta 2026” — cioè per l’anno ' +
+      'modellato; il c. 5 estende la deduzione ai contributi versati per familiari a ' +
+      'carico, il c. 6 dà ai lavoratori di prima occupazione un plafond aggiuntivo nei ' +
+      'venti anni successivi al quinto. Il campo resta generico e senza tetto PER SCELTA, ' +
+      'non più per lacuna: il limite letto riguarda la sola previdenza complementare, e un ' +
+      'campo generico che lo applicasse a ogni onere dell’art. 10 sbaglierebbe nella ' +
+      'direzione opposta. La stessa lettura ha mostrato, fuori dal perimetro, l’adesione ' +
+      'automatica dei neoassunti privati alla previdenza complementare dal 1° luglio 2026 ' +
+      '(cc. 7 ss., inseriti dalla L. 199/2025): sta a monte della RAL e non tocca questo ' +
+      'calcolo',
   },
 
   apprendistato: {
     livello: 2,
-    statoVerifica: 'prassi-letta',
-    dove: 'Art. 21 della L. 41/1986, testo consolidato, per la riduzione di tre punti',
-    canale: 'normattiva',
+    statoVerifica: 'atto-letto',
+    dove: 'Documento, di legge o di prassi, che dichiari la base storica della riduzione: il 5,84% presuppone un’aliquota di partenza dell’8,84%, che nessuno degli atti aperti enuncia',
+    canale: 'inps',
     lacuna:
-      'l’aliquota del 5,84% è letta nella circolare INPS che la enuncia e la ripete in quattro ' +
-      'somme; l’art. 21 della L. 41/1986, che la circolare indica come fonte della riduzione, ' +
-      'non è stato aperto. Resta aperta anche la derivazione aritmetica: togliendo tre punti al ' +
-      '9,19% che il modello usa per il regime ordinario si otterrebbe 6,19%, non 5,84%',
+      'l’art. 21 della L. 41/1986, ora letto, dà la regola in forma parametrica — l’aliquota ' +
+      'IVS della generalità “con una riduzione di tre punti” — che applicata all’aliquota ' +
+      'vigente del 9,19% darebbe 6,19%, non il 5,84% che l’INPS enuncia e il modello usa: ' +
+      'il 5,84 presuppone una base dell’8,84%, che nessun documento aperto dichiara',
     etichetta: 'Apprendistato: natura del contratto e aliquota dell’apprendista',
     norma:
-      'Artt. 41 e 43-45 del D.Lgs. 81/2015 per la disciplina; art. 21 della L. 41/1986 per ' +
-      'l’aliquota a carico dell’apprendista; art. 47 c. 7 del D.Lgs. 81/2015 per la durata ' +
-      'del beneficio',
+      'Artt. 41 e 43-45 del D.Lgs. 81/2015 per la disciplina; art. 21 della L. 28 febbraio ' +
+      '1986, n. 41 per l’aliquota a carico dell’apprendista; art. 47 c. 7 del D.Lgs. 81/2015 ' +
+      'per la durata del beneficio',
     dettaglio:
       'L’apprendistato è un contratto di lavoro A TEMPO INDETERMINATO finalizzato alla ' +
       'formazione, e la definizione decide una cosa concreta: il minimo garantito della ' +
@@ -615,37 +624,46 @@ export const FONTI = {
     prassi:
       'INPS, circolare n. 108 del 14/11/2018, par. 3.3 — “Apprendistato: riepilogo degli ' +
       'obblighi contributivi”.',
-    url: 'https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:1986-02-13;41',
+    url: 'https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:1986-02-28;41',
     verifica:
-      'La DISCIPLINA è verificata sul testo vigente del D.Lgs. 81/2015: l’art. 41 c. 1 dispone ' +
+      'VERIFICATO ora anche sull’art. 21 della L. 41/1986, aperto sul testo consolidato ' +
+      'fornito dal committente — e la lettura è cominciata correggendo la citazione: la ' +
+      'legge è del 28 FEBBRAIO 1986, non del 13 che il registro riportava. L’articolo ' +
+      'dispone che “è estesa a carico degli apprendisti la disciplina degli obblighi ' +
+      'contributivi a carico della generalità dei lavoratori dipendenti relativamente: ' +
+      'a) all’assicurazione generale obbligatoria per l’invalidità, la vecchiaia ed i ' +
+      'superstiti, con una riduzione di tre punti della relativa aliquota contributiva”. ' +
+      'La formula della circolare INPS è quindi la norma quasi alla lettera, ma è ' +
+      'PARAMETRICA: il 5,84% non vi compare, e applicata all’aliquota vigente darebbe ' +
+      '9,19 − 3 = 6,19. La DISCIPLINA resta verificata sul testo vigente del D.Lgs. 81/2015: l’art. 41 c. 1 dispone ' +
       'che “l’apprendistato è un contratto di lavoro a tempo indeterminato finalizzato alla ' +
       'formazione e alla occupazione dei giovani”, che è la riga da cui dipende quale minimo ' +
       'dell’art. 13 applicare — prenderlo a caso sarebbe valso 690 € di errore su un rapporto ' +
       'parziale. Gli artt. 43 c. 7 e 45 c. 3 escludono l’obbligo retributivo per le ore di ' +
       'formazione esterna e riducono al dieci per cento quelle a carico del datore; gli artt. ' +
       '43 c. 8 e 44 c. 5 ammettono l’apprendistato a tempo determinato per le attività ' +
-      'stagionali, unica eccezione alla regola del c. 1. L’ALIQUOTA è letta nella circolare ' +
+      'stagionali, unica eccezione alla regola del c. 1. L’ALIQUOTA è enunciata dalla circolare ' +
       'INPS n. 108/2018 par. 3.3: “l’aliquota contributiva a carico dell’apprendista è pari a ' +
       'quella prevista dall’assicurazione generale obbligatoria con una riduzione di tre punti ' +
       'ed è quindi pari al 5,84% della retribuzione imponibile, per tutta la durata del ' +
       'periodo di formazione”, con il beneficio esteso di un anno dalla prosecuzione del ' +
       'rapporto per l’art. 47 c. 7 del D.Lgs. 81/2015. Il numero non poggia sulla sola frase: ' +
       'la circolare lo ripete in quattro somme dei paragrafi successivi, ogni volta come ' +
-      'addendo di un totale diverso. DUE PUNTI RESTANO APERTI, dichiarati in lacuna: l’art. 21 ' +
-      'della L. 41/1986 non è stato aperto, e la riduzione “di tre punti” non si riconcilia con ' +
-      'il 9,19% del regime ordinario, che darebbe 6,19%. Il modello usa il numero enunciato, ' +
-      'non quello ricostruito',
+      'addendo di un totale diverso. UN PUNTO RESTA APERTO, dichiarato in lacuna: il 5,84 ' +
+      'presuppone una base dell’8,84% che nessun documento aperto dichiara. Il modello usa ' +
+      'il numero enunciato, non quello ricostruito',
   },
 
   ragguaglioGiorni: {
     livello: 2,
     statoVerifica: 'atto-letto',
-    dove: 'Circolare Ministero delle Finanze n. 326/E del 23/12/1997, per i giorni che danno diritto alla detrazione e per il caso di più rapporti — cercare “retribuzione assoggettata”',
+    dove: 'Istruzioni ai modelli dichiarativi (CU e 730, quadro C — giorni di lavoro dipendente), per le due regole accessorie: quali giorni si contano e il computo unico dei periodi contemporanei',
     canale: 'def',
     lacuna:
-      'il passaggio letto conferma la convenzione dell’anno di 365 giorni; le altre due ' +
-      'regole del dettaglio — quali giorni si contano e come si trattano più rapporti ' +
-      'contemporanei — non compaiono in quel passaggio e restano su prassi consolidata',
+      'la circolare 326/E, ora letta per intero, conferma la convenzione dei 365 giorni ma ' +
+      'NON contiene le altre due regole del dettaglio — quali giorni si contano e come si ' +
+      'trattano più rapporti contemporanei: la loro sede è nelle istruzioni ai modelli ' +
+      'dichiarativi, non ancora aperte',
     etichetta: 'Come si contano i giorni di lavoro nell’anno',
     norma:
       'Circolare Ministero delle Finanze n. 326/E del 23/12/1997, par. 3.3 (periodo di ' +
@@ -667,8 +685,15 @@ export const FONTI = {
       'delle aliquote progressive per scaglioni di reddito”. La riga era rimasta ' +
       'l’ultima non verificata del registro, ed è stata la più faticosa non perché il ' +
       'testo fosse oscuro ma perché la stringa cercata era sbagliata: “365” in un ' +
-      'documento fiscale è rumore, “bisestile” porta al punto in un colpo. Restano fuori ' +
-      'dal passaggio letto le altre due regole del dettaglio, dichiarate in lacuna',
+      'documento fiscale è rumore, “bisestile” porta al punto in un colpo. UN SECONDO ' +
+      'GIRO ha poi letto la circolare PER INTERO, dal PDF fornito dal committente ' +
+      '(52 pagine): il passaggio dei 365 giorni è confermato alla lettera, il par. 3.4 ' +
+      'conferma le detrazioni “rapportate al periodo stesso” e il trattamento autonomo ' +
+      'delle mensilità aggiuntive, e la ricerca sull’intero testo — festività, riposi, ' +
+      'contemporaneità, ogni occorrenza di “giorni” — dà esito negativo: le due regole ' +
+      'accessorie NON stanno in questa circolare. La ricerca a vuoto stavolta è ' +
+      'un’informazione, non un dubbio: la lacuna cambia indirizzo, dalla 326/E alle ' +
+      'istruzioni ai modelli dichiarativi',
   },
 };
 
@@ -684,8 +709,11 @@ export const PARAMETRI_2026 = {
     fonte: 'contributi',
     aliquotaIvs: 0.0919,
     /**
-     * Aliquota IVS a carico dell'apprendista: art. 21 della L. 41/1986, letto
-     * nella circolare INPS n. 108/2018 par. 3.3. NON e' l'art. 1 c. 773 della
+     * Aliquota IVS a carico dell'apprendista: la regola (riduzione di tre punti)
+     * e' l'art. 21 della L. 28 febbraio 1986, n. 41, letto in originale; la
+     * misura del 5,84% e' enunciata dalla circolare INPS n. 108/2018 par. 3.3,
+     * perche' l'articolo e' parametrico e oggi darebbe 6,19 (vedi la lacuna
+     * della fonte). NON e' l'art. 1 c. 773 della
      * L. 296/2006, che tutte le fonti secondarie indicano e che riguarda la sola
      * quota del datore. Il parametro e' rimasto a null finche' la fonte non e'
      * stata letta, e il motore si rifiutava di calcolare un apprendista: quel
@@ -1074,22 +1102,6 @@ export const PARAMETRI_2026 = {
         '1° gennaio dell’anno cui si riferisce l’addizionale». Il «31 dicembre» che alcune ' +
         'pagine regionali riportano ancora è il testo previgente, riscritto dal ' +
         'D.Lgs. 506/1999: le due addizionali guardano la stessa data.',
-    },
-    {
-      voce: 'Apprendistato: aliquota contributiva ridotta a carico dell’apprendista',
-      norma:
-        'Fonte da individuare. L’art. 1 c. 773 della L. 296/2006, che le fonti secondarie ' +
-        'indicano concordemente, è stato letto e riguarda la sola quota del DATORE',
-      motivo:
-        'È l’unico dei tre tipi di contratto che cambia il netto in modo grosso, perché ' +
-        'l’apprendista versa un’aliquota ridotta rispetto al 9,19% ordinario. Il prototipo non ' +
-        'lo rappresenta e non ne scrive la misura, e stavolta il motivo è più forte di una ' +
-        'cautela: il comma che tutti citano NON la contiene. Letto per intero, il c. 773 ' +
-        'rideterrmina “la contribuzione dovuta dai DATORI DI LAVORO per gli apprendisti … nel ' +
-        '10 per cento della retribuzione imponibile”, e la riduce di 8,5 e 7 punti nei primi ' +
-        'due anni per chi occupa fino a nove addetti. Della quota a carico dell’apprendista non ' +
-        'dice nulla. Quella misura è stratificata come il 9,19% e va cercata nella prassi INPS, ' +
-        'non in una legge singola.',
     },
     {
       voce: 'Apprendistato: aliquote a carico del datore di lavoro',
