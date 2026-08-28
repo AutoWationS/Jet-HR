@@ -245,6 +245,34 @@ test('il perimetro escluso e dichiarato voce per voce, con norma e motivo', () =
   }
 });
 
+test('ogni citazione della cascata punta a una scheda esistente del registro', () => {
+  // La cascata cita la norma accanto a ogni voce, e la citazione e' un
+  // collegamento alla scheda della fonte in fondo alla pagina. La UI non e'
+  // importabile qui (tocca il DOM), quindi si legge il sorgente: ogni
+  // cita('testo', 'chiave') deve puntare a una fonte del registro, e lo schema
+  // dell'ancora deve essere lo stesso sui due lati del collegamento — un link
+  // che punta a una scheda che non c'e' fallirebbe in silenzio nel browser.
+  const sorgente = readFileSync(new URL('../src/ui.js', import.meta.url), 'utf8');
+
+  const citazioni = [...sorgente.matchAll(/\bcita\(\s*'[^']*'\s*,\s*'([a-zA-Z0-9]+)'\s*\)/g)];
+  assert.ok(
+    citazioni.length >= 12,
+    'quasi nessuna citazione trovata in ui.js: se il modo di citare e cambiato, aggiorna il pattern',
+  );
+  for (const [, chiave] of citazioni) {
+    assert.ok(FONTI[chiave], `la cascata cita la fonte inesistente "${chiave}"`);
+  }
+
+  assert.ok(
+    sorgente.includes('href="#fonte-${chiave}"'),
+    'la citazione non usa lo schema di ancora #fonte-<chiave>',
+  );
+  assert.ok(
+    sorgente.includes('id="fonte-${chiave}"'),
+    'le schede delle fonti non espongono l\'ancora id="fonte-<chiave>"',
+  );
+});
+
 test('nessuna fonte dichiara due volte la stessa chiave', () => {
   // Difetto reale, occorso una volta: aggiornando la nota di verifica di sei
   // fonti la prosa nuova e' stata inserita in cima al blocco senza togliere
